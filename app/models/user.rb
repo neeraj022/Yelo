@@ -16,7 +16,9 @@ class User
   field :email,                type: String, default: ""
   field :encrypted_password,   type: String, default: ""
   field :avatar_off,           type: String, default: false
-  field :interest_ids,         type: Array      
+  field :interest_ids,         type: Array 
+  field :status,               type: Boolean, default: true
+  field :abuse_count,          type: Boolean, default: 0     
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
@@ -45,5 +47,26 @@ class User
   has_many     :listings
   embeds_one   :setting
   embeds_one   :statistic
+
+  def s_id
+    self.id.to_s
+  end
+
+  def tags
+    tags = Array.new
+    self.listings.each do |l|
+      l.listing_tags.each{|t| tags << {id: t.tag_id ,name: t.tag_name}}
+    end
+    tags
+  end
+
+  validates :mobile_number, presence: true,
+                      numericality: true,
+                      uniqueness: true,
+                      length: { minimum: 10, maximum: 15 }
+  validates :email, uniqueness: true, allow_blank: true, allow_nil: true
+  validates :push_token, :name, :platform, :encypt_device_id, :description,
+             presence: true, on: :update
+  validates :description, presence: true, on: :update
 
 end
