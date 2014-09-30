@@ -15,6 +15,10 @@ class Api::V1::BaseController < ActionController::API
     end
   end
 
+  def rescue_message(e)
+    render json: {error_message: Code.error_message(e), status: Code[:status_error] }, status: Code[:error_code]
+  end
+
   private
     def authenticate_user_from_token!
       request.format = "json"

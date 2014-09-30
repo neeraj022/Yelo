@@ -3,7 +3,8 @@ class Code
     def [](k)
   	  code = {
          :status_success => "success",
-         :status_error => "error"
+         :status_error => "error",
+         :error_code => 400
         }
       if code[k.to_sym].present?
         return code[k.to_sym]
@@ -11,5 +12,13 @@ class Code
         raise "Code not found"
       end
     end
+
+     def error_message(e)
+       if(Rails.env == "production")
+          "Error, something went wrong"
+       else 
+          e.message
+       end
+     end
    end
 end

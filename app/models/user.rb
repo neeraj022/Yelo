@@ -10,9 +10,9 @@ class User
   field :name,                 type: String
   field :description,          type: String
   field :platform,             type: String
-  field :encypt_device_id,     type: String
+  field :encrypt_device_id,    type: String
   field :push_id,              type: String
-  field :country_code,         type: String
+  field :country_code,         type: Integer
   field :email,                type: String, default: ""
   field :encrypted_password,   type: String, default: ""
   field :avatar_off,           type: String, default: false
@@ -23,6 +23,8 @@ class User
   field :serial_code,          type: Integer
   field :sms_verify,           type: Boolean, default: false
   field :auth_token,           type: String
+  field :share_token,          type: String
+  field :ext_image_url,        type: String
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
@@ -47,7 +49,10 @@ class User
   # field :failed_attempts, type: Integer, default: 0 # Only if lock strategy is :failed_attempts
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
-  
+    
+  ## carrier wave
+  mount_uploader :image, ImageUploader
+ 
   ## relations
   has_many     :listings
   embeds_one   :setting
@@ -59,17 +64,15 @@ class User
                       uniqueness: true,
                       length: { minimum: 10, maximum: 15 }
   validates :email, uniqueness: true, allow_blank: true, allow_nil: true
-  validates :push_token, :name, :platform, :encypt_device_id, :description,
+  validates :push_id, :name, :platform, :encrypt_device_id, :description,
              presence: true, on: :update
   validates :description, presence: true, on: :update
   
   ## filters
   before_save :ensure_authentication_token, :mobile_verification_serial
-  before_create :ensure_share_token, :ensure_password
-
-  def s_id
-    self.id.to_s
-  end
+              
+  before_create :ensure_share_token
+  before_validation :ensure_password
 
   def tags
     tags = Array.new
@@ -101,7 +104,23 @@ class User
     record if record && record.authenticatable_salt == salt
   end
 
+  def image_url
+    if !Rails.application.secrets.cloud_storage.present? || self.image.url.include?("fallback")
+      Rails.application.secrets.app_url+self.image.thumb.url
+    else
+      self.image.thumb.url
+    end
+  end
+
   ## before actions ######################################
+  def mobile_number_filter
+    if mobile_number_changed? && mobile_number.length > 10
+      num =  self.mobile_number
+      self.mobile_number = num.slice!(-(10-num.length), 10)
+      self.country_code = num
+    end
+  end
+
   def ensure_authentication_token
     if auth_token.blank?
       self.auth_token = generate_authentication_token
@@ -114,14 +133,22 @@ class User
   end
 
   def mobile_verification_serial
-    if sms_serial_key.blank?
-      self.sms_serial_key = SecureRandom.random_number(888888)
+    if serial_code.blank?
+      self.serial_code = SecureRandom.random_number(888888)
     end
   end
 
   def ensure_password
     return if self.password.present?
     self.password = SecureRandom.random_number(888888888)
+  end
+ 
+  ## class methods ###########################
+  class << self
+    def mobile_number_format(num)
+      mobile_number = num.slice!(-(10-num.length), 10)
+      {mobile_number: mobile_number, country_code: num}
+    end
   end
  
   ## private methods

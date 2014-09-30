@@ -8,5 +8,6 @@ class Statistic
   field: last_post,       type: DateTime, default: Time.now
   field: tdy_pst_cnt,     type: Integer,  default: 0
   
+  ## relations
   embedded_in :user
 end
