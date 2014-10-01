@@ -1,6 +1,6 @@
 class Api::V1::UsersController < Api::V1::BaseController
-  before_action :authenticate_user!, except: [:show, :create]
-  before_action :set_mobile_number, only: [:create, :update]
+  before_action :authenticate_user!, except: [:show, :create, :verify_serial_code]
+  before_action :set_mobile_number, only: [:create, :update, :verify_serial_code]
   
   # POST '/users'
   def create
@@ -9,6 +9,25 @@ class Api::V1::UsersController < Api::V1::BaseController
       existing_user
     else
       create_new_user
+    end
+  rescue => e
+    rescue_message(e)
+  end
+
+  # POST /verify
+  def verify_serial_code
+    @user = User.where(mobile_number: params[:user][:mobile_number], serial_code: params[:user][:serial_code]).first
+    if(@user.present?)
+      @user.serial_code = ""
+      @user.push_id = params[:user][:push_id]
+      @user.platform = params[:user][:platform]
+      @user.auth_token = ""
+      @user.serial_present =  true
+      @user.encrypt_device_id = params[:user][:encrypt_device_id]
+      @user.save!
+      render json: {auth_token: @user.auth_token, is_present: @user.is_present}
+    else
+      render json: {auth_token: ""}, status: Code[:error_code]
     end
   rescue => e
     rescue_message(e)

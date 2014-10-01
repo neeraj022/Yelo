@@ -4,7 +4,8 @@ class User
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-
+  attr_accessor :serial_present
+  
   ## Database authenticatable
   field :mobile_number,        type: Integer, default: ""
   field :name,                 type: String
@@ -29,6 +30,7 @@ class User
   field :city,                 type: String
   field :state,                type: String
   field :country,              type: String
+  field :is_present,           type: Boolean, default: false
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
@@ -66,11 +68,11 @@ class User
   validates :mobile_number, presence: true,
                       numericality: true,
                       uniqueness: true,
-                      length: { minimum: 10, maximum: 15 }
+                      length: { is: 10 }
   validates :email, uniqueness: true, allow_blank: true, allow_nil: true
-  validates :push_id, :name, :platform, :encrypt_device_id, :description,
+  validates :push_id, :platform, :encrypt_device_id,
              presence: true, on: :update
-  validates :description, presence: true, on: :update
+  validates :description, :name, presence: true, on: :update, :if => :validate_profile?
   
   ## filters
   before_save :ensure_authentication_token, :mobile_verification_serial
@@ -84,6 +86,14 @@ class User
       l.listing_tags.each{|t| tags << {id: t.tag_id ,name: t.tag_name}}
     end
     tags
+  end
+
+  def validate_profile?
+    if self.serial_present
+      false
+    else
+      true
+    end  
   end
 
   def online?
