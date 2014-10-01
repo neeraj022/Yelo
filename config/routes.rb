@@ -58,6 +58,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1, defaults:{format: 'json'} do
       post "/verify", to: "users#verify_serial_code"
+      post "/interests", to: "users#interests"
       resources :users
     end
   end

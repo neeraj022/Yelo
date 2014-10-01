@@ -57,7 +57,9 @@ class User
   # field :failed_attempts, type: Integer, default: 0 # Only if lock strategy is :failed_attempts
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
-    
+  ## index
+  index({ location: "2d" }, { min: -200, max: 200 })
+  index "mobile_number" => 1
   ## carrier wave
   mount_uploader :image, ImageUploader
  

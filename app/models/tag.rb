@@ -15,4 +15,18 @@ class Tag
 
   G_CODE = {LOCAL: 1, CITY: 2}
 
+  ## class methods #############################
+  class << self
+    
+    def verify_ids(tag_ids)
+      ids = Array.new
+      tag_ids.each do |id|
+         tag = Tag.where(_id: id).first
+         next unless tag.present?
+         ids << id
+	     end
+      ids
+    end
+ 
+  end
 end

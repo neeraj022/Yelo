@@ -58,13 +58,19 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         authWithUser(@user)
         @params = {id: @user.id, user: {name: "yelo"}}
       end
-      it "with providing id" do
+      it "profile with id" do
          get :update, @params
          expect(response.status).to eql(200)
          expect(json["user"]["name"]).to eql("yelo")
       end
+      it "interests" do
+         tag = FactoryGirl.create(:tag)
+         params = {user: {interest_ids: [tag.id.to_s]}}
+         get :interests, params
+         expect(response.status).to eql(200)
+         expect(json["user"]["interest_ids"]).to eql([tag.id.to_s])
+      end
     end
-  
   end
 end
 

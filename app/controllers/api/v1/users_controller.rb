@@ -41,7 +41,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue_message(e)
   end
 
-  # POST /verify
+  # POST 'users/verify'
   def verify_serial_code
     @user = User.where(mobile_number: params[:user][:mobile_number], serial_code: params[:user][:serial_code]).first
     if(@user.present?)
@@ -55,6 +55,20 @@ class Api::V1::UsersController < Api::V1::BaseController
       render json: {auth_token: @user.auth_token, is_present: @user.is_present}
     else
       render json: {error_message: "user not present"}, status: Code[:error_code]
+    end
+  rescue => e
+    rescue_message(e)
+  end
+
+  # POST 'users/interests'
+  def interests
+    @user = current_user
+    tag_ids = Tag.verify_ids(params[:user][:interest_ids])
+    @user.interest_ids = []
+    if(@user.add_to_set(interest_ids: tag_ids))
+       render json: {user: {interest_ids: @user.interest_ids}}
+    else
+       render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
     end
   rescue => e
     rescue_message(e)
