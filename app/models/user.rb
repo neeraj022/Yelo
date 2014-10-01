@@ -2,6 +2,7 @@ class User
   include Mongoid::Document
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
+  include Geo  
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -33,6 +34,8 @@ class User
   field :state,                type: String
   field :country,              type: String
   field :is_present,           type: Boolean, default: false
+  field :latitude,   type: String
+  field :longitude,  type: String
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
@@ -60,13 +63,20 @@ class User
   ## index
   index({ location: "2d" }, { min: -200, max: 200 })
   index "mobile_number" => 1
+  index "auth_token" => 1
   ## carrier wave
   mount_uploader :image, ImageUploader
- 
+
   ## relations
   has_many     :listings
   embeds_one   :setting
   embeds_one   :statistic
+
+  ## filters
+  before_save :ensure_authentication_token, :mobile_verification_serial
+                          
+  before_create :ensure_share_token
+  before_validation :ensure_password
 
   ## validators
   validates :mobile_number, presence: true,
@@ -77,12 +87,10 @@ class User
   validates :push_id, :platform, :encrypt_device_id,
              presence: true, on: :update
   validates :description, :name, presence: true, on: :update, :if => :validate_profile?
-  
-  ## filters
-  before_save :ensure_authentication_token, :mobile_verification_serial
-              
-  before_create :ensure_share_token
-  before_validation :ensure_password
+  validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
+  validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
+
+
 
   def tags
     tags = Array.new
