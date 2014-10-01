@@ -39,6 +39,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
          @params[:user][:serial_code] = "2323423"
          post :verify_serial_code, @params
          expect(response.status).to eql(400)
+         expect(json["error_message"]).to match(/.+/)
       end
     end
     

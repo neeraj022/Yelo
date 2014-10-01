@@ -1,5 +1,7 @@
 class Setting
   include Mongoid::Document
+  include Mongoid::Timestamps::Created
+  include Mongoid::Timestamps::Updated
   
   field :ns_code, type: Integer, default: Setting.NS_CODE[:NOTIFY_SUMMARY]
 

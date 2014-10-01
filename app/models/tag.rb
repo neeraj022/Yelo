@@ -1,5 +1,7 @@
 class Tag
   include Mongoid::Document
+  include Mongoid::Timestamps::Created
+  include Mongoid::Timestamps::Updated
 
   field :name, type: String
   field :group_id, type: String

@@ -25,7 +25,7 @@ class Api::V1::BaseController < ActionController::API
       user_token = token_and_options(request).presence
       return if user_token.blank?
       user_device_id = user_token[1][:device_id].presence 
-      user = user_device_id && User.where(encrypt_device_id: user_device_id, is_verified_by_sms: true).first
+      user = user_device_id && User.where(encrypt_device_id: user_device_id, sms_verify: true).first
       if user && Devise.secure_compare(user.auth_token, user_token[0])
         sign_in user, store: false
       end

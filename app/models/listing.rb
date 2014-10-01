@@ -1,5 +1,7 @@
 class Listing
   include Mongoid::Document
+  include Mongoid::Timestamps::Created
+  include Mongoid::Timestamps::Updated
 
   field :user_id,    type: BSON::ObjectId
   field :status,     type: Boolean, default: true

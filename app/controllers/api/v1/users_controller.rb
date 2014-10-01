@@ -1,6 +1,6 @@
 class Api::V1::UsersController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:show, :create, :verify_serial_code]
-  before_action :set_mobile_number, only: [:create, :update, :verify_serial_code]
+  before_action :set_mobile_number, only: [:create, :verify_serial_code]
   
   # POST '/users'
   def create
@@ -23,6 +23,24 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue_message(e)
   end
 
+  # PUT/PATCH '/users/id'
+  def update
+    @user  = current_user
+    if(params[:image].present?)
+      @user.image = params[:image]
+    elsif(params[:user][:ext_image_url].present?)
+      @user.remote_image_url = params[:user][:ext_image_url]
+      @user.ext_image_url = params[:user][:ext_image_url]
+    end
+    if(@user.update_attributes(user_params))
+      render json: @user
+    else
+      render json: {error_message: @user.errors.full_messages},  status: Code[:error_code]
+    end
+  rescue => e
+    rescue_message(e)
+  end
+
   # POST /verify
   def verify_serial_code
     @user = User.where(mobile_number: params[:user][:mobile_number], serial_code: params[:user][:serial_code]).first
@@ -36,7 +54,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       @user.save!
       render json: {auth_token: @user.auth_token, is_present: @user.is_present}
     else
-      render json: {auth_token: ""}, status: Code[:error_code]
+      render json: {error_message: "user not present"}, status: Code[:error_code]
     end
   rescue => e
     rescue_message(e)
@@ -52,7 +70,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:name, :mobile_number, :email, 
-        :image, :ext_image_url, :description, :encrypt_device_id, :push_token,
+        :image, :ext_image_url, :description,
          :platform, :country_code, :ext_image_url)
     end
 
@@ -78,3 +96,5 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
   end
 end
+
+
