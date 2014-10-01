@@ -18,6 +18,13 @@ describe "Users API", :type => :api do
       json["status"].should eql("error")
     end
   end
+
+  describe "verify user" do
+    it "with serial code"
+       params = {user: {mobile_number: "+9112345"}}
+    end
+  end
+
 end
 
 

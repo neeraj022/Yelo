@@ -14,6 +14,15 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue_message(e)
   end
 
+  # GET '/users/:id'
+  def show
+    @user  = User.find(params[:id])
+    expires_in 5.minutes, :public => true
+    render json: @user
+  rescue => e
+    rescue_message(e)
+  end
+
   # POST /verify
   def verify_serial_code
     @user = User.where(mobile_number: params[:user][:mobile_number], serial_code: params[:user][:serial_code]).first

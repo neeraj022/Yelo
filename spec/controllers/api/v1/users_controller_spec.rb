@@ -41,6 +41,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
          expect(response.status).to eql(400)
       end
     end
+    
+    describe "show a user" do
+      before(:each) {@user = FactoryGirl.create(:user)}
+      it "with id" do
+         get :show, {id: @user.id} 
+         expect(response.status).to eql(200)
+         expect(json["name"]).not_to eql(@user.name)
+      end
+    end
   
   end
 end

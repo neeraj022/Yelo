@@ -3,7 +3,7 @@
 FactoryGirl.define do
   factory :user do
   	# sequence(:mobile_number) { |n| "988373838373" }
-  	mobile_number '911234567890'
+  	mobile_number '1234567890'
     description 'Test'
     sms_verify 'true'
     push_id '123213234'
