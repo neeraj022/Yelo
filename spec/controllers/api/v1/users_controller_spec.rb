@@ -48,7 +48,20 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       it "with id" do
          get :show, {id: @user.id} 
          expect(response.status).to eql(200)
-         expect(json["name"]).not_to eql(@user.name)
+         expect(json["user"]["name"]).to eql(@user.name)
+      end
+    end
+   
+    describe "update user" do
+      before(:each) do 
+        @user = FactoryGirl.create(:user)
+        authWithUser(@user)
+        @params = {id: @user.id, user: {name: "yelo"}}
+      end
+      it "with providing id" do
+         get :update, @params
+         expect(response.status).to eql(200)
+         expect(json["user"]["name"]).to eql("yelo")
       end
     end
   

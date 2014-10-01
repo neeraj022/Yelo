@@ -10,6 +10,7 @@ FactoryGirl.define do
     encrypt_device_id '324rm32n4kj'
     platform 'device_id'
     name 'test'
+    country_code '91'
   end
 end
 
