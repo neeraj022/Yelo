@@ -11,7 +11,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       create_new_user
     end
   rescue => e
-     rescue_message(e)
+    rescue_message(e)
   end
   
   ## private methods ###################################
@@ -44,8 +44,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def create_new_user
     @user = User.new(user_create_params)
     if(@user.save)
-      # render json: {status: Code[:status_success]}
-       render json: @user, serializer: UserSerializer
+      render json: {status: Code[:status_success]}
     else
       render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
     end

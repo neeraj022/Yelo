@@ -3,9 +3,12 @@
 FactoryGirl.define do
   factory :user do
   	sequence(:mobile_number) { |n| "9{n}373838373" }
-    password '123456789'
-    password_confirmation '123456789'
     description 'Test'
+    sms_verify 'true'
+    push_id '123213234'
+    encrypt_device_id '324rm32n4kj'
+    platform 'device_id'
+    name 'test'
   end
 end
 

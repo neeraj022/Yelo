@@ -6,7 +6,7 @@ class User
          :recoverable, :rememberable, :trackable, :validatable
 
   ## Database authenticatable
-  field :mobile_number,        type: String, default: ""
+  field :mobile_number,        type: Integer, default: ""
   field :name,                 type: String
   field :description,          type: String
   field :platform,             type: String
@@ -25,6 +25,10 @@ class User
   field :auth_token,           type: String
   field :share_token,          type: String
   field :ext_image_url,        type: String
+  field :location,             type: Array
+  field :city,                 type: String
+  field :state,                type: String
+  field :country,              type: String
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
