@@ -6,7 +6,7 @@ class Tag
   field :name, type: String
   field :group_id, type: String
   field :granularity, type: Integer, default: 1
-  
+  field :score, type: Integer, default: 0
   ## relations
   belongs_to :group
   

@@ -11,6 +11,10 @@ FactoryGirl.define do
     platform 'device_id'
     name 'test'
     country_code '91'
+    latitude '12.123'
+    longitude '13.14'
+    country 'india'
+    city 'bangalore'
   end
 end
 

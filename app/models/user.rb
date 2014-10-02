@@ -161,13 +161,13 @@ class User
 
   def mobile_verification_serial
     if serial_code.blank?
-      self.serial_code = SecureRandom.random_number(888888)
+      self.serial_code = SecureRandom.random_number.to_s[2..7]
     end
   end
 
   def ensure_password
     return if self.password.present?
-    self.password = SecureRandom.random_number(888888888)
+    self.password = Devise.friendly_token
   end
  
   ## class methods ###########################
