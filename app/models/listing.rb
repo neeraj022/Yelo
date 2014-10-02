@@ -14,14 +14,14 @@ class Listing
   field :country,    type: String
   field :address,    type: String
   field :zipcode,    type: String
-
+  field :tag_ids,    type: Array
   ## index
   index({ location: "2d" }, { min: -200, max: 200 })
   
   ## relations ################
   belongs_to  :user, index: true
   embeds_many :listing_tags
-  
+  before_save :save_tag_ids
   ## filters ###################
   validate :user_id, :city, :country, :latitude, :longitude, presence: true
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
@@ -35,6 +35,7 @@ class Listing
       tag = Tag.where(_id: id).first
       next unless tag.present?
       obj = self.listing_tags.create!(tag_id: tag.id, tag_name: tag.name)
+      tag.save_score
     end
     return {status: true}
   rescue => e 

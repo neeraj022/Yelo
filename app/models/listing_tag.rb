@@ -7,4 +7,6 @@ class ListingTag
   field :rating_avg, type: Integer, default: 0
 
   validates :tag_id, :tag_name, presence: true
+  validates :tag_id, uniqueness: true
+
 end

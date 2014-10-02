@@ -2,7 +2,7 @@ class Api::V1::ListingsController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:show, :create]
   # POST /listings.json
   def create
-  	# @listing = Listing.first
+  	@listing = Listing.first
     @listing = current_user.listings.new(listing_params) unless @listing.present?
     list_save = @listing.create_with_tags(params[:tag_ids])
     if(list_save[:status])

@@ -15,6 +15,11 @@ class Tag
 
   G_CODE = {LOCAL: 1, CITY: 2}
 
+  def save_score
+    self.score += self.score
+    self.save
+  end
+
   ## class methods #############################
   class << self
     
