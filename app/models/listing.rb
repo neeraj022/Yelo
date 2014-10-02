@@ -24,18 +24,18 @@ class Listing
   
   ## filters
   
-  validate :user_id, :city, :latitude, :longitude, presence: true
+  validate :user_id, :city, :country, :latitude, :longitude, presence: true
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
 
   def create_with_tags(tag_ids)
     self.listing_tags.destroy_all if self.persisted?
+    self.save
     tag_ids.each do |id|
       tag = Tag.where(_id: id).first
       next unless tag.present?
       self.listing_tags.create!(tag_id: tag.id, tag_name: tag.name)
     end
-    self.save
   end
 
 end

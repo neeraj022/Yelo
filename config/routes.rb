@@ -60,6 +60,7 @@ Rails.application.routes.draw do
       post "/verify", to: "users#verify_serial_code"
       post "/interests", to: "users#interests"
       resources :users
+      resources :listings
     end
   end
 
