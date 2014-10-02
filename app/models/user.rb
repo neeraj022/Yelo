@@ -91,7 +91,7 @@ class User
             on: :update,  :if => :validate_profile?
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }, on: :update,
             on: :update,  :if => :validate_profile?
-  validates :city, :country, on: :update, :if => :validate_profile?
+  validates :city, :country, presence: true, on: :update, :if => :validate_profile?
 
   def tags
     tags = Array.new
