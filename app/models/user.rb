@@ -96,7 +96,7 @@ class User
   def tags
     tags = Array.new
     self.listings.each do |l|
-      l.listing_tags.each{|t| tags << {id: t.tag_id ,name: t.tag_name}}
+      l.listing_tags.each{|t| tags << {id: t.tag_id.to_s ,name: t.tag_name}}
     end
     tags
   end

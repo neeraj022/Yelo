@@ -21,11 +21,17 @@ class Listing
   ## relations ################
   belongs_to  :user, index: true
   embeds_many :listing_tags
-  before_save :save_tag_ids
+  before_save :insert_tag_ids
+  
   ## filters ###################
   validate :user_id, :city, :country, :latitude, :longitude, presence: true
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
+
+  def insert_tag_ids
+     self.tag_ids = []
+     self.tag_ids = self.listing_tags.map{|l| l.tag_id.to_s}
+  end
 
   def create_with_tags(tag_ids)
     obj = self

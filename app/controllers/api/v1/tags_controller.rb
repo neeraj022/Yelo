@@ -1,9 +1,9 @@
 class Api::V1::TagsController < ApplicationController
   
   # GET /tags/suggestions
-  def suggestion
+  def suggestions
     if(current_user.present?)
-      usr_tag_arr  = current_user.tag_hash
+      usr_tag_arr  = current_user.tags
       usr_tag_ids = usr_tag_arr.map{|t| t.id}
     end
     usr_tag_ids ||= [] 
