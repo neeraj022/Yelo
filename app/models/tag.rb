@@ -32,6 +32,12 @@ class Tag
 	     end
       ids
     end
+
+    def auto_suggestions(name)
+      tags = Tag.where(name: /^#{name}/i).limit(10)
+      tags_array = tags.map{|t| {id: t.id.to_s, name: t.name}}
+      tags_array
+    end
  
   end
 end

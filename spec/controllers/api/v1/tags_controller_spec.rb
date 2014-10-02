@@ -25,5 +25,10 @@ RSpec.describe Api::V1::TagsController, :type => :controller do
        expect(json["tags"].count).to eql(1)
        expect(json["user_tags"].count).to eql(1)
   	 end
+  	 it "should give auto complete suggestions" do
+         get :auto_suggestions, {q:"i"}
+         expect(response.status).to eql(200)
+         expect(json["tags"][0]["name"]).to eql("ios")
+  	 end
   end
 end

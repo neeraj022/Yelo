@@ -60,6 +60,7 @@ Rails.application.routes.draw do
       post "/verify", to: "users#verify_serial_code"
       post "/interests", to: "users#interests"
       get "/tags/suggestions", to: "tags#suggestions"
+      get "/tags/auto_suggestions", to: "tags#auto_suggestions"
       resources :users
       resources :listings
     end
