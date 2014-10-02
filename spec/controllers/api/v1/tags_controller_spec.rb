@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::TagsController, :type => :controller do
-  let(:listing_params) {{listing: {latitude: "12.9667", longitude: "77.5667",
-  	                          city:"Bangalore", country: "india"}}}
+  let(:listing_params) {{latitude: "12.9667", longitude: "77.5667",
+  	                          city:"Bangalore", country: "india"}}
   before(:each) do
     @tag1 = Tag.create(name: "android", score: 1)
     @tag2 = Tag.create(name: "ios", score: 2)
@@ -10,8 +10,8 @@ RSpec.describe Api::V1::TagsController, :type => :controller do
   end
   describe "tag suggestion" do
   	before(:each) do 
-      @listing = @user.listings.new(listing_params[:listing])
-      @listing_tag = @listing.create_with_tags([@tag1.id.to_s])
+      @listing = @user.listings.create(listing_params)
+      @listing.create_tags([@tag1.id.to_s])
     end
   	 it "should give top tags" do
          get :suggestions

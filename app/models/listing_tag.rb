@@ -8,5 +8,7 @@ class ListingTag
 
   validates :tag_id, :tag_name, presence: true
   validates :tag_id, uniqueness: true
+  
+  embedded_in :listing
 
 end

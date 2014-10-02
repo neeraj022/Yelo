@@ -2,17 +2,18 @@ class Api::V1::ListingsController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:show, :create]
   # POST /listings.json
   def create
-  	@listing = Listing.first
-    @listing = current_user.listings.new(listing_params) unless @listing.present?
-    list_save = @listing.create_with_tags(params[:tag_ids])
-    if(list_save[:status])
+  	raise "No more than one listing" if Listing.first.present?
+    @listing = current_user.listings.new(listing_params) 
+    if(@listing.save)
+      @list_save = @listing.create_tags(params[:tag_ids])
+      raise "Listing saved but error with tags #{@l_tag[:error_message]}" unless @list_save[:status]
       render json: @listing
     else
-      render json: {error_message: list_save[:error_message]}, status: Code[:error_code]
+      render json: {error_message: @listing.errors.full_messages}, status: Code[:error_code]
     end
    rescue => e
-      render json: {error_message: e.message}, status: Code[:error_code]
-  end
+     rescue_message(e)  
+   end
   
   private
     # Use callbacks to share common setup or constraints between actions.

@@ -59,7 +59,7 @@ Rails.application.routes.draw do
     namespace :v1, defaults:{format: 'json'} do
       post "/verify", to: "users#verify_serial_code"
       post "/interests", to: "users#interests"
-      post "/tags/suggestions", to: "tags#suggestions"
+      get "/tags/suggestions", to: "tags#suggestions"
       resources :users
       resources :listings
     end

@@ -33,19 +33,17 @@ class Listing
      self.tag_ids = self.listing_tags.map{|l| l.tag_id.to_s}
   end
 
-  def create_with_tags(tag_ids)
-    obj = self
-    obj.listing_tags.destroy_all if self.persisted?
-    obj.save!
+  def create_tags(tag_ids)
     tag_ids.each do |id|
       tag = Tag.where(_id: id).first
       next unless tag.present?
-      obj = self.listing_tags.create!(tag_id: tag.id, tag_name: tag.name)
+      l_tag = self.listing_tags.create!(tag_id: tag.id, tag_name: tag.name)
+      self.save
       tag.save_score
     end
     return {status: true}
   rescue => e 
-     e = obj.errors.full_messages if obj.errors.present?
+     e = l_tag.errors.full_messages if l_tag.errors.present?
      return {status: false, error_message: e}
   end
 

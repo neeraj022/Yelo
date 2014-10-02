@@ -1,10 +1,11 @@
-class Api::V1::TagsController < ApplicationController
+class Api::V1::TagsController < Api::V1::BaseController
+  before_action :authenticate_user!, except: [:suggestions]
   
   # GET /tags/suggestions
   def suggestions
     if(current_user.present?)
       usr_tag_arr  = current_user.tags
-      usr_tag_ids = usr_tag_arr.map{|t| t.id}
+      usr_tag_ids = usr_tag_arr.map{|t| t[:id]}
     end
     usr_tag_ids ||= [] 
     usr_tag_arr ||= []
