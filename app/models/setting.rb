@@ -3,7 +3,7 @@ class Setting
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
   
-  field :ns_code, type: Integer, default: Setting.NS_CODE[:NOTIFY_SUMMARY]
+  field :ns_code, type: Integer, default: 1
 
   NS_CODE = {NOTIFY_SUMMARY: 1 ,NOTIFY_ALL: 2, NOTIFY_MUTE: 3}
   
