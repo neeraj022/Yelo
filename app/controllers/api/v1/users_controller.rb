@@ -46,10 +46,12 @@ class Api::V1::UsersController < Api::V1::BaseController
     @user = User.where(mobile_number: params[:user][:mobile_number], serial_code: params[:user][:serial_code]).first
     if(@user.present?)
       @user.serial_code = ""
+      @user.sms_verify = true
       @user.push_id = params[:user][:push_id]
       @user.platform = params[:user][:platform]
       @user.auth_token = ""
       @user.skip_update_validation =  true
+      @user.verify_platform = true
       @user.encrypt_device_id = params[:user][:encrypt_device_id]
       @user.save!
       render json: {id: @user.id.to_s, auth_token: @user.auth_token, is_present: @user.is_present}
@@ -92,23 +94,23 @@ class Api::V1::UsersController < Api::V1::BaseController
       params.require(:user).permit(:mobile_number, :country_code)
     end
 
-   def existing_user
-     if(@user.update_attributes(user_create_params.merge(serial_code: "",
+    def existing_user
+      if(@user.update_attributes(user_create_params.merge(serial_code: "",
                skip_update_validation: true)))
-       render json: {status: Code[:status_success], serial_code: @user.serial_code}
-     else
-       render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
-     end
-   end
-
-  def create_new_user
-    @user = User.new(user_create_params)
-    if(@user.save)
-      render json: {status: Code[:status_success], serial_code: @user.serial_code}
-    else
-      render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
+        render json: {status: Code[:status_success], serial_code: @user.serial_code}
+      else
+        render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
+      end
     end
-  end
+
+    def create_new_user
+      @user = User.new(user_create_params)
+      if(@user.save)
+        render json: {status: Code[:status_success], serial_code: @user.serial_code}
+      else
+        render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
+      end
+    end
 end
 
 
