@@ -21,4 +21,15 @@ class Code
        end
      end
    end
+
+  def self.serialized_json(obj, class_name = nil)
+    if obj.kind_of?(Array)
+      ActiveModel::ArraySerializer.new(obj).as_json
+    elsif(class_name)
+      class_name.constantize.new(obj, root: false)
+    else
+      "error"
+    end
+  end
+
 end

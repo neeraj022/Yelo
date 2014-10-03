@@ -1,5 +1,5 @@
 class Api::V1::ListingsController < Api::V1::BaseController
-  before_action :authenticate_user!, except: [:show, :create]
+  before_action :authenticate_user!, except: [:show, :create, :user_listings]
   # POST /listings.json
   def create
   	raise "No more than one listing" if Listing.first.present?
@@ -13,6 +13,15 @@ class Api::V1::ListingsController < Api::V1::BaseController
     end
    rescue => e
      rescue_message(e)  
+   end
+
+   # GET /users/:id/listings
+   def user_listings
+     @user = User.where(_id: params[:id]).first
+     @listings = @user.listings
+     render json: {user: Code.serialized_json(@user, "UserSerializer"), listings: Code.serialized_json(@listings)}
+   rescue => e
+     rescue_message(e)
    end
   
   private

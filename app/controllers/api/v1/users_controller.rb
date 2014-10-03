@@ -49,10 +49,10 @@ class Api::V1::UsersController < Api::V1::BaseController
       @user.push_id = params[:user][:push_id]
       @user.platform = params[:user][:platform]
       @user.auth_token = ""
-      @user.serial_present =  true
+      @user.skip_update_validation =  true
       @user.encrypt_device_id = params[:user][:encrypt_device_id]
       @user.save!
-      render json: {auth_token: @user.auth_token, is_present: @user.is_present}
+      render json: {id: @user.id.to_s, auth_token: @user.auth_token, is_present: @user.is_present}
     else
       render json: {error_message: "user not present"}, status: Code[:error_code]
     end
@@ -94,8 +94,8 @@ class Api::V1::UsersController < Api::V1::BaseController
 
    def existing_user
      if(@user.update_attributes(user_create_params.merge(serial_code: "",
-               encrypt_device_id: params[:user][:encrypt_device_id])))
-       render json: {status: Code[:status_success]}
+               skip_update_validation: true)))
+       render json: {status: Code[:status_success], serial_code: @user.serial_code}
      else
        render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
      end
@@ -104,7 +104,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def create_new_user
     @user = User.new(user_create_params)
     if(@user.save)
-      render json: {status: Code[:status_success]}
+      render json: {status: Code[:status_success], serial_code: @user.serial_code}
     else
       render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
     end

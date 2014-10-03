@@ -19,4 +19,17 @@ RSpec.describe Api::V1::ListingsController, :type => :controller do
       expect(response.status).to eql(400)
     end
   end
+  describe "show listings" do
+  	before(:each) do
+  	  @listing = @user.listings.create(listing_params[:listing])
+      @listing.create_tags([@tag.id.to_s])
+    end
+    it "should show listings of user" do
+      get :user_listings, {id: @user.id}
+      expect(response.status).to eql(200)
+      expect(json["user"]["id"]).to eql(@user.id.to_s)
+      expect(json["listings"].count).to eql(@user.listings.count)
+      expect(json["listings"][0]["listing_tags"].count).to eql(@user.listings.first.listing_tags.count)
+    end
+  end
 end

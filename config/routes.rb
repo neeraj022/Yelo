@@ -61,6 +61,7 @@ Rails.application.routes.draw do
       post "/interests", to: "users#interests"
       get "/tags/suggestions", to: "tags#suggestions"
       get "/tags/auto_suggestions", to: "tags#auto_suggestions"
+      get "/users/:id/listings", to: "listings#user_listings"
       resources :users
       resources :listings
     end

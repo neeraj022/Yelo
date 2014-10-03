@@ -7,7 +7,7 @@ class User
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
-  attr_accessor :serial_present
+  attr_accessor :skip_update_validation
   
   ## Database authenticatable
   field :mobile_number,        type: Integer, default: ""
@@ -85,13 +85,10 @@ class User
                       length: { is: 10 }
   validates :email, uniqueness: true, allow_blank: true, allow_nil: true
   validates :push_id, :platform, :encrypt_device_id,
-             presence: true, on: :update
+             presence: true, on: :update, :if => :validate_profile?
   validates :description, :name, presence: true, on: :update, :if => :validate_profile?
-  validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }, 
-            on: :update,  :if => :validate_profile?
-  validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }, on: :update,
-            on: :update,  :if => :validate_profile?
-  validates :city, :country, presence: true, on: :update, :if => :validate_profile?
+  validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }, allow_blank: true, allow_nil: true
+  validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }, allow_blank: true, allow_nil: true
 
   def tags
     tags = Array.new
@@ -102,7 +99,7 @@ class User
   end
 
   def validate_profile?
-    if self.serial_present
+    if self.skip_update_validation
       false
     else
       true
