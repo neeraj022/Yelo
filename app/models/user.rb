@@ -60,25 +60,27 @@ class User
   # field :failed_attempts, type: Integer, default: 0 # Only if lock strategy is :failed_attempts
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
-  ## index
+ 
+  ################# index #######################
   index "mobile_number" => 1
   index "auth_token" => 1
-  ## carrier wave
+ 
+  ############## carrier wave ######################
   mount_uploader :image, ImageUploader
 
-  ## relations
+  ############## relations #########################
   has_many :listings
   has_many :walls     
   embeds_one :setting
   embeds_one :statistic
 
-  ## filters
+  ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
                           
   before_create :ensure_share_token
   before_validation :ensure_password
 
-  ## validators
+  ############## validators #########################
   validates :mobile_number, presence: true,
                       numericality: true,
                       uniqueness: true,
@@ -110,8 +112,7 @@ class User
     updated_at > 10.minutes.ago
   end
 
-  ## Model work methods #####################################
-  
+  ############### Model work methods ############################\  
   # for devise remove email validation
   def email_required?
     false

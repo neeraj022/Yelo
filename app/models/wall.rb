@@ -18,15 +18,20 @@ class Wall
   field :country,         type: String
   field :address,         type: String
   field :location,        type: Array
+  field :tag_user_ids,    type: Array 
+
   
-  ## relations #######################
+  ############### relations #######################
   belongs_to  :user, index: true
   belongs_to  :tag,  index: true
   embeds_many :wall_items
   embeds_many :wall_images
   embeds_one  :wall_owner
+  embeds_many :tagged_users
 
-  ## validators ######################
-  validates :message, :city, :country, presence: true
+  ################ validators ######################
+  validates :message, :city, :country, :latitude, :longitude, presence: true
+  validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
+  validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
 
 end

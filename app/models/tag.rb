@@ -10,7 +10,7 @@ class Tag
   ## relations
   belongs_to :group
   
-  ## validators
+  ############## validators  ##############
   validates :name, presence: true
 
   G_CODE = {LOCAL: 1, CITY: 2}
@@ -20,7 +20,7 @@ class Tag
     self.save
   end
 
-  ## class methods #############################
+  ############## class methods #############
   class << self
     
     def verify_ids(tag_ids)
