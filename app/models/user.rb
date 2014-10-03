@@ -61,7 +61,6 @@ class User
   # field :unlock_token,    type: String # Only if unlock strategy is :email or :both
   # field :locked_at,       type: Time
   ## index
-  index({ location: "2d" }, { min: -200, max: 200 })
   index "mobile_number" => 1
   index "auth_token" => 1
   ## carrier wave
@@ -100,11 +99,7 @@ class User
   end
 
   def validate_profile?
-    if self.skip_update_validation
-      false
-    else
-      true
-    end  
+    self.skip_update_validation ? false : true
   end
 
   def validate_platform?
