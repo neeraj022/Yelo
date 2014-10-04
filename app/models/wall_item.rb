@@ -9,7 +9,8 @@ class WallItem
   field :up_votes,         type: Integer, default: 0
   field :name,             type: String
   field :abuse_count,      type: Integer, default: 0
-  field :tag_user_ids,     type: 
+  field :tag_user_ids,     type: Array
+  
   ############### validators ###############
   validates :user_id,  presence: true
 
