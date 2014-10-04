@@ -64,7 +64,9 @@ Rails.application.routes.draw do
       get "/users/:id/listings", to: "listings#user_listings"
       resources :users
       resources :listings
-      resources :walls
+      resources :walls do
+        resources :wall_items
+      end
     end
   end
 

@@ -64,22 +64,19 @@ class User
   ################# index #######################
   index "mobile_number" => 1
   index "auth_token" => 1
- 
   ############## carrier wave ######################
   mount_uploader :image, ImageUploader
-
   ############## relations #########################
   has_many :listings
   has_many :walls     
   embeds_one :setting
   embeds_one :statistic
-
+  has_many :tags
+  has_many :user_tags
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
-                          
   before_create :ensure_share_token
   before_validation :ensure_password
-
   ############## validators #########################
   validates :mobile_number, presence: true,
                       numericality: true,
@@ -91,7 +88,7 @@ class User
   validates :description, :name, presence: true, on: :update, :if => :validate_profile?
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }, allow_blank: true, allow_nil: true
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }, allow_blank: true, allow_nil: true
-
+  ##################### instance methods #####################
   def tags
     tags = Array.new
     self.listings.each do |l|
@@ -110,6 +107,11 @@ class User
 
   def online?
     updated_at > 10.minutes.ago
+  end
+
+  def save_user_tags(tag_id)
+    user_tag = self.user_tags.where(tag_id: tag_id).first_or_create
+    user_tag.count = user_tag.count += 1
   end
 
   ############### Model work methods ############################\  

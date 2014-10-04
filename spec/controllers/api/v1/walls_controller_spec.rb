@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::WallsController, :type => :controller do
   let(:wall_params){{wall: {message: "i need ios dev", latitude: "12.9667", longitude: "77.5667",
-                     city:"Bangalore", country: "india" }}}
+                     city:"Bangalore", country: "india", tag_id: "6578798" }}}
   before(:each) do
     @tag = Tag.create(name: "ios", score: 2)
     @user = FactoryGirl.create(:user)

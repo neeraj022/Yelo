@@ -1,20 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::UsersController, :type => :controller do
-  let(:user_attributes) {{mobile_number: "1234567890", country_code: "91"}}
+  let(:user_attributes) {{user: {mobile_number: "+911234567890"}}}
   describe "Users API" do
      describe "creates a user" do
        it 'with valid mobile number' do
-         params = {user: {mobile_number: "+911234567891"}}
-         post :create, params
+         post :create, user_attributes
          expect(response.status).to eql(200)
          expect(json["status"]).to eql("success")
-         expect(User.last.mobile_number).to eq(1234567891)
+         expect(User.last.mobile_number).to eq(1234567890)
          expect(User.last.country_code).to eq(91)
         end
        it 'with invalid mobile number' do
-         params = {user: {mobile_number: "+911"}}
-         post :create, params
+         post :create, {user: {mobile_number: "+911"}}
          expect(response.status).to eql(400)
          expect(json["status"]).to eql("error")
        end
@@ -22,8 +20,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     
     describe "verify user" do
       before(:each) do
-        @user = User.create(user_attributes)
-        @params = {user: {mobile_number: "91"+@user.mobile_number.to_s, serial_code: @user.serial_code,
+        @user = FactoryGirl.create(:user)
+        @params = {user: {mobile_number: @user.mobile_number.to_s, serial_code: @user.serial_code,
                  push_id: "12345678", encrypt_device_id: "12345678", platform: "android"
                   }}
        end

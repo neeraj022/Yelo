@@ -6,6 +6,8 @@ class Api::V1::BaseController < ActionController::API
   include ActionController::HttpAuthentication::Token
   before_action :authenticate_user_from_token!
 
+  # for active model serializers
+  serialization_scope :current_user
 
   def authenticate_admin!
     if(current_user && current_user.is_admin?)

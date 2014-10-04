@@ -10,7 +10,9 @@ class TaggedUser
   field :mobile_number,  type: String
   field :up_votes,       type: Integer, default: 0
 
+  ############## relations #############################
+  embedded_in :wall
+
   ################ validators ##########################
-  validates :name, presence: true
   validates :user_id, uniqueness: true, allow_blank: true, allow_nil: true
 end
