@@ -18,6 +18,12 @@ RSpec.describe Api::V1::WallsController, :type => :controller do
       post :create, {latitude: "0", longitude: "0"}
       expect(response.status).to eql(400)
     end
+    it "not allowed for specified time" do
+      @user.walls.create(wall_params[:wall])
+      post :create, wall_params
+      expect(response.status).to eql(400)
+      expect(json["error_message"][0]).to match(/only/)
+    end
   end
   describe "with a created wall" do
     before(:each) do

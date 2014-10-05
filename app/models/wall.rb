@@ -27,17 +27,29 @@ class Wall
   embeds_one  :wall_owner
   embeds_many :tagged_users
   ################## filters #######################
-  after_create :save_owner
+  after_create :save_owner_and_statistic
   ################ validators ######################
   validates :message, :city, :country, :tag_id, :latitude, :longitude, presence: true
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
-
+  validate :restrict_wall_creation, on: :create
   ########### instance methods #######################
 
-  def save_owner
+  def save_owner_and_statistic
     user = self.user
+    user.statistic.last_post = self.created_at
+    user.save
     self.create_wall_owner(name: user.name, image_url: user.image_url)
+  end
+
+  def restrict_wall_creation
+    last_post = self.user.statistic.last_post
+    if(last_post.present?)
+      last_time = Time.now - last_post
+      if(last_time < Code.wall_post_interval)
+        errors.add(:base, "only one wall post per #{Code.wall_post_interval} seconds")
+      end
+    end
   end
 
 

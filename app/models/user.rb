@@ -77,6 +77,7 @@ class User
   before_save :ensure_authentication_token, :mobile_verification_serial
   before_create :ensure_share_token
   before_validation :ensure_password
+  after_create :ensure_statistic
   ############## validators #########################
   validates :mobile_number, presence: true,
                       numericality: true,
@@ -113,7 +114,10 @@ class User
     user_tag = self.user_tags.where(tag_id: tag_id).first_or_create
     user_tag.count = user_tag.count += 1
   end
-
+  
+  def ensure_statistic
+    self.create_statistic
+  end
   ############### Model work methods ############################\  
   # for devise remove email validation
   def email_required?
