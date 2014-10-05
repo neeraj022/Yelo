@@ -1,4 +1,4 @@
-class TaggedUserSerializer < ActiveModel::Serializer
+class TaggedUserSerializer < CustomSerializer
   attributes :id, :user_id, :name, :details, :image_url
 
   def details

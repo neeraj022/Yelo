@@ -1,3 +1,3 @@
-class WallImageSerializer < ActiveModel::Serializer
+class WallImageSerializer < CustomSerializer
   attributes :id
 end

@@ -25,7 +25,8 @@ class WallItem
     wall = self.wall
     tag_users.each do |t|
       user = User.where(mobile_number: t[:mobile_number]).first
-      t_usr = wall.tagged_users.new(mobile_number: t[:mobile_number], name: t[:name],
+      mobile_number = User.mobile_number_format(t[:mobile_number])[:mobile_number]
+      t_usr = wall.tagged_users.new(mobile_number: mobile_number, name: t[:name],
                                          email: t[:email])
       if(user.present?)
         user.save_user_tags(wall.tag_id)
