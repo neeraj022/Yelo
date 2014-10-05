@@ -24,7 +24,8 @@ class Api::V1::WallsController < Api::V1::BaseController
   rescue => e
   	rescue_message(e)
   end
-
+  
+  
   private
     def wall_params
       params.require(:wall).permit(:tag_id, :message, :latitude, :longitude,

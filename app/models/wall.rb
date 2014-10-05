@@ -26,9 +26,19 @@ class Wall
   embeds_many :wall_images
   embeds_one  :wall_owner
   embeds_many :tagged_users
+  ################## filters #######################
+  after_create :save_owner
   ################ validators ######################
-  validates :message, :city, :country, :tag, :latitude, :longitude, presence: true
+  validates :message, :city, :country, :tag_id, :latitude, :longitude, presence: true
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
+
+  ########### instance methods #######################
+
+  def save_owner
+    user = self.user
+    self.create_wall_owner(name: user.name, image_url: user.image_url)
+  end
+
 
 end

@@ -2,17 +2,24 @@ class Api::V1::ListingsController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:show, :create, :user_listings]
   # POST /listings.json
   def create
-    raise "No more than one listing" if current_user.listings.first.present?
+    # raise "No more than one listing" if current_user.listings.first.present?
     @listing = current_user.listings.new(listing_params) 
     if(@listing.save)
-      @list_save = @listing.create_tags(params[:tag_ids])
-      raise "Listing saved but error with tags #{@l_tag[:error_message]}" unless @list_save[:status]
-      render json: @listing
+      save_tags
     else
       render json: {error_message: @listing.errors.full_messages}, status: Code[:error_code]
     end
   rescue => e
      rescue_message(e)  
+  end
+
+  def save_tags
+    @list_tags_save = @listing.create_tags(params[:tag_ids])
+    if @list_tags_save[:status]
+       render json: @listing
+    else
+      render json: {error_message: @list_tags_save[:error_message]}, status: Code[:error_code]
+    end
   end
 
    # GET /users/:id/listings
@@ -42,3 +49,5 @@ class Api::V1::ListingsController < Api::V1::BaseController
     end
 
 end
+
+

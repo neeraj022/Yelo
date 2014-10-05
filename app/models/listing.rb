@@ -32,6 +32,7 @@ class Listing
   end
 
   def create_tags(tag_ids)
+    l_tag =  ""
     tag_ids.each do |id|
       tag = Tag.where(_id: id).first
       next unless tag.present?
