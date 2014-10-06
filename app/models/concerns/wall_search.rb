@@ -87,32 +87,50 @@ module WallSearch
                 ]
             
        end
-       
+       if(query[:city].blank? && query[:country].blank? && query[:tag_id].blank?)
+          @search_definition[:query] = { match_all: {} }
+       else
+          @search_definition[:query] = {
+            bool: {
+                   should: []
+                    }
+                }
+       end
        if(query[:tag_id].present?)
-         @search_definition[:query][:bool][:should] ||= []  
-          @search_definition[:query][:bool][:should] << {
-            match:  { tag_id: query[:tag_id],
-              operator: 'and'
+         @search_definition[:query][:bool][:should] << {
+            match:  { 
+              tag_id: {
+                query: query[:tag_id],
+                operator: 'and'
+               }
             } 
           }
        end
-       if(query[:city].present? && query[:country].present?)
-          @search_definition[:query][:bool][:should] << { match:{
-            city: query[:city].downcase,
-            operator: 'and' }
+       if(query[:city].present?)
+          @search_definition[:query][:bool][:should] << {
+            match:{
+              city: {
+                query: query[:city].downcase,
+                operator: 'and' 
+                }
+              }
             }
-           
-          @search_definition[:query][:bool][:should] << { match: {
-            country: query[:country].downcase,
-            operator: 'and'
+        end  
+        if(query[:country].present?)
+          @search_definition[:query][:bool][:should] << { 
+            match: {
+              country: {
+                query: query[:country].downcase,
+                operator: 'and'
+                 }
                }
             }
-       end
-       if(query[:city].blank? && query[:tag_id].blank?)
-          @search_definition[:query] = { match_all: {} }
-       end
+        end
+
         __elasticsearch__.search(@search_definition)
      end
   end
 end
+
+
 

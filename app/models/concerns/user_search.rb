@@ -42,7 +42,7 @@ module UserSearch
     # @param query [String] The user query
     # @return [Elasticsearch::Model::Response::Response]
     #
-    def self.search(query, options={})
+    def self.search(query)
       # Prefill and set the filters (top-level `filter` and `facet_filter` elements)
       #
       __set_filters = lambda do |key, f|
@@ -54,20 +54,23 @@ module UserSearch
         @search_definition[:facets][key.to_sym][:facet_filter][:and]  |= [f]
       end
 
+
       @search_definition = {
-          query: {},
-          filter: {
+          query: {}
+        }
+
+      if(query[:latitude].present? && query[:longitude].present?)
+         @search_definition[:filter] = {
               geo_distance: {
                   distance: query[:radius].to_s+"km",
                   loc: {
                     lon: query[:longitude].to_f,
                     lat: query[:latitude].to_f
                       }
-                
                   }
-            },
-
-          sort: [
+               }
+          @search_definition[:sort] = 
+                [
                     {
                         _geo_distance: {
                             loc: {
@@ -76,18 +79,41 @@ module UserSearch
                                   },
                             order: "asc",
                             unit: "km"
-                        }
+                         }
                     }
                 ]
-        }
-
-         if(query[:tag_id].present?)
-            @search_definition[:query] = {
-              match:  { tag_id: query[:tag_id]} 
-            }
-        else
+            
+       end
+       if(query[:city].blank? && query[:country].blank? && query[:tag_id].blank?)
           @search_definition[:query] = { match_all: {} }
+       else
+          @search_definition[:query] = {
+            bool: {
+                   should: []
+                    }
+                }
+       end
+       if(query[:city].present?)
+          @search_definition[:query][:bool][:should] << {
+            match:{
+              city: {
+                query: query[:city].downcase,
+                operator: 'and' 
+                }
+              }
+            }
+        end  
+        if(query[:country].present?)
+          @search_definition[:query][:bool][:should] << { 
+            match: {
+              country: {
+                query: query[:country].downcase,
+                operator: 'and'
+                 }
+               }
+            }
         end
+
         __elasticsearch__.search(@search_definition)
      end
   end

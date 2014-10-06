@@ -53,5 +53,9 @@ class Wall
     end
   end
 
+  def save_image(image)
+   self.wall_images.create(image: image)
+  end
+
 
 end
