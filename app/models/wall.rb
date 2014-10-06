@@ -3,6 +3,7 @@ class Wall
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
   include Geo
+  include WallSearch
 
   field :message,         type: String
   field :user_id,         type: BSON::ObjectId
