@@ -76,6 +76,18 @@ gem 'rvm1-capistrano3', require: false
 
 gem 'capistrano-sidekiq' , github: 'seuros/capistrano-sidekiq'
 
+gem 'thin'
+
+gem "amqp", "~> 1.5.0"
+
+gem "oj"
+
+gem "elasticsearch", git: "git://github.com/elasticsearch/elasticsearch-ruby.git"
+
+gem "elasticsearch-model", git: "git://github.com/elasticsearch/elasticsearch-rails.git"
+
+gem "elasticsearch-rails", git: "git://github.com/elasticsearch/elasticsearch-rails.git"
+
 
 
 group :development, :test do

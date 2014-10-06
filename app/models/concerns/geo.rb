@@ -13,13 +13,20 @@ module Geo
       self.location = [longitude.to_f, latitude.to_f]
     end
   end
+  
+  def location_coordinates
+    {:lat => self.latitude.to_s, :lon => self.longitude.to_s}
+  end
 
   def downcase_address
     if country.present? 
-      self.country = country.downcase
+      self.country = country.downcase.strip
     end
     if city.present? 
-      self.country = country.downcase
+      self.country = city.downcase.strip
+    end
+   if state.present? 
+      self.state = state.downcase.strip
     end
   end
 

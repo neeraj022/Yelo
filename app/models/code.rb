@@ -32,11 +32,4 @@ class Code
     end
   end
 
-  def self.wall_post_interval
-    if AppSetting.first
-      AppSetting.first.post_time_interval * 60
-    else
-      1 * 60
-    end
-  end
 end

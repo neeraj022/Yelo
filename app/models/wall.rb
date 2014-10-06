@@ -20,7 +20,7 @@ class Wall
   field :location,        type: Array
   field :tag_user_ids,    type: Array 
   ############### relations #######################
-  belongs_to  :user, index: true
+  belongs_to  :user, index: true, touch: true
   belongs_to  :tag,  index: true
   embeds_many :wall_items
   embeds_many :wall_images
@@ -46,7 +46,7 @@ class Wall
     last_post = self.user.statistic.last_post
     if(last_post.present?)
       last_time = Time.now - last_post
-      if(last_time < Code.wall_post_interval)
+      if(last_time < AppSetting.wall_post_interval)
         errors.add(:base, "only one wall post per #{Code.wall_post_interval} seconds")
       end
     end

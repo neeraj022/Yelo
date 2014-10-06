@@ -18,7 +18,7 @@ class Listing
   #################### index ###########################
   index({ location: "2d" }, { min: -200, max: 200 })
   ###################relations #########################
-  belongs_to  :user, index: true
+  belongs_to  :user, index: true, touch: true
   embeds_many :listing_tags
   before_save :insert_tag_ids
   ######################## filters ######################
