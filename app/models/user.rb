@@ -72,7 +72,6 @@ class User
   has_many :walls     
   embeds_one :setting
   embeds_one :statistic
-  has_many :tags
   has_many :user_tags
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial

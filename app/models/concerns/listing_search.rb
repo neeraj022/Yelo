@@ -7,7 +7,7 @@ module ListingSearch
 
     # Customize the index name
     #
-    index_name [Rails.application.engine_name, Rails.env].join('_')
+    index_name ["yelo", "listing", Rails.env].join('_')
 
     # Set up index configuration and mapping
     #
@@ -95,7 +95,7 @@ module ListingSearch
        if(query[:tag_id].present?)
          @search_definition[:query][:bool][:must] << {
             term:  { 
-              tag_ids: query[:tag_id],
+              tag_ids: query[:tag_ids],
             } 
           }
        end

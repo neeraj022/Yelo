@@ -33,6 +33,8 @@ class WallItem
         t_usr.user_id = user.id
         t_usr.image_url = user.image_url
         t_usr.name = user.name
+        v_hash = {wall_id: wall.id, tagged_by: self.user_id.to_s}
+        Notification.save_notify(Notification::N_CONS[:USER_TAG], v_hash, user.id)
       end
       return {status: false, error_message: t_usr.errors.messages} unless t_usr.save
       self.add_to_set(tagged_user_ids: t_usr.id.to_s)

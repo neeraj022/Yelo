@@ -12,7 +12,7 @@ class Api::V1::SearchController < ApplicationController
     def set_search_params
       @params = {latitude: params[:latitude].to_f, longitude: params[:longitude].to_f,
                  city: params[:city].downcase.strip, country: params[:country].downcase.strip,
-                 type: params[:type], tag_id: params[:tag_id]}
+                 type: params[:type], tag_ids: params[:tag_ids]}
       params[:radius] ||= 20
       params[:per] ||= 20
       @params[:radius] = params[:radius].to_i 

@@ -9,8 +9,4 @@ class TaggedUserSerializer < CustomSerializer
     end
   end
 
-  def user_id
-    object.user_id.to_s
-  end
-
 end

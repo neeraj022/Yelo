@@ -6,6 +6,7 @@ class Api::V1::WallsController < Api::V1::BaseController
     @wall = current_user.walls.new(wall_params)
     if @wall.save
       @wall.save_image(params[:image]) if params[:image].present?
+      @wall.create_wall_owner(name: current_user.name, image_url: current_user.image_url)
       render json: @wall
     else
       render json: {error_message: @wall.errors.full_messages}, status: Code[:error_code]

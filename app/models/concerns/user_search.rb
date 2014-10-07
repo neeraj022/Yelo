@@ -7,8 +7,8 @@ module UserSearch
 
     # Customize the index name
     #
-    index_name [Rails.application.engine_name, Rails.env].join('_')
-
+    # index_name [Rails.application.engine_name, Rails.env].join('_')
+      index_name ["yelo", "user", Rails.env].join('_')
     # Set up index configuration and mapping
     #
     settings index: { number_of_shards: 1, number_of_replicas: 0 } do

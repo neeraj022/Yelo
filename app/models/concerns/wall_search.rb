@@ -7,7 +7,8 @@ module WallSearch
 
     # Customize the index name
     #
-    index_name [Rails.application.engine_name, Rails.env].join('_')
+    #index_name [Rails.application.engine_name, Rails.env].join('_')
+     index_name ["yelo", "wall", Rails.env].join('_')
 
     # Set up index configuration and mapping
     #
@@ -99,7 +100,7 @@ module WallSearch
        if(query[:tag_id].present?)
          @search_definition[:query][:bool][:must] << {
             term:  { 
-              tag_id: query[:tag_id],
+              tag_id: query[:tag_ids],
             } 
           }
        end
