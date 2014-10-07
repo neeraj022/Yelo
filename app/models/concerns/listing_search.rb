@@ -83,7 +83,7 @@ module ListingSearch
                 ]
             
        end
-       if((query[:city].blank? || query[:country].blank?) && query[:tag_id].blank?)
+       if( query[:city].blank? && query[:country].blank? && query[:tag_ids].blank?)
           @search_definition[:query] = { match_all: {} }
        else
           @search_definition[:query] = {
@@ -92,7 +92,7 @@ module ListingSearch
                     }
                 }
        end
-       if(query[:tag_id].present?)
+       if(query[:tag_ids].present?)
          @search_definition[:query][:bool][:must] << {
             term:  { 
               tag_ids: query[:tag_ids],
@@ -102,14 +102,14 @@ module ListingSearch
        if(query[:city].present?)
           @search_definition[:query][:bool][:must] << {
             term:{
-                city: query[:city].downcase,    
+                city: query[:city].downcase.strip,    
               }
             }
         end  
         if(query[:country].present?)
           @search_definition[:query][:bool][:must] << { 
             term: {
-                country: query[:country].downcase,
+                country: query[:country].downcase.strip,
                }
             }
         end

@@ -7,14 +7,11 @@ class Notification
   field :n_type,    type: Integer
   field :n_value,   type: Hash
   field :n_status,  type: Integer, default: 0
-  
   ################### relation ###################
   belongs_to :user 
-
   ################  constants ####################
   N_CONS = {USER_TAG: 1, CREATE_WALL: 2}
   N_STATUS = {FRESH: 0, SENT: 1, SEEN: 2}
-
   ################ class methods ##################
   class << self
     def save_notify(n_type, n_value, user_id)
@@ -30,6 +27,7 @@ class Notification
       tag_name = wall.tag.name
       users = Search.query(params).records
       users.each do |u|
+      	v_hash = {wall_id: wall.id.to_s, tag_name: tag_name}
         self.save_notify(Notification::N_CONS[:CREATE_WALL], v_hash, u.id)
       end
     end
