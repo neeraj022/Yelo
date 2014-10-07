@@ -7,7 +7,6 @@ class Wall
 
   field :message,         type: String
   field :user_id,         type: BSON::ObjectId
-  field :tag_user_count,  type: Integer, default: true
   field :tag_id,          type: BSON::ObjectId
   field :chat_users,      type: Array
   field :status,          type: Boolean, default: true
@@ -41,6 +40,19 @@ class Wall
     user.statistic.last_post = self.created_at
     user.save
     self.create_wall_owner(name: user.name, image_url: user.image_url)
+  end
+
+  def chat_users_count
+    return self.chat_users.length if self.chat_users.present?
+    0
+  end
+
+  def tag_name
+    self.tag.name
+  end
+
+  def tagged_users_count
+    self.tagged_users.count
   end
 
   def restrict_wall_creation
