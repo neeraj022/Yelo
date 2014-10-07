@@ -99,7 +99,7 @@ module WallSearch
        end
        if(query[:tag_ids].present?)
          @search_definition[:query][:bool][:must] << {
-            term:  { 
+            terms:  { 
               tag_id: query[:tag_ids],
             } 
           }
