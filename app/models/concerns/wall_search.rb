@@ -36,7 +36,7 @@ module WallSearch
     # Customize the JSON serialization for Elasticsearch
     #
     def as_indexed_json(options={})
-      {tag_id: self.tag_id.to_s, loc: location_coordinates, country: self.country,
+      {id: self.id.to_s, tag_id: self.tag_id.to_s, loc: location_coordinates, country: self.country,
        city: self.city, state: self.state, created_at: self.created_at}
     end
 
@@ -87,42 +87,33 @@ module WallSearch
                 ]
             
        end
-       if(query[:city].blank? && query[:country].blank? && query[:tag_id].blank?)
+       if((query[:city].blank? || query[:country].blank?) && query[:tag_id].blank?)
           @search_definition[:query] = { match_all: {} }
        else
           @search_definition[:query] = {
             bool: {
-                   should: []
+                   must: []
                     }
                 }
        end
        if(query[:tag_id].present?)
-         @search_definition[:query][:bool][:should] << {
-            match:  { 
-              tag_id: {
-                query: query[:tag_id],
-                operator: 'and'
-               }
+         @search_definition[:query][:bool][:must] << {
+            term:  { 
+              tag_id: query[:tag_id],
             } 
           }
        end
        if(query[:city].present?)
-          @search_definition[:query][:bool][:should] << {
-            match:{
-              city: {
-                query: query[:city].downcase,
-                operator: 'and' 
-                }
+          @search_definition[:query][:bool][:must] << {
+            term:{
+                city: query[:city].downcase,    
               }
             }
         end  
         if(query[:country].present?)
-          @search_definition[:query][:bool][:should] << { 
-            match: {
-              country: {
-                query: query[:country].downcase,
-                operator: 'and'
-                 }
+          @search_definition[:query][:bool][:must] << { 
+            term: {
+                country: query[:country].downcase,
                }
             }
         end

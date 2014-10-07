@@ -31,7 +31,9 @@ module ListingSearch
     # Customize the JSON serialization for Elasticsearch
     #
     def as_indexed_json(options={})
-       as_json.merge(loc: location_coordinates)
+      {id: self.id.to_s, user_id: self.user_id.to_s, loc: location_coordinates, tag_ids:  self.tag_ids,
+      country: self.country.to_s, city: self.city.to_s, state: self.state.to_s,
+      address: self.address.to_s}
     end
 
     # Search in title and content fields for `query`, include highlights in response
@@ -81,42 +83,33 @@ module ListingSearch
                 ]
             
        end
-       if(query[:city].blank? && query[:country].blank? && query[:tag_id].blank?)
+       if((query[:city].blank? || query[:country].blank?) && query[:tag_id].blank?)
           @search_definition[:query] = { match_all: {} }
        else
           @search_definition[:query] = {
             bool: {
-                   should: []
+                   must: []
                     }
                 }
        end
        if(query[:tag_id].present?)
-         @search_definition[:query][:bool][:should] << {
-            match:  { 
-              tag_id: {
-                query: query[:tag_id],
-                operator: 'and'
-               }
+         @search_definition[:query][:bool][:must] << {
+            term:  { 
+              tag_ids: query[:tag_id],
             } 
           }
        end
        if(query[:city].present?)
-          @search_definition[:query][:bool][:should] << {
-            match:{
-              city: {
-                query: query[:city].downcase,
-                operator: 'and' 
-                }
+          @search_definition[:query][:bool][:must] << {
+            term:{
+                city: query[:city].downcase,    
               }
             }
         end  
         if(query[:country].present?)
-          @search_definition[:query][:bool][:should] << { 
-            match: {
-              country: {
-                query: query[:country].downcase,
-                operator: 'and'
-                 }
+          @search_definition[:query][:bool][:must] << { 
+            term: {
+                country: query[:country].downcase,
                }
             }
         end

@@ -3,11 +3,11 @@ class Search
     def query(params)
       case params[:type]
       when "listing"
-      	self.search_listings(params)
+      	Search.search_listings(params)
       when "user"
-      	self.search_users(params)
+      	Search.search_users(params)
       when "wall"
-      	self.search_walls(params)
+      	Search.search_walls(params)
       else
       	""
       end
@@ -18,11 +18,11 @@ class Search
     end
 
     def search_users(params)
-       User.search(params)
+      User.search(params)
     end
     
     def search_walls(params)
-       Wall.search(params)
+      Wall.search(params)
     end
 
   end

@@ -18,9 +18,7 @@ module UserSearch
         indexes :name, analyzer: 'standard'
         indexes :state, analyzer: 'standard'
         indexes :loc, type: 'geo_point'
-        indexes :statistic do
-          indexes :rating_score, index: 'not_analyzed', type: 'integer'
-        end
+        indexes :rating_score, type: 'standard'
       end
     end
 
@@ -34,7 +32,8 @@ module UserSearch
     # Customize the JSON serialization for Elasticsearch
     #
     def as_indexed_json(options={})
-       {id: self.id.to_s, loc: self.loction_coordinates, name: self.name}
+       {id: self.id.to_s, loc: self.loction_coordinates, name: self.name, rating_score:
+         self.statistic.rating_score}
     end
 
     # Search in title and content fields for `query`, include highlights in response

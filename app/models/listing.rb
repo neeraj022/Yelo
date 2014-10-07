@@ -3,7 +3,7 @@ class Listing
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
   include Geo
-  # include ListingSearch
+  include ListingSearch
     
   field :user_id,    type: BSON::ObjectId
   field :status,     type: Boolean, default: true

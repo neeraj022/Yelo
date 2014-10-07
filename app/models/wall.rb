@@ -24,7 +24,7 @@ class Wall
   belongs_to  :user, index: true, touch: true
   belongs_to  :tag,  index: true
   embeds_many :wall_items
-  embeds_many :wall_images
+  embeds_one  :wall_image
   embeds_one  :wall_owner
   embeds_many :tagged_users
   ################## filters #######################
@@ -54,7 +54,7 @@ class Wall
   end
 
   def save_image(image)
-   self.wall_images.create(image: image)
+   self.create_wall_image(image: image)
   end
 
 
