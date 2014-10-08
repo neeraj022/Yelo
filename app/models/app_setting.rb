@@ -8,6 +8,7 @@ class AppSetting
   field :summary_notify_interval, type: Integer, default: 24    
   field :default_notify_code,     type: Integer, default: 1
   field :wall_notify_radius,      type: Integer, default: 12
+  ############### class methods ############################
   class << self
     def wall_post_interval
       if AppSetting.first

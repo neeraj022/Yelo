@@ -38,7 +38,7 @@ class User
   field :latitude,             type: String
   field :longitude,            type: String
   field :last_notify_sent_at,  type: String
-  field :utc_offset,           type: String
+  field :utc_offset,           type: Integer, default: 0
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
@@ -79,7 +79,7 @@ class User
   before_save :ensure_authentication_token, :mobile_verification_serial
   before_create :ensure_share_token
   before_validation :ensure_password
-  after_create :ensure_statistic
+  after_create :ensure_statistic_and_setting
   ############## validators #########################
   validates :mobile_number, presence: true,
                       numericality: true,
@@ -117,8 +117,9 @@ class User
     user_tag.count = user_tag.count += 1
   end
   
-  def ensure_statistic
+  def ensure_statistic_and_setting
     self.create_statistic
+    self.create_setting
   end
   ############### Model work methods ############################\  
   # for devise remove email validation
@@ -177,34 +178,40 @@ class User
   end
 
   def can_send_notification?(type)
-    n_setting  = self.setting.ns_code
+    n_setting  = self.notify_setting
     case n_setting
-    when Setting.NS_CODE[:NOTIFY_ALL]
+    when Setting::NS_CODE[:NOTIFY_ALL]
       return true
-    when Setting.NS_CODE[:NOTIFY_MUTE]
+    when Setting::NS_CODE[:NOTIFY_MUTE]
       return false
-    when Setting.NS_CODE[:NOTIFY_SUMMARY]
+    when Setting::NS_CODE[:NOTIFY_SUMMARY]
       return true if type == Notification.N_CONS[:USER_TAG]
     else
       return true
     end
   end
 
+  def notify_setting
+    setting = self.setting
+    return setting.ns_code if setting.present?
+    Setting::NS_CODE[:NOTIFY_ALL]
+  end
+
   def can_send_summary_notification?
     diff_time = notify_time_diff
     interval = AppSetting.summary_notify_interval
-    c_user_hour = Code.utc_time(self.utc_offset).hours
-    hours <= 20 && hours >= 11 && (diff_time <= interval)
+    c_user_hour = Code.utc_time(self.utc_offset).hour
+    c_user_hour <= 20 && c_user_hour >= 11 && (diff_time <= interval)
   end
 
   def notify_time_diff
     c_time = Time.now
     n_time = self.last_notify_sent_at
-    n_time = 0 if n_time.blank?
+    return 0 if n_time.blank?
     diff = ((c_time - n_time) / 3600).round
   end
  
-  ## class methods ###########################
+  ################# class methods ###########################
   class << self
     def mobile_number_format(num)
       mobile_number = num.slice!(-(10-num.length), 10)

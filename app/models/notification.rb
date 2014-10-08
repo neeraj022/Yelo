@@ -14,15 +14,15 @@ class Notification
   N_STATUS = {FRESH: 0, SENT: 1, SEEN: 2, SUMMARY: 3}
   ################ instance methods ##############
   def save_notification_status(status)
-    self.n_status = Notification.N_STATUS[:SENT]
+    self.n_status = Notification::N_STATUS[:SENT]
     self.save
   end
 
   def notify_obj
      case self.n_value
-     when Notification.N_CONS[:USER_TAG]
+     when Notification::N_CONS[:USER_TAG]
        Notification.create_wall_obj(self)
-     when Notification.N_CONS[:CREATE_WALL]
+     when Notification::N_CONS[:CREATE_WALL]
         Notification.user_tag_obj(self)
      end
   end
@@ -42,14 +42,14 @@ class Notification
   class << self
     def save_notify(n_type, n_value, user_id)
       Notification.create(n_type: Notification::N_CONS[:USER_TAG],
-              n_value: v_hash, user_id: user.id)
+              n_value: n_value, user_id: user_id)
     end
 
     def save_wall(id)
       wall = Wall.where(_id: id).first
       return false unless wall.present?
       params = self.set_geo_params(wall)
-      params[:tag_ids] = wall.tag_id.to_s
+      params[:tag_ids] = [wall.tag_id.to_s]
       users = Search.query(params).records
       users.each do |u|
       	v_hash = {wall_id: wall.id.to_s, tag_name: wall.tag_name, message: wall.message,
@@ -60,22 +60,22 @@ class Notification
 
     def set_geo_params(obj)
       params = Hash.new
-      params[:latitude] = wall.latitude
-      params[:longitude] = wall.longitude
+      params[:latitude] = obj.latitude
+      params[:longitude] = obj.longitude
       params[:radius] = AppSetting.wall_notify_radius
       params[:type] = obj.class.to_s.downcase
       params
     end
 
     def notify
-      notifications = Notification.where(n_status: Notification.N_STATUS[:FRESH])
+      notifications = Notification.where(n_status: Notification::N_STATUS[:FRESH])
       notifications.each do |n|
         user = n.user
         unless user.can_send_notification?(n.n_value)
-          n.save_notification_status(Notification.N_STATUS[:SUMMARY])
+          n.save_notification_status(Notification::N_STATUS[:SUMMARY])
           next
         end
-        n.save_notification_status(Notification.N_STATUS[:SENT])
+        n.save_notification_status(Notification::N_STATUS[:SENT])
         obj = n.notify_obj
         Notification.push_notify(user.platform, [user.push_id], obj)
       end
@@ -84,16 +84,16 @@ class Notification
     def wall_summary_notify
       User.all.each do |u|
         next unless u.can_send_summary_notification?
-        notifications = u.notifications.where(n_status: Notification.N_STATUS[:SUMMARY])
-        c_wall_nfs = notifications.where(n_type: Notification.N_CONS[:CREATE_WALL])
+        notifications = u.notifications.where(n_status: Notification::N_STATUS[:SUMMARY])
+        c_wall_nfs = notifications.where(n_type: Notification::N_CONS[:CREATE_WALL])
         tags_arr = Array.new
         c_wall_nfs.each do |n|
-          v_hash = n_obj.n_value
-          n.save_notification_status(Notification.N_STATUS[:SENT])
+          v_hash = n.n_value
+          n.save_notification_status(Notification::N_STATUS[:SENT])
           if tags_arr.has_key?(v_hash[:tag_name])
             tags_arr[v_hash[:tag_name]] = (tags_arr[v_hash[:tag_name]] += 1)
           else
-            tags_arr << {v_hash[:tag_name]: 1} 
+            tags_arr << {:"#{v_hash[:tag_name]}" => 1} 
           end   
         end
         obj = self.summary_wall_obj(tags_arr)
