@@ -8,6 +8,7 @@ class Wall
   field :message,         type: String
   field :user_id,         type: BSON::ObjectId
   field :tag_id,          type: BSON::ObjectId
+  field :tag_name,        type: String
   field :chat_users,      type: Array
   field :status,          type: Boolean, default: true
   field :abuse_count,     type: Integer, default: 0
@@ -33,6 +34,7 @@ class Wall
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
   # validate :restrict_wall_creation, on: :create
+  validate :tag_presence
   ########### instance methods #######################
 
   def save_owner_and_statistic
@@ -47,8 +49,15 @@ class Wall
     0
   end
 
-  def tag_name
-    self.tag.name
+  def tag_presence
+    if(self.tag_id.present?)
+      tag = Tag.where(_id: self.tag_id).first
+      if(tag.present?)
+        self.tag_name = tag.name
+      else
+        errors.add(:base, "The given tag id is not present")
+      end
+    end
   end
 
   def tagged_users_count
@@ -68,6 +77,5 @@ class Wall
   def save_image(image)
    self.create_wall_image(image: image)
   end
-
-
+  
 end

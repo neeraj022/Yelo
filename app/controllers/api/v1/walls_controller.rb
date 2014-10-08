@@ -12,7 +12,7 @@ class Api::V1::WallsController < Api::V1::BaseController
       render json: {error_message: @wall.errors.full_messages}, status: Code[:error_code]
     end
   rescue => e
-  	rescue_message(e)
+    rescue_message(e)
   end
   
   # POST /walls/:id

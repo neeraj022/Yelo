@@ -185,14 +185,12 @@ class User
       return false
     when Setting.NS_CODE[:NOTIFY_SUMMARY]
       return true if type == Notification.N_CONS[:USER_TAG]
+    else
+      return true
     end
   end
 
-  def can_send_sumry_notify?(type)
-    is_summary_notify_allowed?
-  end
-
-  def is_summary_notify_allowed?
+  def can_send_summary_notification?
     diff_time = notify_time_diff
     interval = AppSetting.summary_notify_interval
     c_user_hour = Code.utc_time(self.utc_offset).hours
