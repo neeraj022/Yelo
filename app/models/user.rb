@@ -35,8 +35,10 @@ class User
   field :state,                type: String
   field :country,              type: String
   field :is_present,           type: Boolean, default: false
-  field :latitude,   type: String
-  field :longitude,  type: String
+  field :latitude,             type: String
+  field :longitude,            type: String
+  field :last_notify_sent_at,  type: String
+  field :utc_offset,           type: String
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
@@ -172,6 +174,36 @@ class User
   def ensure_password
     return if self.password.present?
     self.password = Devise.friendly_token
+  end
+
+  def can_send_notification?(type)
+    n_setting  = self.setting.ns_code
+    case n_setting
+    when Setting.NS_CODE[:NOTIFY_ALL]
+      return true
+    when Setting.NS_CODE[:NOTIFY_MUTE]
+      return false
+    when Setting.NS_CODE[:NOTIFY_SUMMARY]
+      return true if type == Notification.N_CONS[:USER_TAG]
+    end
+  end
+
+  def can_send_sumry_notify?(type)
+    is_summary_notify_allowed?
+  end
+
+  def is_summary_notify_allowed?
+    diff_time = notify_time_diff
+    interval = AppSetting.summary_notify_interval
+    c_user_hour = Code.utc_time(self.utc_offset).hours
+    hours <= 20 && hours >= 11 && (diff_time <= interval)
+  end
+
+  def notify_time_diff
+    c_time = Time.now
+    n_time = self.last_notify_sent_at
+    n_time = 0 if n_time.blank?
+    diff = ((c_time - n_time) / 3600).round
   end
  
   ## class methods ###########################

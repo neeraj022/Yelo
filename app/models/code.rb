@@ -32,4 +32,12 @@ class Code
     end
   end
 
+  def self.utc_time(utc_offset)
+    zone_name = ActiveSupport::TimeZone[utc_offset].name
+    zone = ActiveSupport::TimeZone[zone_name]
+    time_locally = Time.now
+    z_time = zone.at(time_locally)
+    #z_time.hour
+  end
+
 end

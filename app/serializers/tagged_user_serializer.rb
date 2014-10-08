@@ -5,7 +5,7 @@ class TaggedUserSerializer < CustomSerializer
    if scope.present? && (scope.id.to_s == object.wall.user_id.to_s)
      {mobile_number: object.mobile_number, email: object.mobile_number}
     else
-     ""
+     nil
     end
   end
 

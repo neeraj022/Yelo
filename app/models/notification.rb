@@ -12,6 +12,32 @@ class Notification
   ################  constants ####################
   N_CONS = {USER_TAG: 1, CREATE_WALL: 2}
   N_STATUS = {FRESH: 0, SENT: 1, SEEN: 2}
+  ################ instance methods ##############
+  def save_notification_status(status)
+    self.n_status = Notification.N_STATUS[:SENT]
+    self.save
+  end
+
+  def notify_obj
+     case self.n_value
+     when Notification.N_CONS[:USER_TAG]
+       Notification.create_wall_obj(self)
+     when Notification.N_CONS[:CREATE_WALL]
+        Notification.user_tag_obj(self)
+     end
+  end
+  
+  def self.create_wall_obj(n_obj)
+    v_hash = n_obj.n_value
+    {message: "New post for #{v_hash[:tag_name]}: v_hash[:message] created by #{v_hash[:wall_user]}", resource: {name:
+     "create wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+  end
+
+  def self.user_tag_obj(wall)
+    v_hash = n_obj.n_value
+    {message: "#{v_hash[:tag_user]} tagged u for #{v_hash[:message]}", resource: {name:
+    "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+  end
   ################ class methods ##################
   class << self
     def save_notify(n_type, n_value, user_id)
@@ -39,6 +65,21 @@ class Notification
       params[:radius] = AppSetting.wall_notify_radius
       params[:type] = obj.class.to_s.downcase
       params
+    end
+
+    def notify
+      notifications = Notification.where(n_status: Notification.N_STATUS[:FRESH])
+      notifications.each do |n|
+         user = n.user
+         n.save_notification_status(Notification.N_STATUS[:sent])
+         next unless user.can_send_notification?(n.n_value)
+         obj = n.notify_obj
+         if(user.platform.downcase == "android")
+           self.push_android([user.push_token], obj)
+         elsif(user.platform.downcase == "ios")
+           # self.push_ios([user.push_token], obj)
+         end
+       end
     end
   end
 
