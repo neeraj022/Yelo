@@ -113,8 +113,10 @@ class User
   end
 
   def save_user_tags(tag_id)
-    user_tag = self.user_tags.where(tag_id: tag_id).first_or_create
+    user_tag = self.user_tags.where(tag_id: tag_id).first
+    return self.user_tags.create(tag_id: tag_id) unless user_tag.present?
     user_tag.count = user_tag.count += 1
+    user_tag.save
   end
   
   def ensure_statistic_and_setting
@@ -146,7 +148,7 @@ class User
     end
   end
 
-  ## before actions ######################################
+  ################### before actions ###########################
   def mobile_number_filter
     if mobile_number_changed? && mobile_number.length > 10
       num =  self.mobile_number
