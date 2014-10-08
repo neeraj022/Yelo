@@ -75,6 +75,7 @@ class User
   embeds_one :setting
   embeds_one :statistic
   has_many :user_tags
+  has_many :notifications
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
   before_create :ensure_share_token

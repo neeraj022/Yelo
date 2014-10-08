@@ -73,19 +73,19 @@ class Notification
     def wall_summary_notify
       User.all.each do |u|
         next unless u.can_send_summary_notification?
-        notifications = u.notifications.where(n_status: Notification::N_STATUS[:SUMMARY])
-        c_wall_nfs = notifications.where(n_type: Notification::N_CONS[:CREATE_WALL])
-        tags_arr = Array.new
+        c_wall_nfs = u.notifications.where(n_status: Notification::N_STATUS[:SUMMARY], n_type: Notification::N_CONS[:CREATE_WALL])
+        next unless c_wall_nfs.present?
+        tags_hash = Hash.new
         c_wall_nfs.each do |n|
           v_hash = n.n_value
           n.save_notification_status(Notification::N_STATUS[:SENT])
-          if tags_arr.has_key?(v_hash[:tag_name])
-            tags_arr[v_hash[:tag_name]] = (tags_arr[v_hash[:tag_name]] += 1)
+          if tags_hash.has_key?(v_hash[:tag_name])
+            tags_hash[v_hash[:tag_name]] = (tags_hash[v_hash[:tag_name]] += 1)
           else
-            tags_arr << {:"#{v_hash[:tag_name]}" => 1} 
-          end   
+            tags_hash[v_hash[:tag_name]] = 1 
+          end 
         end
-        obj = Notification.summary_wall_obj(tags_arr)
+        obj = Notification.summary_wall_obj(tags_hash)
         Notification.push_notify(u.platform, [u.push_id], obj)
       end    
     end
@@ -102,10 +102,10 @@ class Notification
       "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
-    def summary_wall_obj(tags_arr)
-     str = "New wall posts"
-     tags_arr.each_pair do |k, v| 
-       str += "#{v} in #{k}"
+    def summary_wall_obj(tags_hash)
+     str = "New wall posts "
+     tags_hash.each_pair do |k,v| 
+         str += "#{v} in #{k}"
      end
      {collapse_key: "summary", message: str, resource: {name:
     "wall summary", dest: nil}}
