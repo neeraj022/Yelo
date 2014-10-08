@@ -19,29 +19,17 @@ class Notification
   end
 
   def notify_obj
-     case self.n_value
+     case self.n_type
      when Notification::N_CONS[:USER_TAG]
        Notification.create_wall_obj(self)
      when Notification::N_CONS[:CREATE_WALL]
         Notification.user_tag_obj(self)
      end
   end
-
-  def self.create_wall_obj(n_obj)
-    v_hash = n_obj.n_value
-    {collapse_key: "wall", message: "New post for #{v_hash[:tag_name]}: #{v_hash[:message]} created by #{v_hash[:wall_user]}", resource: {name:
-     "create wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
-  end
-
-  def self.user_tag_obj(wall)
-    v_hash = n_obj.n_value
-    {collapse_key: "tag", message: "#{v_hash[:tagged_by]} tagged u for #{v_hash[:message]}", resource: {name:
-    "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
-  end
   ################ class methods ##################
   class << self
     def save_notify(n_type, n_value, user_id)
-      Notification.create(n_type: Notification::N_CONS[:USER_TAG],
+      Notification.create(n_type: n_type,
               n_value: n_value, user_id: user_id)
     end
 
@@ -50,11 +38,13 @@ class Notification
       return false unless wall.present?
       params = self.set_geo_params(wall)
       params[:tag_ids] = [wall.tag_id.to_s]
-      users = Search.query(params).records
-      users.each do |u|
+      params[:type] = "listing"
+      listings = Search.query(params).records
+      user_ids = listings.map{|l| l.user_id.to_s}.uniq
+      user_ids.each do |id|
       	v_hash = {wall_id: wall.id.to_s, tag_name: wall.tag_name, message: wall.message,
         wall_user: wall.wall_owner.name}
-        self.save_notify(Notification::N_CONS[:CREATE_WALL], v_hash, u.id)
+        self.save_notify(Notification::N_CONS[:CREATE_WALL], v_hash, id)
       end
     end
 
@@ -63,7 +53,6 @@ class Notification
       params[:latitude] = obj.latitude
       params[:longitude] = obj.longitude
       params[:radius] = AppSetting.wall_notify_radius
-      params[:type] = obj.class.to_s.downcase
       params
     end
 
@@ -96,12 +85,24 @@ class Notification
             tags_arr << {:"#{v_hash[:tag_name]}" => 1} 
           end   
         end
-        obj = self.summary_wall_obj(tags_arr)
+        obj = Notification.summary_wall_obj(tags_arr)
         Notification.push_notify(u.platform, [u.push_id], obj)
       end    
     end
 
-    def self.summary_wall_obj(tags_arr)
+    def create_wall_obj(n_obj)
+      v_hash = n_obj.n_value
+      {collapse_key: "wall", message: "New post for #{v_hash[:tag_name]}: #{v_hash[:message]} created by #{v_hash[:wall_user]}", resource: {name:
+       "create wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+    end
+
+    def user_tag_obj(n_obj)
+      v_hash = n_obj.n_value
+      {collapse_key: "tag", message: "#{v_hash[:tagged_by]} tagged u for #{v_hash[:message]}", resource: {name:
+      "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+    end
+
+    def summary_wall_obj(tags_arr)
      str = "New wall posts"
      tags_arr.each_pair do |k, v| 
        str += "#{v} in #{k}"
@@ -111,8 +112,9 @@ class Notification
     end
 
     def push_notify(platform, push_ids, obj)
+      puts obj
       if(platform.downcase == "android")
-        self.push_android(push_ids, obj)
+        # self.push_android(push_ids, obj)
       elsif(platform.downcase == "ios")
         # self.push_ios([user.push_token], obj)
       end

@@ -94,7 +94,7 @@ module ListingSearch
        end
        if(query[:tag_ids].present?)
          @search_definition[:query][:bool][:must] << {
-            term:  { 
+            terms:  { 
               tag_ids: query[:tag_ids],
             } 
           }
