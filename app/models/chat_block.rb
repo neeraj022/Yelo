@@ -1,7 +1,6 @@
 class ChatBlock
   include Mongoid::Document
 
-  field :user_id,       type: BSON::ObjectId
   field :status,        type: Integer, default: 1
   field :request_time,  type: DateTime 
   #################### constants ################

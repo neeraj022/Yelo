@@ -3,5 +3,5 @@ class ChatItem
 
   field :chat_id, type: BSON::ObjectId
   #################### relations ############### 
-  embedded_in :chatted_user
+  embedded_in :chat_log
 end

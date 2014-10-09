@@ -5,9 +5,8 @@ class ChatLog
   field :chatter_id, type: BSON::ObjectId
   ############### relations ##############
   belongs_to  :user
-  embeds_one  :chatted_user
+  embeds_many :chat_items
   embeds_one  :chat_block
-  embeds_many :chat_item
   ############## class methods ############
   class << self
     def save_chats(obj, chat_id)

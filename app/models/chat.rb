@@ -9,6 +9,7 @@ class Chat
   field :message,       type: String
   field :is_seen,       type: Boolean, default: false
   field :seen_at,       type: DateTime
+  ############## class methods ######################
   class << self
     
     def create_chat(params)
@@ -42,8 +43,8 @@ class Chat
       s_log = ChatLog.where(user_id: s_id, chatter_id: r_id).first_or_create
       r_block  = r_log.chat_block
       s_block  = s_log.chat_block
-      if((s_block == ChatBlock.CONS[:BLOCK]) || (s_block == ChatBlock.CONS[:REJECT]) )
-        s_block.status = ChatBlock.CONS[:ALLOW]
+      if((s_block == ChatBlock::CONS[:BLOCK]) || (s_block == ChatBlock::CONS[:REJECT]) )
+        s_block.status = ChatBlock::CONS[:ALLOW]
         s_block.save
       end
       result = block_state(r_block)
@@ -56,12 +57,12 @@ class Chat
       result = Hash.new
       if(r_block.present?)
          case r_block.status
-         when ChatBlock.CONS[:ALLOW]
+         when ChatBlock::CONS[:ALLOW]
            result[:can_send] = true
-         when ChatBlock.CONS[:BLOCK]
+         when ChatBlock::CONS[:BLOCK]
            result[:can_send] = false
            result[:message] = "You cant chat with this user"
-         when ChatBlock.CONS[:REJECT]
+         when ChatBlock::CONS[:REJECT]
           result[:can_send] = Chat.reject_status(r_block)
           result[:message] = "you can only chat after #{AppSetting.chat_reject_interval} hours"
          else
@@ -76,7 +77,7 @@ class Chat
     def reject_status(block_obj)
       request_time = block_obj.request_time
       interval = AppSetting.chat_reject_interval
-      diff = ((Time.now - request_time) / 3600).round
+      diff = ((Time.now - request_time).to_f / 3600).round
       if(interval <= diff)
         true
       else
