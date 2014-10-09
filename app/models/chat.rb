@@ -28,6 +28,7 @@ class Chat
       if(chat_state[:can_send])
         chat = Chat.create_chat(params)
         params[:status] = true
+        params[:reply_id] = chat.id.to_s
         params[:created_at] = chat.created_at
         ChatLog.save_chats(chat_state[:r_log], chat.id)
         ChatLog.save_chats(chat_state[:s_log], chat.id)

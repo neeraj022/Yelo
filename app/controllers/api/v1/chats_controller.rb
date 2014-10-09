@@ -2,9 +2,15 @@ class Api::V1::ChatsController < Api::V1::BaseController
   before_action :authenticate_user!
   
   # POST /chat
-  def send
-    ampq(params[:chat])
-    render json: {}
+  def send_chat
+    if params[:sender_id]  == current_user.id.to_s
+      ampq(params)
+      render json: {status: "success"}
+    else
+      render json: {status: "error", error_message: "sender is not you"}, status: Code[:error_code]
+    end
+  rescue => e
+    rescue_message(e)
   end
 
   def ampq(params)
@@ -20,12 +26,13 @@ class Api::V1::ChatsController < Api::V1::BaseController
         e = "" if Rails.env == "production"
         obj[:message] = "something went wrong #{e}"
       end
+      obj[:server_sent_at] = Time.now
       if(obj[:status])
-        receiver_exchange = channel.fanout(receiver.id.to_s+"exchange")
-        receiver_exchange.publish(chat_hash.to_json)
+        receiver_exchange = channel.fanout(obj[:receiver_id]+"exchange")
+        receiver_exchange.publish(obj.to_json)
       end
-      sender_exchange = channel.fanout(params[:sender_id]+"exchange") 
-      sender_exchange.publish(chat_hash.to_json)
+      sender_exchange = channel.fanout(obj[:sender_id]+"exchange") 
+      sender_exchange.publish(obj.to_json)
       connection.on_tcp_connection_loss do |connection, settings|
         # reconnect in 10 seconds, without enforcement
         connection.reconnect(false, 10)
@@ -44,7 +51,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
     }
   end
 
-  # POST /chats/seen
+  # # POST /chats/seen
   def set_seen
   	time =  Time.parse(params[:created_at])
     Chat.where(:created_at.lte => time, is_seen: false, receiver_id: current_user.id.to_s).update_all(is_seen: true)
@@ -53,7 +60,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
     rescue_message(e)
   end
 
-  # POST /chats/status
+  # # POST /chats/status
   def set_status
     chat_log =  current_user.chat_logs.where(chatter_id: params[:chatter_id]).first
     block = chat_log.chat_block

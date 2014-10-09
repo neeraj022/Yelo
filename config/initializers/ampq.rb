@@ -7,10 +7,10 @@ module ThinEM
       channel = AMQP.channel
      
       #-------------------
-      s_exchange = channel.fanout("53e5015a7375727e02000000exchange")
-      u_exchange = channel.fanout("53e79c4f7375721ec1040000exchange")
-      u_queue = channel.queue("53e79c4f7375721ec1040000queue", :auto_delete => true).bind(u_exchange)
-      s_queue = channel.queue("53e5015a7375727e02000000queue", :auto_delete => true).bind(s_exchange) 
+      s_exchange = channel.fanout("542bf1167375721471000000exchange")
+      u_exchange = channel.fanout("5433c19173757225ed160000exchange")
+      u_queue = channel.queue("5433c19173757225ed160000queue", :auto_delete => true).bind(u_exchange)
+      s_queue = channel.queue("542bf1167375721471000000queue", :auto_delete => true).bind(s_exchange) 
       u_queue.subscribe do |payload|
         puts "Received a message: #{payload}. Disconnecting..."
         # connection.close { EventMachine.stop }
