@@ -63,6 +63,9 @@ Rails.application.routes.draw do
       get "/tags/auto_suggestions", to: "tags#auto_suggestions"
       get "/users/:id/listings", to: "listings#user_listings"
       get  "/search", to: "search#search"
+      post '/chats', to: "chat#send"
+      post '/chats/status', to: "chat#set_status"
+      post '/chats/seen', to: "chat#set_seen"
       resources :users
       resources :listings
       resources :walls do
