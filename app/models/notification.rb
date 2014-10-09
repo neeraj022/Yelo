@@ -105,7 +105,7 @@ class Notification
     def summary_wall_obj(tags_hash)
      str = "New wall posts "
      tags_hash.each_pair do |k,v| 
-         str += "#{v} in #{k}"
+         str += "#{v} in #{k},"
      end
      {collapse_key: "summary", message: str, resource: {name:
     "wall summary", dest: nil}}
@@ -114,20 +114,21 @@ class Notification
     def push_notify(platform, push_ids, obj)
       puts obj
       if(platform.downcase == "android")
-        # self.push_android(push_ids, obj)
+        self.push_android(push_ids, obj)
       elsif(platform.downcase == "ios")
         # self.push_ios([user.push_token], obj)
       end
     end
 
-    def self.push_android(ids, obj)
+    def push_android(ids, obj)
       gcm = GCM.new(Rails.application.secrets.android_api_key)
       registration_ids = ids
       options = {data: obj, collapse_key: obj["collapse_key"]}
       response = gcm.send(registration_ids, options)
+      puts response
     end
 
-    def self.push_ios(ids, msg)
+    def push_ios(ids, msg)
       gcm = GCM.new(Rails.application.secrets.android_api_key)
       registration_ids= ids
       options = {data: {score: "123"}, collapse_key: obj["collapse_key"]}

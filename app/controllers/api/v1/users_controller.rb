@@ -49,6 +49,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       @user.sms_verify = true
       @user.push_id = params[:user][:push_id]
       @user.platform = params[:user][:platform]
+      @user.utc_offset = params[:user][:utc_offset]
       @user.auth_token = ""
       @user.skip_update_validation =  true
       @user.verify_platform = true
@@ -87,7 +88,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     def user_params
       params.require(:user).permit(:name, :mobile_number, :email, 
         :image, :ext_image_url, :description,
-         :platform, :country_code, :ext_image_url)
+         :platform, :country_code, :ext_image_url, :utc_offset)
     end
 
     def user_create_params

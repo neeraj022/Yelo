@@ -70,12 +70,13 @@ class User
   ############## carrier wave ######################
   mount_uploader :image, ImageUploader
   ############## relations #########################
-  has_many :listings
-  has_many :walls     
+  has_many :listings, dependent: :destroy
+  has_many :walls, dependent: :destroy     
   embeds_one :setting
   embeds_one :statistic
-  has_many :user_tags
-  has_many :notifications
+  has_many :user_tags, dependent: :destroy
+  has_many :notifications, dependent: :destroy
+  has_many :chat_logs, dependent: :destroy
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
   before_create :ensure_share_token
