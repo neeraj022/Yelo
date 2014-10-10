@@ -66,6 +66,7 @@ Rails.application.routes.draw do
       post '/chats/send', to: "chats#send_chat"
       post '/chats/status', to: "chats#set_status"
       post '/chats/seen', to: "chats#set_seen"
+      get '/notify', to: "chats#notify"
       resources :users
       resources :listings
       resources :walls do

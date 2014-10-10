@@ -73,5 +73,10 @@ class Api::V1::ChatsController < Api::V1::BaseController
   rescue => e
     rescue_message(e)
   end
+  
+  # GET /notify
+  def notify
+    Notification.notify
+  end
 
 end
