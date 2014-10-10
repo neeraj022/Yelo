@@ -13,6 +13,7 @@ class ChatBlock
   	case type
     when "reject"
       self.status = ChatBlock::CONS[:REJECT]
+      self.request_time = Time.now
     when "block"
       self.status = ChatBlock::CONS[:BLOCK]
     when "allow"

@@ -53,7 +53,8 @@ class Api::V1::ChatsController < Api::V1::BaseController
 
   # # POST /chats/seen
   def set_seen
-  	time =  Time.parse(params[:created_at])
+  	time =  Time.parse(params[:created_at]) 
+    time += 1.minutes
     Chat.where(:created_at.lte => time, is_seen: false, receiver_id: current_user.id.to_s).update_all(is_seen: true)
     render json: {status: "success"}
   rescue => e
