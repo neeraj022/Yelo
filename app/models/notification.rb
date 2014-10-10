@@ -14,7 +14,7 @@ class Notification
   N_STATUS = {FRESH: 0, SENT: 1, SEEN: 2, SUMMARY: 3}
   ################ instance methods ##############
   def save_notification_status(status)
-    self.n_status = Notification::N_STATUS[:SENT]
+    self.n_status = status
     self.save
   end
 
@@ -116,15 +116,14 @@ class Notification
       if(platform.downcase == "android")
         self.push_android(push_ids, obj)
       elsif(platform.downcase == "ios")
-        # self.push_ios([user.push_token], obj)
+        # self.push_ios([user.push_token], obj.to_json)
       end
     end
 
     def push_android(ids, obj)
       gcm = GCM.new(Rails.application.secrets.android_api_key)
-      registration_ids = ids
-      options = {data: obj, collapse_key: obj["collapse_key"]}
-      response = gcm.send(registration_ids, options)
+      options = {data: {payload: obj.to_json}, collapse_key: obj["collapse_key"]}
+      response = gcm.send(ids, options)
       puts response
     end
 
