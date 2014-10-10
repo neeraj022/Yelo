@@ -1,5 +1,5 @@
 class Api::V1::ChatsController < Api::V1::BaseController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:notify]
   
   # POST /chat
   def send_chat

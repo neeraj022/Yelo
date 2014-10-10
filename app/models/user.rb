@@ -189,7 +189,7 @@ class User
     when Setting::NS_CODE[:NOTIFY_MUTE]
       return false
     when Setting::NS_CODE[:NOTIFY_SUMMARY]
-      return true if type == Notification.N_CONS[:USER_TAG]
+      return true if type == Notification::N_CONS[:USER_TAG]
     else
       return true
     end
