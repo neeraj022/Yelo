@@ -9,6 +9,8 @@ class AppSetting
   field :default_notify_code,     type: Integer, default: 1
   field :wall_notify_radius,      type: Integer, default: 12
   field :chat_reject_interval,    type: Integer, default: 6
+  field :server_status,           type: Integer, default: 1
+  field :server_message,          type: String
   ############### class methods ############################
   class << self
     def wall_post_interval
@@ -32,6 +34,15 @@ class AppSetting
         AppSetting.chat_reject_interval
       else
         1
+      end
+    end
+
+    def server_status
+      if AppSetting.first
+        s = AppSetting.first
+        {code: s.server_status, message: s.server_message}
+      else
+        {code: 1, message: "ok"}
       end
     end
 

@@ -41,6 +41,7 @@ class Notification
       params[:type] = "listing"
       listings = Search.query(params).records
       user_ids = listings.map{|l| l.user_id.to_s}.uniq
+      user_ids.delete(wall.user_id.to_s)
       user_ids.each do |id|
       	v_hash = {wall_id: wall.id.to_s, tag_name: wall.tag_name, message: wall.message,
         wall_user: wall.wall_owner.name}

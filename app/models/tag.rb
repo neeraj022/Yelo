@@ -7,18 +7,43 @@ class Tag
   field :group_id, type: String
   field :granularity, type: Integer, default: 1
   field :score, type: Integer, default: 0
-  ## relations
+  ################# relations ################
   belongs_to :group
-  
-  ############## validators  ##############
+  ################## filters #################
+  after_save :update_embed_docs
+  ############## validators  #################
   validates :name, presence: true
-
+  ############## constants ###################
   G_CODE = {LOCAL: 1, CITY: 2}
-
+  ############## instance methods ############
   def save_score
     self.score = self.score += 1
     self.save
   end
+
+  def update_embed_docs
+    if(name_changed?)
+      update_wall_tag_name
+      update_listing_tag_name
+    end
+  end
+
+  def update_wall_tag_name
+    walls = self.walls
+    walls.each do |w|
+      w.tag_name = self.name
+      w.save
+    end
+  end
+
+  def update_listing_tag_name
+    listings = Listing.where("listing_tags.tag_id" => self.id)
+    listings.each do |l|
+      tg = l.listing_tags.where(tag_id: self.id).first
+      tg.tag_name = self.name
+      tg.save
+    end
+  end 
 
   ############## class methods #############
   class << self

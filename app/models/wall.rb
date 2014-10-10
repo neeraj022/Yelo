@@ -41,7 +41,7 @@ class Wall
     user = self.user
     user.statistic.last_post = self.created_at
     user.save
-    self.create_wall_owner(name: user.name, image_url: user.image_url)
+    self.create_wall_owner(user_id: user.id, name: user.name, image_url: user.image_url)
   end
 
   def chat_users_count

@@ -79,6 +79,7 @@ class User
   has_many :chat_logs, dependent: :destroy
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
+  after_save :update_embed_docs
   before_create :ensure_share_token
   before_validation :ensure_password
   after_create :ensure_statistic_and_setting
@@ -150,7 +151,6 @@ class User
     end
   end
 
-  ################### before actions ###########################
   def mobile_number_filter
     if mobile_number_changed? && mobile_number.length > 10
       num =  self.mobile_number
@@ -214,7 +214,22 @@ class User
     return 0 if n_time.blank?
     diff = ((c_time - n_time) / 3600).round
   end
- 
+  
+  def update_embed_docs
+    if(name_changed? || image_changed?)
+      wall_owner_update
+    end
+  end
+
+  def wall_owner_update
+    walls = self.walls
+    walls.each do |w|
+      owner = w.wall_owner
+      owner.name = self.name 
+      owner.image_url = self.image_url if image_changed?
+      owner.save
+    end
+  end
   ################# class methods ###########################
   class << self
     def mobile_number_format(num)
