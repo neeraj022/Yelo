@@ -9,6 +9,7 @@ class Tag
   field :score, type: Integer, default: 0
   ################# relations ################
   belongs_to :group
+  has_many :walls
   ################## filters #################
   after_save :update_embed_docs
   ############## validators  #################

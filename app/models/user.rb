@@ -77,6 +77,7 @@ class User
   has_many :user_tags, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :chat_logs, dependent: :destroy
+  has_many :ratings, dependent: :destroy
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
   after_save :update_embed_docs
@@ -113,6 +114,27 @@ class User
 
   def online?
     updated_at > 10.minutes.ago
+  end
+  
+  def save_rating_and_score
+    rating = get_rating_and_users_count
+    avg = rating[:avg]
+    user_count = rating[:user_count]
+    self.statistic.rating_avg = avg
+    self.statistic.rating_score = (avg * user_count)
+    self.save
+  end
+
+  def rating_avg
+    self.statistic.rating_avg
+  end
+
+  def get_rating_and_users_count
+    ratings_array = self.ratings.where(:"stars".gt => 0)
+    count = ratings_array.count
+    sum = ratings_array.sum(:rating) 
+    avg = (sum/count)*100/10
+    {avg: avg, user_count: count}
   end
 
   def save_user_tags(tag_id)
