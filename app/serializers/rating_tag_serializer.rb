@@ -1,3 +1,3 @@
-class RatingTagSerializer < ActiveModel::Serializer
+class RatingTagSerializer < CustomSerializer
   attributes :tag_id, :tag_name
 end

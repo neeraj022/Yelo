@@ -15,9 +15,10 @@ class ListingTag
   after_destroy :update_tag_ids
 
   def update_tag_ids
-    wall = self.wall
-    wall.tag_ids = []
-    wall.tag_ids = wall.listing_tags.map{|l| l.tag_id.to_s}
+    listing = self.listing
+    listing.tag_ids = []
+    listing.tag_ids = listing.listing_tags.map{|l| l.tag_id.to_s}
+    listing.save
   end
 
 end

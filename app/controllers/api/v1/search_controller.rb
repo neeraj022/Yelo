@@ -17,6 +17,15 @@ class Api::V1::SearchController < ApplicationController
       params[:per] ||= 20
       @params[:radius] = params[:radius].to_i 
       @params[:per]  = params[:per].to_i
+      @params[:tag_ids] = set_tag_ids
     end 
+
+    def set_tag_ids
+      if(current_user.present? && params[:tag_ids].blank?)
+        current_user.wall_tags
+      else
+        params[:tag_ids]
+      end
+    end
 
 end

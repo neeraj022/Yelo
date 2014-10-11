@@ -37,7 +37,7 @@ class Listing
     end
     return {status: true}
   rescue => e 
-     e = l_tag.errors.full_messages if l_tag.errors.present?
+     e = l_tag.errors.full_messages if l_tag.present? && l_tag.errors.present?
      return {status: false, error_message: e}
   end
 

@@ -28,26 +28,26 @@ class Api::V1::RatingsController < Api::V1::BaseController
       @rating.save_tags(params[:tag_ids]) if params[:tag_ids].present?
       render json: @rating
     else
-      render json: {status: Code[:status_error], error_message: @rating.errors.full_messages}, status: Code[:status_error]
+      render json: {status: Code[:status_error], error_message: @rating.errors.full_messages}, status: Code[:error_code]
     end
   rescue => e
      rescue_message(e)
   end
 
-  # PATCH/PUT /users/:user_id/ratings
+  # PATCH/PUT /users/:user_id/ratings/:id
   def update
   	@rating = current_user.ratings.find(params[:id])
     if(@rating.update_attributes(rating_params))
       @rating.rating_tags.destroy && @rating.save_tags(params[:tag_ids]) if params[:tag_ids].present?
       render json: @rating
     else
-      render json: {status: Code[:status_error], error_message: @rating.errors.full_messages}, status: Code[:status_error]
+      render json: {status: Code[:status_error], error_message: @rating.errors.full_messages}, status: Code[:error_code]
     end
   rescue => e
     rescue_message(e)
   end
 
-  # DELETE /users/:user_id/ratings
+  # DELETE /users/:user_id/ratings/:id
   def destroy
     @rating = current_user.ratings.find(params[:id])
     @rating.destroy

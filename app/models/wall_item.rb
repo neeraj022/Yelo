@@ -17,6 +17,7 @@ class WallItem
   ############### instance methods #########################
   
   def tagged_users
+    return [] unless self.tagged_user_ids
     tagged_users = self.wall.tagged_users.where(:_id.in =>  self.tagged_user_ids)
     tagged_users
   end

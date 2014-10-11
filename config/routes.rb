@@ -68,7 +68,9 @@ Rails.application.routes.draw do
       post '/chats/seen', to: "chats#set_seen"
       get '/notify', to: "chats#notify"
       get "/server_status", to: "public#server_status"
-      resources :users
+      resources :users do
+        resources :ratings
+      end
       resources :listings
       resources :walls do
         resources :wall_items

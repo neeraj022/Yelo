@@ -104,6 +104,10 @@ class User
     tags
   end
 
+  def wall_tags
+    self.interest_ids.concat(self.tags.map{|t| t[:id]})
+  end
+
   def validate_profile?
     self.skip_update_validation ? false : true
   end
