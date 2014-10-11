@@ -22,7 +22,7 @@ class Api::V1::RatingsController < Api::V1::BaseController
 
   # POST /users/:user_id/ratings
   def create 
-    @rating = @user.ratings.new(rating_params)
+    @rating = @user.ratings.new(rating_params.merge(reviewer_id: current_user.id))
     @rating.create_rating_owner(user_id: current_user.id, name: current_user.name, image_url: current_user.image_url)
     if(@rating.save)
       @rating.save_tags(params[:tag_ids]) if params[:tag_ids].present?

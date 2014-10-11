@@ -7,7 +7,6 @@ class Api::V1::SearchController < ApplicationController
     render json: @results
   end
 
-
   private
     def set_search_params
       @params = {latitude: params[:latitude].to_f, longitude: params[:longitude].to_f,

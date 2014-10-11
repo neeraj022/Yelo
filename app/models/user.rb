@@ -136,7 +136,7 @@ class User
   def get_rating_and_users_count
     ratings_array = self.ratings.where(:"stars".gt => 0)
     count = ratings_array.count
-    sum = ratings_array.sum(:rating) 
+    sum = ratings_array.sum(:stars) 
     avg = (sum/count)*100/10
     {avg: avg, user_count: count}
   end
