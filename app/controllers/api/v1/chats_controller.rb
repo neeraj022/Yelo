@@ -26,7 +26,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
         e = "" if Rails.env == "production"
         obj[:message] = "something went wrong #{e}"
       end
-      obj[:server_sent_at] = Time.now
+      obj[:server_sent_at] = Time.now.to_s
       if(obj[:status])
         receiver_exchange = channel.fanout(obj[:receiver_id]+"exchange")
         receiver_exchange.publish(obj.to_json)

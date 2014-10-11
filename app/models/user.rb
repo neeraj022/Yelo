@@ -133,6 +133,14 @@ class User
     self.statistic.rating_avg
   end
 
+  def total_tagged
+    self.user_tags.count
+  end
+
+  def total_ratings
+    self.ratings.count
+  end
+
   def get_rating_and_users_count
     ratings_array = self.ratings.where(:"stars".gt => 0)
     count = ratings_array.count
