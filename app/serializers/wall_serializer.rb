@@ -3,4 +3,5 @@ class WallSerializer < CustomSerializer
              :tag_name
   has_one :wall_image
   has_one :wall_owner
+  has_many :wall_items
 end

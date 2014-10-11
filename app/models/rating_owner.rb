@@ -1,4 +1,4 @@
-class ReviewOwner
+class RatingOwner
   include Mongoid::Document
   field :image_url,    type: String
   field :name,         type: String

@@ -1,3 +1,3 @@
 class TagSerializer < CustomSerializer
-  attributes :id
+  attributes :id, :name
 end

@@ -6,11 +6,9 @@ class Rating
   field :comment,       type: String
   field :stars,        type: Integer, default: 0
   field :user_id,       type: BSON::ObjectId
-
-  index "review_owner.user_id" => 1
   
   belongs_to  :user, index: true
-  embeds_one  :review_owner
+  embeds_one  :rating_owner
   embeds_many :rating_tags
 
   # validates :rating, format: {with: /[1,2,3,4,5]{0,1}/}, 
@@ -28,12 +26,13 @@ class Rating
 
   def save_tags(tag_ids)
     r_tag =  ""
+    user = self.user
+    tags = user.tags
     tag_ids.each do |id|
-      tag = Tag.where(_id: id).first
-      next unless tag.present?
+      next unless tags.any?{|t| t[:id] == id.to_s}
       r_tag = self.rating_tags.create!(tag_id: tag.id, tag_name: tag.name)
     end
-    self.user.save_rating_score
+    user.save_rating_score
     return {status: true}
   rescue => e 
      e = r_tag.errors.full_messages if r_tag.errors.present?
