@@ -11,8 +11,8 @@ class Api::V1::WallItemsController < Api::V1::BaseController
     else
       render json: {error_message: @wall_item.errors.full_messages}, status: Code[:error_code]
     end
-  rescue => e
-    rescue_message(e)
+  # rescue => e
+  #   rescue_message(e)
   end
 
   def add_tagged_users

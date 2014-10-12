@@ -281,7 +281,6 @@ class User
       owner.name = self.name 
       owner.image_url = self.image_url if image_changed?
       owner.save
-    end
   end
   ################# class methods ###########################
   class << self
@@ -289,7 +288,7 @@ class User
       mobile_number = num.slice!(-(10-num.length), 10)
       {mobile_number: mobile_number, country_code: num}
     end
-
+  end
   ## private methods
   private
     def generate_authentication_token
