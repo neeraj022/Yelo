@@ -26,6 +26,7 @@ class Tag
     if(name_changed?)
       update_wall_tag_name
       update_listing_tag_name
+      update_rating_tag_name
     end
   end
 
@@ -34,6 +35,15 @@ class Tag
     walls.each do |w|
       w.tag_name = self.name
       w.save
+    end
+  end
+
+  def update_rating_tag_name
+    ratings = Rating.where("rating_tags.tag_id" => self.id)
+    ratings.each do |r|
+      r = r.rating_tags.where(tag_id: self.id).first
+      r.tag_name  = self.name
+      r.save
     end
   end
 

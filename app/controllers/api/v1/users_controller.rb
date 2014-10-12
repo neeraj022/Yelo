@@ -76,6 +76,14 @@ class Api::V1::UsersController < Api::V1::BaseController
   rescue => e
     rescue_message(e)
   end
+
+  # POST /referral
+  def register_referral
+    User.register_referral(params[:referral_id], params[:device_id])
+    render json: {status: "success"}
+  rescue => e
+    rescue_message(e)
+  end
   
   ## private methods ###################################
   private

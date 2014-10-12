@@ -68,9 +68,10 @@ Rails.application.routes.draw do
       post '/chats/seen', to: "chats#set_seen"
       get '/notify', to: "chats#notify"
       get "/server_status", to: "public#server_status"
-      resources :users do
-        resources :ratings
-      end
+      post '/referral', to: 'users#register_referral'
+      get "/users/:user_id/ratings", to: 'ratings#user_ratings'
+      resources :users
+      resources :ratings
       resources :listings
       resources :walls do
         resources :wall_items

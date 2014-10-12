@@ -145,7 +145,7 @@ class User
     ratings_array = self.ratings.where(:"stars".gt => 0)
     count = ratings_array.count
     sum = ratings_array.sum(:stars) 
-    avg = (sum/count)*100/10
+    avg = (sum/count)*100/100
     {avg: avg, user_count: count}
   end
 
@@ -159,6 +159,12 @@ class User
   def ensure_statistic_and_setting
     self.create_statistic
     self.create_setting
+  end
+
+  def self.register_referral(referral_id, device_id)
+    user = self.where(share_token: referral_id).first
+    raise "no user found for given share token" unless user.present?
+    Share.where(user_id: user.id, device_id: device_id).first_or_create!
   end
   ############### Model work methods ############################\  
   # for devise remove email validation
@@ -252,13 +258,26 @@ class User
   def update_embed_docs
     if(name_changed? || image_changed?)
       wall_owner_update
+      rating_owner_update
     end
   end
 
   def wall_owner_update
     walls = self.walls
     walls.each do |w|
-      owner = w.wall_owner
+      save_owner(w)
+    end
+  end
+
+  def rating_owner_update
+    ratings = Rating.where(reviewer_id: self.id.to_s)
+    ratings.each do |r|
+      save_owner(r)
+    end
+  end
+
+  def save_owner(obj)
+      owner = obj.wall_owner
       owner.name = self.name 
       owner.image_url = self.image_url if image_changed?
       owner.save
@@ -270,8 +289,7 @@ class User
       mobile_number = num.slice!(-(10-num.length), 10)
       {mobile_number: mobile_number, country_code: num}
     end
-  end
- 
+
   ## private methods
   private
     def generate_authentication_token
