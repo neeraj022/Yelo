@@ -106,7 +106,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     def existing_user
       if(@user.update_attributes(user_create_params.merge(serial_code: "",
                skip_update_validation: true)))
-        render json: {status: Code[:status_success], serial_code: @user.serial_code}
+        send_sms
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
       end
@@ -115,9 +115,18 @@ class Api::V1::UsersController < Api::V1::BaseController
     def create_new_user
       @user = User.new(user_create_params)
       if(@user.save)
-        render json: {status: Code[:status_success], serial_code: @user.serial_code}
+        send_sms
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
+      end
+    end
+
+    def send_sms
+      @sms = @user.send_sms
+      if(@sms[:status])
+        render json: {status: Code[:status_success], serial_code: @user.serial_code}
+      else
+        render json: {status: Code[:status_error], serial_code: @user.serial_code, error_message: @sms[:error_message]}
       end
     end
 end

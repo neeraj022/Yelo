@@ -7,6 +7,6 @@ class Setting
 
   NS_CODE = {NOTIFY_SUMMARY: 1 ,NOTIFY_ALL: 2, NOTIFY_MUTE: 3}
   
-  ## relations
+  ################# relations ############################
   embedded_in :user
 end

@@ -11,6 +11,7 @@ class AppSetting
   field :chat_reject_interval,    type: Integer, default: 6
   field :server_status,           type: Integer, default: 1
   field :server_message,          type: String
+  field :sms_per_day,             type: Integer, default: 5
   ############### class methods ############################
   class << self
     def wall_post_interval
@@ -34,6 +35,15 @@ class AppSetting
         AppSetting.chat_reject_interval
       else
         1
+      end
+    end
+
+
+    def sms_per_day
+      if AppSetting.first
+        AppSetting.sms_per_day
+      else
+        5
       end
     end
 

@@ -1,3 +1,4 @@
+require 'open-uri'
 class User
   include Mongoid::Document
   include Mongoid::Timestamps::Created
@@ -161,12 +162,39 @@ class User
     self.create_setting
   end
 
-  def self.register_referral(referral_id, device_id)
-    user = self.where(share_token: referral_id).first
-    raise "no user found for given share token" unless user.present?
-    Share.where(user_id: user.id, device_id: device_id).first_or_create!
+  def send_sms
+    statistic = self.statistic
+    last_sms_date = statistic.last_sms_sent.to_date if statistic.last_sms_sent.present?
+    last_sms_date ||= Time.now.to_date
+    present_date = Time.now.to_date
+    if(last_sms_date == present_date)
+      if(AppSetting.sms_per_day >= statistic.sms_count)
+        statistic.sms_count = statistic.sms_count += 1
+        statistic.save
+        return {status: true, response: self.sms}
+      else
+        msg = "only #{AppSetting.sms_per_day} verfication sms per day"
+        return {status: false, response: self.sms, error_message: msg}
+      end
+    else
+      statistic.last_sms_sent = Time.now
+      statistic.sms_count = 0
+      statistic.save
+      return {status: true, response: self.sms}
+    end
   end
-  ############### Model work methods ############################\  
+
+  def sms
+    sms_api_key = Rails.application.secrets.sms_api_key
+    request_url = "http://global.sinfini.com/api/v1/?api_key=#{sms_api_key}&method=sms&sender=yelo&to=#{self.full_mobile_number}&message=#{self.serial_code}"
+    response = open(request_url).read
+    response
+  end
+
+  def full_mobile_number
+    self.country_code.to_s + self.mobile_number.to_s
+  end
+
   # for devise remove email validation
   def email_required?
     false
@@ -284,10 +312,18 @@ class User
   end
   ################# class methods ###########################
   class << self
+    
     def mobile_number_format(num)
       mobile_number = num.slice!(-(10-num.length), 10)
       {mobile_number: mobile_number, country_code: num}
     end
+   
+    def register_referral(referral_id, device_id)
+      user = self.where(share_token: referral_id).first
+      raise "no user found for given share token" unless user.present?
+      Share.where(user_id: user.id, device_id: device_id).first_or_create!
+    end
+  
   end
   ## private methods
   private
