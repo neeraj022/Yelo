@@ -1,3 +1,4 @@
+require 'uri'
 class SmsLog
   include Mongoid::Document
   include Mongoid::Timestamps::Created
@@ -18,6 +19,7 @@ class SmsLog
 
   def send_sms(msg)
     if(can_send_sms?)
+      msg = URI.encode(msg)
       Code.send_sms(self.full_mobile_number, msg)
     end
   end

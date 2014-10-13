@@ -47,7 +47,7 @@ class Code
     response
   end
 
-  def time_diff_in_hours(time1, time2)
+  def self.time_diff_in_hours(time1, time2)
     ((time1 - time2) / 3600).round
   end
 
