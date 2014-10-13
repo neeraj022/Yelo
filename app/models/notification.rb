@@ -62,7 +62,7 @@ class Notification
       notifications = Notification.where(n_status: Notification::N_STATUS[:FRESH])
       notifications.each do |n|
         user = n.user
-        unless user.can_send_notification?(n.n_value)
+        unless user.can_send_notification?(n.n_type)
           n.save_notification_status(Notification::N_STATUS[:SUMMARY])
           next
         end
