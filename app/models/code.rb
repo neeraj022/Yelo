@@ -40,4 +40,15 @@ class Code
     #z_time.hour
   end
 
+  def self.send_sms(num, msg)
+    sms_api_key = Rails.application.secrets.sms_api_key
+    request_url = "http://global.sinfini.com/api/v1/?api_key=#{sms_api_key}&method=sms&sender=yelo&to=#{num}&message=#{msg}"
+    response = open(request_url).read
+    response
+  end
+
+  def time_diff_in_hours(time1, time2)
+    ((time1 - time2) / 3600).round
+  end
+
 end

@@ -17,9 +17,11 @@
 #   runner "AnotherModel.prune_old_records"
 # end
 
-set :output, {:error => 'error.log', :standard => 'cron.log'}
+#set :output, {:error => 'error.log', :standard => 'cron.log'}
 
-every 5.minutes do
+set :output, "log/cron_log.log"
+
+every 1.minutes do
   runner "Notification.notify"
 end
 

@@ -58,6 +58,7 @@ class Notification
     end
 
     def notify
+      puts "started quick notification"
       notifications = Notification.where(n_status: Notification::N_STATUS[:FRESH])
       notifications.each do |n|
         user = n.user
@@ -72,6 +73,7 @@ class Notification
     end
 
     def wall_summary_notify
+      puts "started summary notification"
       User.all.each do |u|
         next unless u.can_send_summary_notification?
         c_wall_nfs = u.notifications.where(n_status: Notification::N_STATUS[:SUMMARY], n_type: Notification::N_CONS[:CREATE_WALL])

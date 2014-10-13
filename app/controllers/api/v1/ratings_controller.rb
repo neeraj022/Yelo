@@ -2,7 +2,7 @@ class Api::V1::RatingsController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:show, :index]
   before_action :set_user, only: [:index]
 
-  # GET users/:user_id/ratings
+  # GET /users/:user_id/ratings
   def user_ratings
     @ratings = @user.ratings
     # expires_in 5.minutes, :public => true
