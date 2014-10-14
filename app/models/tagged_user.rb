@@ -14,5 +14,5 @@ class TaggedUser
   embedded_in :wall
 
   ################ validators ##########################
-  validates :user_id, uniqueness: {message: "user can be tagged only once"}, allow_blank: true, allow_nil: true
+  validates :mobile_number, uniqueness: {message: "user can be tagged only once"}, allow_blank: true, allow_nil: true
 end

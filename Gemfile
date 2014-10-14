@@ -88,6 +88,8 @@ gem "elasticsearch-model", git: "git://github.com/elasticsearch/elasticsearch-ra
 
 gem "elasticsearch-rails", git: "git://github.com/elasticsearch/elasticsearch-rails.git"
 
+gem 'twilio-ruby', '~> 3.11'
+
 
 
 group :development, :test do

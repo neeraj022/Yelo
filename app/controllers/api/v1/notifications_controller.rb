@@ -1,4 +1,4 @@
-class Api::V1::NotificationsController < ApplicationController
+class Api::V1::NotificationsController < Api::V1::BaseController
   before_action :authenticate_user!
 
   # GET /notifications
@@ -13,9 +13,9 @@ class Api::V1::NotificationsController < ApplicationController
   def update_seen_status
     @notification = Notification.where(_id: params[:id]).first
     if @notification.update_attributes(n_status: Notification::N_STATUS[:seen])
-      render json {status: "ok"}
+      render json: {status: "ok"}
     else
-      render json {status: "error"}
+      render json: {status: "error"}
     end
   rescue => e
      rescue_message(e) 

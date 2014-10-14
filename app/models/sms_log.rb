@@ -19,7 +19,7 @@ class SmsLog
 
   def send_sms(msg)
     if(can_send_sms?)
-      msg = URI.encode(msg)
+      # msg = URI.encode(msg)
       Code.send_sms(self.full_mobile_number, msg)
       self.last_sms_sent = Time.now
       self.save

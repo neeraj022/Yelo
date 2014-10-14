@@ -119,7 +119,7 @@ module WallSearch
             }
         end
         @search_definition[:sort] ||= []
-        @search_definition[:sort] << { created_at: "desc"}
+        @search_definition[:sort] << { created_at: "asc"}
 
         __elasticsearch__.search(@search_definition)
      end
