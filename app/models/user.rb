@@ -280,7 +280,7 @@ class User
     c_time = Time.now
     n_time = self.last_notify_sent_at
     return 0 if n_time.blank?
-    diff = ((c_time - n_time) / 3600).round
+    diff = ((c_time - n_time) / 3600).ceil
   end
   
   def update_embed_docs

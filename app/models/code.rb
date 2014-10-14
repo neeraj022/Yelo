@@ -56,7 +56,7 @@ class Code
   end
 
   def self.time_diff_in_hours(time1, time2)
-    ((time1 - time2) / 3600).round
+    ((time1 - time2) / 3600).ceil
   end
 
 end
