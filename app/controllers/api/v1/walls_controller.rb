@@ -1,5 +1,5 @@
 class Api::V1::WallsController < Api::V1::BaseController
-  before_action :authenticate_user!, except: [:show]
+  before_action :authenticate_user!, except: [:show, :user_wall]
 
   # POST /walls/
   def create
@@ -20,6 +20,15 @@ class Api::V1::WallsController < Api::V1::BaseController
   def show
     @wall = Wall.where(id: params[:id]).first
     render json: @wall
+  end
+
+  # GET /users/:user_id/walls
+  def user_walls
+    @user = User.where(_id: params[:user_id]).first
+    @walls = @user.walls
+    render json: @walls
+  rescue => e
+    rescue_message(e)
   end
   
   # POST /walls/:id

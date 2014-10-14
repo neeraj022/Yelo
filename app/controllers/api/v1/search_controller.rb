@@ -5,6 +5,8 @@ class Api::V1::SearchController < ApplicationController
   def search
   	@results  = Search.query(@params).page(params[:page]).per(params[:per]).records
     render json: @results
+ rescue => e
+     rescue_message(e) 
   end
 
   private

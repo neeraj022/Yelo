@@ -70,6 +70,9 @@ Rails.application.routes.draw do
       get "/server_status", to: "public#server_status"
       post '/referral', to: 'users#register_referral'
       get "/users/:user_id/ratings", to: 'ratings#user_ratings'
+      get "/users/:user_id/walls", to: 'walls#user_walls'
+      post "/notifications/:id/seen", to: "notifications#update_seen_status"
+      get "/notifications", to: "notifications#index"
       resources :users
       resources :ratings
       resources :listings

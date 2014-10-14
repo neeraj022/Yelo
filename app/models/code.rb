@@ -41,10 +41,18 @@ class Code
   end
 
   def self.send_sms(num, msg)
-    sms_api_key = Rails.application.secrets.sms_api_key
-    request_url = "http://global.sinfini.com/api/v1/?api_key=#{sms_api_key}&method=sms&sender=yelo&to=#{num}&message=#{msg}"
-    response = open(request_url).read
-    response
+    # sms_api_key = Rails.application.secrets.sms_api_key
+    # request_url = "http://global.sinfini.com/api/v1/?api_key=#{sms_api_key}&method=sms&sender=yelo&to=#{num}&message=#{msg}"
+    # response = open(request_url).read
+    account_sid = Rails.application.secrets.twilio_account_sid
+    auth_token = Rails.application.secrets.twilio_auth_token
+    client = Twilio::REST::Client.new account_sid, auth_token
+    ss = client.account.messages.create(
+        :from => '(847) 380-8587',
+        :to => "+"+num.to_s,
+        :body => msg
+     )
+    ss
   end
 
   def self.time_diff_in_hours(time1, time2)
@@ -52,3 +60,5 @@ class Code
   end
 
 end
+
+

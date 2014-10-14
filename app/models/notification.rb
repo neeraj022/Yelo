@@ -10,7 +10,7 @@ class Notification
   ################### relation ###################
   belongs_to :user 
   ################  constants ####################
-  N_CONS = {USER_TAG: 1, CREATE_WALL: 2}
+  N_CONS = {USER_TAG: 1, CREATE_WALL: 2, WALL_PIN: 3}
   N_STATUS = {FRESH: 0, SENT: 1, SEEN: 2, SUMMARY: 3}
   ################ instance methods ##############
   def save_notification_status(status)
