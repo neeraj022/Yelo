@@ -95,21 +95,21 @@ module ListingSearch
        if(query[:tag_ids].present?)
          @search_definition[:query][:bool][:must] << {
             terms:  { 
-              tag_ids: query[:tag_ids],
+              tag_ids: query[:tag_ids]
             } 
           }
        end
        if(query[:city].present?)
           @search_definition[:query][:bool][:must] << {
             term:{
-                city: query[:city].downcase.strip,    
+                city: query[:city].downcase.strip    
               }
             }
         end  
         if(query[:country].present?)
           @search_definition[:query][:bool][:must] << { 
             term: {
-                country: query[:country].downcase.strip,
+                country: query[:country].downcase.strip
                }
             }
         end
