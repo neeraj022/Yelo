@@ -90,7 +90,9 @@ gem "elasticsearch-rails", git: "git://github.com/elasticsearch/elasticsearch-ra
 
 gem 'twilio-ruby', '~> 3.11'
 
-
+group :test do
+  gem 'elasticsearch-extensions'
+end
 
 group :development, :test do
   gem 'spring-commands-rspec'

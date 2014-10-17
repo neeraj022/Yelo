@@ -1,5 +1,5 @@
 class Api::V1::TagsController < Api::V1::BaseController
-  before_action :authenticate_user!, except: [:suggestions, :auto_suggestions]
+  before_action :authenticate_user!, except: [:suggestions, :auto_suggestions, :all_user_tags]
   
   # GET /tags/suggestions
   def suggestions
@@ -14,6 +14,12 @@ class Api::V1::TagsController < Api::V1::BaseController
     render json: {tags: tag_arr, user_tags: usr_tag_arr}
   rescue => e
     rescue_message(e)
+  end
+
+  # GET /users/:user_id/all_tags
+  def all_user_tags
+    @user =  User.where(_id: params[:user_id]).first
+    render json: {user: @user.all_tags} 
   end
 
   # GET /tags/auto_suggestions

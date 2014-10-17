@@ -8,7 +8,7 @@ RSpec.describe Api::V1::TagsController, :type => :controller do
     @tag2 = Tag.create(name: "ios", score: 2)
     @user = FactoryGirl.create(:user)
   end
-  describe "tag suggestion" do
+  describe "tag" do
   	before(:each) do 
       @listing = @user.listings.create(listing_params[:listing])
       @listing.create_tags([@tag1.id.to_s])
@@ -26,9 +26,14 @@ RSpec.describe Api::V1::TagsController, :type => :controller do
        expect(json["user_tags"].count).to eql(1)
   	 end
   	 it "should give auto complete suggestions" do
-         get :auto_suggestions, {q:"i"}
-         expect(response.status).to eql(200)
-         expect(json["tags"][0]["name"]).to eql("ios")
+        get :auto_suggestions, {q:"i"}
+        expect(response.status).to eql(200)
+        expect(json["tags"][0]["name"]).to eql("ios")
   	 end
+     it "should give all tags of auser" do
+        get :all_user_tags, {user_id: @user.id.to_s}
+        expect(response.status).to eql(200)
+        expect(json["user"]).to eq(@user.all_tags.deep_stringify_keys)
+     end
   end
 end

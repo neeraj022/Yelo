@@ -73,6 +73,7 @@ Rails.application.routes.draw do
       get "/users/:user_id/walls", to: 'walls#user_walls'
       post "/notifications/:id/seen", to: "notifications#update_seen_status"
       get "/notifications", to: "notifications#index"
+      get "/users/:user_id/all_tags", to: "tags#all_user_tags"
       resources :users
       resources :ratings
       resources :listings

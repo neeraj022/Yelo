@@ -105,6 +105,17 @@ class User
     tags
   end
 
+  def all_tags
+    {listing_tags: tags, interest_tags: interest_tags}
+  end
+
+  def interest_tags
+    ids = self.interest_ids ||= []
+    tags = Tag.where(:_id.in => ids)
+    arr = tags.map{|t| {id: t.id.to_s, name: t.name}}
+    arr
+  end
+
   def wall_tags
     self.interest_ids.concat(self.tags.map{|t| t[:id]})
   end
