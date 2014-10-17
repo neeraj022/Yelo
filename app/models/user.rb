@@ -283,7 +283,8 @@ class User
   def can_send_summary_notification?
     diff_time = notify_time_diff
     interval = AppSetting.summary_notify_interval
-    c_user_hour = Code.utc_time(self.utc_offset).hour
+    utc_offset = (self.utc_offset ||= 0)
+    c_user_hour = Code.utc_time(utc_offset).hour
     c_user_hour <= 20 && c_user_hour >= 11 && (diff_time <= interval)
   end
 

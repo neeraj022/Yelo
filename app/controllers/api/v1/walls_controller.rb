@@ -47,7 +47,7 @@ class Api::V1::WallsController < Api::V1::BaseController
   def destroy
     @wall = current_user.walls.where(_id: params[:id])
     @wall.destroy
-    render json: { status: "ok"}
+    render json: { status: "success"}
   rescue => e
     rescue_message(e)
   end

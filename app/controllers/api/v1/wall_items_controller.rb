@@ -29,7 +29,7 @@ class Api::V1::WallItemsController < Api::V1::BaseController
     @wall = Wall.where(_id: params[:wall_id]).first
     @wall_item = @wall.wall_items.where(_id: params[:id], user_id: current_user.id.to_s).first
     @wall_item.destroy
-    render json: { status: "ok"}
+    render json: { status: "success"}
   rescue => e
     rescue_message(e)
   end
