@@ -42,7 +42,15 @@ class Api::V1::WallsController < Api::V1::BaseController
   rescue => e
   	rescue_message(e)
   end
-  
+
+  # DELETE /walls/:wall_id 
+  def destroy
+    @wall = current_user.walls.where(_id: params[:id])
+    @wall.destroy
+    render json: { status: "ok"}
+  rescue => e
+    rescue_message(e)
+  end
   
   private
     def wall_params

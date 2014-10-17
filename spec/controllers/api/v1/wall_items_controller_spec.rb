@@ -19,5 +19,13 @@ RSpec.describe Api::V1::WallItemsController, :type => :controller do
       expect(@user.user_tags.count).to eql(1)
     end
   end
+  
+  describe "destroy wall item" do
+    it "should delete the wall" do
+      @wall_item = @wall.wall_items.create(comment: "test", user_id: @user.id)
+      delete :destroy, {wall_id: @wall.id.to_s, id: @wall_item.id.to_s}
+      expect(@wall.reload.wall_items.count).to eq(0)
+    end
+  end
 
 end

@@ -11,8 +11,8 @@ class Api::V1::WallItemsController < Api::V1::BaseController
     else
       render json: {error_message: @wall_item.errors.full_messages}, status: Code[:error_code]
     end
-  # rescue => e
-  #   rescue_message(e)
+  rescue => e
+    rescue_message(e)
   end
 
   def add_tagged_users
@@ -24,6 +24,15 @@ class Api::V1::WallItemsController < Api::V1::BaseController
     end
   end
 
+  # DELETE walls/:wall_id/wall_items/:id
+  def destroy
+    @wall = Wall.where(_id: params[:wall_id]).first
+    @wall_item = @wall.wall_items.where(_id: params[:id], user_id: current_user.id.to_s).first
+    @wall_item.destroy
+    render json: { status: "ok"}
+  rescue => e
+    rescue_message(e)
+  end
 
   private
    

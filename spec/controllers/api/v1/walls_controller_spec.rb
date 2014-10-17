@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::WallsController, :type => :controller do
+  
   before(:each) do
     Wall.__elasticsearch__.create_index! force: true
     Listing.__elasticsearch__.create_index! force: true
@@ -11,6 +12,7 @@ RSpec.describe Api::V1::WallsController, :type => :controller do
                      city:"Bangalore", country: "india", tag_id: @tag.id.to_s }}
     sleep 1
   end
+ 
   describe "create wall" do
     it "with valid params" do
       post :create, @params
@@ -28,10 +30,12 @@ RSpec.describe Api::V1::WallsController, :type => :controller do
       expect(json["error_message"][0]).to match(/only/)
     end
   end
+ 
   describe "with a created wall" do
     before(:each) do
       @wall = @user.walls.create(@params[:wall])
     end
+   
     describe "update wall" do
       it "with valid params" do
         put :update, {id: @wall.id, wall: {message: "now android"}}
@@ -44,11 +48,20 @@ RSpec.describe Api::V1::WallsController, :type => :controller do
         expect(response.status).to eql(400)
       end
     end
-      it "should show walls of logged in user" do
-        get :user_walls, {user_id: @user.id.to_s}
-        expect(response.status).to eql(200)
-        expect(json.count).to eql(@user.walls.count)
+     
+     it "should show walls of logged in user" do
+       get :user_walls, {user_id: @user.id.to_s}
+       expect(response.status).to eql(200)
+       expect(json.count).to eql(@user.walls.count)
+     end
+      
+      it "should delete the wall" do
+        expect do
+          delete :destroy, {id: @wall.id.to_s}
+        end.to change(Wall, :count).by(-1)
       end
-  end
+    end
 
 end
+
+
