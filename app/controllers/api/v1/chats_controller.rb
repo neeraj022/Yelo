@@ -77,7 +77,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
   
   # GET /notify
   def notify
-    Notification.notify
+    Notification.wall_summary_notify
   end
 
 end
