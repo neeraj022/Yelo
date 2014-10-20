@@ -11,7 +11,7 @@ class ListingTag
   
   embedded_in :listing
 
-  after_create  :update_tag_ids
+  after_save    :update_tag_ids
   after_destroy :update_tag_ids
 
   def update_tag_ids
