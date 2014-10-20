@@ -19,7 +19,8 @@ RSpec.describe Api::V1::ListingsController, :type => :controller do
       expect(response.status).to eql(400)
     end
   end
-  describe "show listings" do
+
+  describe "with createdlistings" do
   	before(:each) do
   	  @listing = @user.listings.create(listing_params[:listing])
       @listing.create_tags([@tag.id.to_s])
@@ -30,6 +31,14 @@ RSpec.describe Api::V1::ListingsController, :type => :controller do
       expect(json["user"]["id"]).to eql(@user.id.to_s)
       expect(json["listings"].count).to eql(@user.listings.count)
       expect(json["listings"][0]["listing_tags"].count).to eql(@user.listings.first.listing_tags.count)
+    end
+    describe "update listing" do
+       it "with valid params" do
+         @tag2 = Tag.create(name: "test")
+         post :update, listing_params.merge(id: @listing.id.to_s, tag_ids: [@tag.id.to_s, @tag2.id.to_s])
+         expect(response.status).to eql(200)
+         expect(json["listing"]["listing_tags"].count).to eql(2)
+       end
     end
   end
 end
