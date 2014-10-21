@@ -77,6 +77,7 @@ Rails.application.routes.draw do
       resources :users
       resources :ratings
       resources :listings
+      resources :tags
       resources :walls do
         resources :wall_items
       end

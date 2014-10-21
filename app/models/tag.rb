@@ -7,13 +7,14 @@ class Tag
   field :group_id, type: String
   field :granularity, type: Integer, default: 1
   field :score, type: Integer, default: 0
+  field :status, type: Boolean, default: false
   ################# relations ################
   belongs_to :group
   has_many :walls
   ################## filters #################
   after_save :update_embed_docs
   ############## validators  #################
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
   ############## constants ###################
   G_CODE = {LOCAL: 1, CITY: 2}
   ############## instance methods ############

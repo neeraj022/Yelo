@@ -16,6 +16,17 @@ class Api::V1::TagsController < Api::V1::BaseController
     rescue_message(e)
   end
 
+  def create
+    @tag = Tag.new(tag_params)
+    if @tag.save
+      render json: @tag
+    else
+      render json: {error_message: @tag.errors.full_messages}, status: Code[:error_code]
+    end
+  rescue => e
+    rescue_message(e)
+  end
+
   # GET /users/:user_id/all_tags
   def all_user_tags
     @user =  User.where(_id: params[:user_id]).first
@@ -27,5 +38,11 @@ class Api::V1::TagsController < Api::V1::BaseController
     tags = Tag.auto_suggestions(params[:q])
     render json: {tags: tags} 
   end
+
+  private
+    
+    def tag_params
+      params.require(:tag).permit(:name)
+    end
 
 end

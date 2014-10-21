@@ -7,6 +7,15 @@ RSpec.describe Api::V1::TagsController, :type => :controller do
     @tag1 = Tag.create(name: "android", score: 1)
     @tag2 = Tag.create(name: "ios", score: 2)
     @user = FactoryGirl.create(:user)
+    @params = {tag: {name: "founders"}}
+  end
+  describe "create tag" do
+    it "with valid params" do
+      authWithUser(@user)
+      post :create, @params
+      expect(response.status).to eql(200)
+      expect(json["tag"]["name"]).to eql(@params[:tag][:name])
+    end
   end
   describe "tag" do
   	before(:each) do 
@@ -14,9 +23,9 @@ RSpec.describe Api::V1::TagsController, :type => :controller do
       @listing.create_tags([@tag1.id.to_s])
     end
   	 it "should give top tags" do
-         get :suggestions
-         expect(response.status).to eql(200)
-         expect(json["tags"].count).to eql(2)
+      get :suggestions
+      expect(response.status).to eql(200)
+      expect(json["tags"].count).to eql(2)
   	 end
   	 it "should give top tags without usertags and user tags seperately" do
        authWithUser(@user)
