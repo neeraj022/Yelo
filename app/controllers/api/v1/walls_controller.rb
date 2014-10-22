@@ -35,6 +35,7 @@ class Api::V1::WallsController < Api::V1::BaseController
   def update
     @wall = current_user.walls.where(_id: params[:id]).first
     if @wall.update_attributes(wall_params)
+      @wall.save_image(params[:image]) if params[:image].present?
       render json: @wall
     else
       render json: {error_message: @wall.errors.full_messages}, status: Code[:error_code]
@@ -45,7 +46,7 @@ class Api::V1::WallsController < Api::V1::BaseController
 
   # DELETE /walls/:wall_id 
   def destroy
-    @wall = current_user.walls.where(_id: params[:id])
+    @wall = current_user.walls.where(_id: params[:id]).first
     @wall.destroy
     render json: { status: "success"}
   rescue => e
