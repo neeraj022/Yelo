@@ -14,7 +14,6 @@ module WallSearch
     #
     settings index: { number_of_shards: 1, number_of_replicas: 0 } do
       mapping do
-        indexes :created_at, type: 'date'
         indexes :city, analyzer: 'standard'
         indexes :country, analyzer: 'standard'
         indexes :state, analyzer: 'standard'
@@ -58,10 +57,12 @@ module WallSearch
         @search_definition[:facets][key.to_sym][:facet_filter][:and]  |= [f]
       end
 
-
+      
       @search_definition = {
           query: {}
         }
+      @search_definition[:sort] ||= []
+      @search_definition[:sort] << { created_at: {order: "desc"}}
 
       if(query[:latitude].present? && query[:longitude].present?)
          @search_definition[:filter] = {
@@ -73,8 +74,7 @@ module WallSearch
                       }
                   }
                }
-          @search_definition[:sort] = 
-                [
+          @search_definition[:sort] <<
                     {
                         _geo_distance: {
                             loc: {
@@ -85,8 +85,6 @@ module WallSearch
                             unit: "km"
                          }
                     }
-                ]
-            
        end
        if(query[:city].blank? && query[:country].blank? && query[:tag_ids].blank?)
           @search_definition[:query] = { match_all: {} }
@@ -117,10 +115,7 @@ module WallSearch
                 country: query[:country].downcase.strip
                }
             }
-        end
-        @search_definition[:sort] ||= []
-        @search_definition[:sort] << { created_at: "asc"}
-
+        end         
         __elasticsearch__.search(@search_definition)
      end
   end

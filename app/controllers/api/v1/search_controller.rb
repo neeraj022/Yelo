@@ -4,7 +4,7 @@ class Api::V1::SearchController < Api::V1::BaseController
   # GET /search
   def search
   	@results  = Search.query(@params).page(params[:page]).per(params[:per]).records
-    render json: @results
+    render json: @results.to_a
  rescue => e
      rescue_message(e) 
   end
