@@ -19,12 +19,14 @@ class Notification
   end
 
   def notify_obj
-     case self.n_type
-     when Notification::N_CONS[:USER_TAG]
-       Notification.create_wall_obj(self)
-     when Notification::N_CONS[:CREATE_WALL]
-        Notification.user_tag_obj(self)
-     end
+    case self.n_type
+    when Notification::N_CONS[:USER_TAG]
+      Notification.create_wall_obj(self)
+    when Notification::N_CONS[:CREATE_WALL]
+      Notification.user_tag_obj(self)
+    when Notification::N_CONS[:WALL_PIN]
+      Notification.wall_tag_obj(self)
+    end
   end
   ################ class methods ##################
   class << self
@@ -102,6 +104,12 @@ class Notification
     def user_tag_obj(n_obj)
       v_hash = n_obj.n_value
       {collapse_key: "tag", message: "#{v_hash[:tagged_by]} tagged u for #{v_hash[:message]}", resource: {name:
+      "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+    end
+
+    def wall_tag_obj(n_obj)
+      v_hash = n_obj.n_value
+      {collapse_key: "pin", message: "#{v_hash[:commented_by]} tagged on your wall #{v_hash[:message]}", resource: {name:
       "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 

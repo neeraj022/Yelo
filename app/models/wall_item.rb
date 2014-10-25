@@ -30,7 +30,7 @@ class WallItem
       if t_usr.errors.present?
         return {status: false, error_message: t_usr.errors.messages} 
       else
-        v_hash = {wall_id: wall.id.to_s, commented_by: self.name}
+        v_hash = {wall_id: wall.id.to_s, message: wall.message, commented_by: self.name, tag_name: wall.tag_name}
         Notification.save_notify(Notification::N_CONS[:WALL_PIN], v_hash, self.user.id)
       end
     end
