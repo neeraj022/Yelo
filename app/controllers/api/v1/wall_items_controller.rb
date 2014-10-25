@@ -20,6 +20,7 @@ class Api::V1::WallItemsController < Api::V1::BaseController
     if(@tagged_users[:status])
       render json: @wall_item
     else
+      @wall_item.destroy
       render json: {error_message: @tagged_users[:error_message]}, status: Code[:error_code]
     end
   end

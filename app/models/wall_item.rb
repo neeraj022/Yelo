@@ -28,7 +28,7 @@ class WallItem
     tag_users.each do |t|
       t_usr = create_tag_user(wall, t)
       if t_usr.errors.present?
-        return {status: false, error_message: t_usr.errors.messages} unless t_usr.save
+        return {status: false, error_message: t_usr.errors.messages} 
       else
         v_hash = {wall_id: wall.id.to_s, commented_by: self.name}
         Notification.save_notify(Notification::N_CONS[:WALL_PIN], v_hash, self.user.id)

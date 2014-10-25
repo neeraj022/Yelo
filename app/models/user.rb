@@ -224,9 +224,9 @@ class User
 
   def image_url
     if !Rails.application.secrets.cloud_storage.present? || self.image.url.include?("fallback")
-      Rails.application.secrets.app_url+self.image.thumb.url
+      Rails.application.secrets.app_url+self.image.url
     else
-      self.image.thumb.url
+      self.image.url
     end
   end
 

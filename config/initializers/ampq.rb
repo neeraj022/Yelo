@@ -7,10 +7,10 @@ module ThinEM
       channel = AMQP.channel
      
       #-------------------
-      s_exchange = channel.fanout("542bf1167375721471000000exchange")
-      u_exchange = channel.fanout("5433c19173757225ed160000exchange")
-      u_queue = channel.queue("5433c19173757225ed160000queue", :auto_delete => true).bind(u_exchange)
-      s_queue = channel.queue("542bf1167375721471000000queue", :auto_delete => true).bind(s_exchange) 
+      s_exchange = channel.fanout("53fce1cd6261727446000000exchange")
+      u_exchange = channel.fanout("5421a4cf6261721838af0300exchange")
+      u_queue = channel.queue("5421a4cf6261721838af0300queue", :auto_delete => true).bind(u_exchange)
+      s_queue = channel.queue("53fce1cd6261727446000000queue", :auto_delete => true).bind(s_exchange) 
       s_exchange.publish("publishing test")
 
       u_queue.subscribe do |payload|

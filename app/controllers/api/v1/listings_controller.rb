@@ -20,6 +20,7 @@ class Api::V1::ListingsController < Api::V1::BaseController
     if @list_tags_save[:status]
        render json: @listing
     else
+      @listing.destroy
       render json: {error_message: @list_tags_save[:error_message]}, status: Code[:error_code]
     end
   end
