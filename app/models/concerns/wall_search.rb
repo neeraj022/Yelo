@@ -66,6 +66,7 @@ module WallSearch
 
       if(query[:latitude].present? && query[:longitude].present?)
          @search_definition[:filter] = {
+          :or => [
               geo_distance: {
                   distance: query[:radius].to_s+"km",
                   loc: {
@@ -73,7 +74,8 @@ module WallSearch
                     lat: query[:latitude].to_f
                       }
                   }
-               }
+            ]
+          }
           @search_definition[:sort] <<
                     {
                         _geo_distance: {

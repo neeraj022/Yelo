@@ -14,7 +14,7 @@ class Code
     end
 
      def error_message(e)
-       if(Rails.env == "production")
+       if(Rails.env == "production1")
           "Error, something went wrong"
        else 
           e.message

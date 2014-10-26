@@ -52,6 +52,14 @@ class Api::V1::WallsController < Api::V1::BaseController
   rescue => e
     rescue_message(e)
   end
+
+  def connects
+    tag_users = User.get_users(self.tag_user_ids)
+    chat_users = User.get_users(self.chat_user_ids)
+    render json: {tag_users: tag_users, chat_users: chat_users}
+  rescue => e
+    rescue_message(e)
+  end
   
   private
     def wall_params

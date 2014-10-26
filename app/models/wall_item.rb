@@ -66,7 +66,7 @@ class WallItem
     sms_log = SmsLog.where(mobile_number: mobile_number, country_code: country_code).first_or_create
     msg = "#{self.name} tagged you in yelo app for a query: #{wall.message},
            Download app at #{@mobile_app_url[:android]}"
-    sms_log.send_sms(msg)
+    #sms_log.send_sms(msg)
   end
 
   def set_country_code(code)

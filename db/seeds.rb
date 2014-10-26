@@ -43,5 +43,55 @@ JSON.parse(open("#{Rails.root}/db/listings.json").read).each do |s|
 	list.create_tags(s["sub_cat_ids"])
 end
 
+tags = Hash.new
+tags[:classes] = []
+tags[:"creative arts"] = []
+tags[:design] = []
+tags[:events] = []
+tags[:"health & sports"] = []
+tags[:local]=[]
+tags[:"photography"]=[]
+tags[:"professional service"]=[]
+tags[:"real estate"]=[]
+tags[:"startup"]=[]
+tags[:"tech"]=[]
+tags[:"travel"]=[]
 
+
+[
+{"classes": []},
+{"creative_arts": ["painter", "photographer", "musician", "teacher", "dancer", "writer",
+  "Calligraphy person"]},
+{"design": []},
+{"events": []},
+{"health & sports": ["neutricians/dietians", "Physiotherpahists", "gym instructors"]},
+{"local": []},
+{"photography":[]},
+{"professional service": ["lawyer", "broker", "agents"]},
+{"real estate": []},
+{"startup": []},
+{"tech": ["designer", "investor", "avenglists", "public relationship managers"]},
+{"travel": []},
+{"others": []}
+]
+
+
+
+
+  Home Services Homesservices Providers
+    Handyman
+  Health / Wellness Doctors
+    Neutricians / Dietians
+    Physiotherpahists
+    Gym Instructors
+  Creative Arts Painter
+    Photographer
+    Musician
+    Teacher
+    Dancer
+    Writter
+    Calligraphy person
+  Repairs / Rentals Photobooth Rentals
+    Auto Repairs
+  Education / Academics Coaching
 

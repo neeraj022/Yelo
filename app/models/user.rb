@@ -317,10 +317,10 @@ class User
   end
 
   def save_owner(obj)
-      owner = obj.wall_owner
-      owner.name = self.name 
-      owner.image_url = self.image_url if image_changed?
-      owner.save
+    owner = obj.wall_owner
+    owner.name = self.name 
+    owner.image_url = self.image_url if image_changed?
+    owner.save
   end
   ################# class methods ###########################
   class << self
