@@ -13,11 +13,12 @@ class Chat
   class << self
     
     def create_chat(params)
-      Chat.create(receiver_id: params[:sender_id], receiver_id: params[:receiver_id],
+      chat = Chat.create(receiver_id: params[:sender_id], receiver_id: params[:receiver_id],
        message: params[:message], reply_id: params[:reply_id], is_seen: false)
-       if(params[:wall_id].present?)
-          Wall.save_wall_chat_user(params[:wall_id], params[:receiver_id])
-       end
+      if(params[:wall_id].present?)
+         Wall.save_wall_chat_user(params[:wall_id], params[:receiver_id])
+      end
+      chat
     end
     
     def set_chat(params)

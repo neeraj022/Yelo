@@ -35,7 +35,12 @@ RSpec.describe Api::V1::WallsController, :type => :controller do
     before(:each) do
       @wall = @user.walls.create(@params[:wall])
     end
-   
+    it "get connects of wall" do
+      get :connects, {id: @wall.id}
+      expect(response.status).to eql(200)
+      expect(json["tag_users"]).to eql([])
+      expect(json["chat_users"]).to eql([])
+    end
     describe "update wall" do
       it "with valid params" do
         put :update, {id: @wall.id, wall: {message: "now android"}}

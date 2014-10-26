@@ -335,6 +335,16 @@ class User
       raise "no user found for given share token" unless user.present?
       Share.where(user_id: user.id, device_id: device_id).first_or_create!
     end
+
+    def get_users(ids_arr)
+      ids_arr ||= []
+      users = Array.new
+      ids_arr.each do |id|
+        u = User.where(_id: id).first
+        users << {id: u.id.to_s, name: u.name}
+      end
+      users
+    end
   
   end
   ## private methods

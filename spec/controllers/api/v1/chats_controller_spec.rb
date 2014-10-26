@@ -44,6 +44,15 @@ RSpec.describe Api::V1::ChatsController, :type => :controller do
        expect(response.status).to eql(200)
        expect(Chat.all.count).to eql(1)
     end
+    it "records chat user for walls" do
+      @wall_params = {wall: {message: "i need ios dev", latitude: "12.9667", longitude: "77.5667",
+                     city:"Bangalore", country: "india", tag_id: @tag.id.to_s }}
+      @wall = @sender.walls.create(@wall_params[:wall])
+      post :send_chat, @params
+      Chat.set_chat(@params.merge(wall_id: @wall.id.to_s))
+      expect(response.status).to eql(200)
+      expect(Wall.last.chat_user_ids).to eql([@receiver.id.to_s])
+    end
   end
   describe "chat status" do
   	before(:each) do 

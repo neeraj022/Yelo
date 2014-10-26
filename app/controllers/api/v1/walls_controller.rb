@@ -44,7 +44,7 @@ class Api::V1::WallsController < Api::V1::BaseController
   	rescue_message(e)
   end
 
-  # DELETE /walls/:wall_id 
+  # DELETE /walls/:id 
   def destroy
     @wall = current_user.walls.where(_id: params[:id]).first
     @wall.destroy
@@ -52,16 +52,42 @@ class Api::V1::WallsController < Api::V1::BaseController
   rescue => e
     rescue_message(e)
   end
-
+  
+  # GET /walls/:id/connects
   def connects
-    tag_users = User.get_users(self.tag_user_ids)
-    chat_users = User.get_users(self.chat_user_ids)
+    @wall = Wall.where(_id: params[:id]).first
+    tag_users = User.get_users(@wall.tag_user_ids)
+    chat_users = User.get_users(@wall.chat_user_ids)
     render json: {tag_users: tag_users, chat_users: chat_users}
+  rescue => e
+    rescue_message(e)
+  end
+ 
+  # post /walls/:id/close
+  def wall_close
+    set_mobile_number
+    @wall = current_user.walls.where(_id: params[:id]).first
+    @wall.status = false
+    @wall_info = @wall.build_wall_info(is_solved: params[:is_solved], s_name: params[:name], s_mobile_number: 
+    @mobile_number, s_user_id: params[:user_id], s_country_code: @country_code)
+    if(@wall.save)
+      render json: {status: "success"}
+    else
+      render json: {error_message: @wall.errors.full_messages}, status: Code[:error_code]
+    end
   rescue => e
     rescue_message(e)
   end
   
   private
+  
+    def set_mobile_number
+      obj = User.mobile_number_format(params[:mobile_number]) if params[:mobile_number].present?
+      obj ||= {}
+      @mobile_number = (obj[:mobile_number] ||= "")
+      @country_code =  (obj[:country_code] ||= "")
+    end
+
     def wall_params
       params.require(:wall).permit(:tag_id, :message, :latitude, :longitude,
       	                           :country, :city, :state, :address)

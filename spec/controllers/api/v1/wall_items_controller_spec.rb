@@ -9,6 +9,7 @@ RSpec.describe Api::V1::WallItemsController, :type => :controller do
     authWithUser(@user)
     @wall = @user.walls.create(@wall_params[:wall_item])
   end
+  
   describe "create wall item" do
     it "with valid params" do
       post :create, @wall_params.merge(wall_id: @wall.id, tag_users: [{mobile_number: @user.mobile_number, name: "test"}])
@@ -26,6 +27,10 @@ RSpec.describe Api::V1::WallItemsController, :type => :controller do
       delete :destroy, {wall_id: @wall.id.to_s, id: @wall_item.id.to_s}
       expect(@wall.reload.wall_items.count).to eq(0)
     end
+  end
+
+  describe "get tagged users of a wall" do
+     
   end
 
 end

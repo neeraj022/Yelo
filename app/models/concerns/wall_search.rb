@@ -37,7 +37,7 @@ module WallSearch
     #
     def as_indexed_json(options={})
       {id: self.id.to_s, tag_id: self.tag_id.to_s, loc: location_coordinates, country: self.country,
-       city: self.city, state: self.state, created_at: self.created_at}
+       city: self.city, state: self.state, created_at: self.created_at, status: self.status}
     end
 
     # Search in title and content fields for `query`, include highlights in response
@@ -56,17 +56,15 @@ module WallSearch
         @search_definition[:facets][key.to_sym][:facet_filter][:and] ||= []
         @search_definition[:facets][key.to_sym][:facet_filter][:and]  |= [f]
       end
-
-      
       @search_definition = {
-          query: {}
+          query: {},
+          filter: {}
         }
       @search_definition[:sort] ||= []
       @search_definition[:sort] << { created_at: {order: "desc"}}
-
+      @search_definition[:filter][:or] ||= []
       if(query[:latitude].present? && query[:longitude].present?)
-         @search_definition[:filter] = {
-          :or => [
+         @search_definition[:filter][:or] << {
               geo_distance: {
                   distance: query[:radius].to_s+"km",
                   loc: {
@@ -74,19 +72,33 @@ module WallSearch
                     lat: query[:latitude].to_f
                       }
                   }
-            ]
-          }
-          @search_definition[:sort] <<
-                    {
-                        _geo_distance: {
-                            loc: {
-                                lon: query[:longitude].to_f,
-                                lat: query[:latitude].to_f
-                                  },
-                            order: "asc",
-                            unit: "km"
-                         }
-                    }
+            }
+         @search_definition[:sort] <<
+                   {
+                       _geo_distance: {
+                           loc: {
+                               lon: query[:longitude].to_f,
+                               lat: query[:latitude].to_f
+                                 },
+                           order: "asc",
+                           unit: "km"
+                        }
+                   }
+       end
+
+       if(query[:or_city].present? && query[:or_country].present? )
+         @search_definition[:filter][:or] << {
+            bool: {
+              must:[
+                term: { 
+                   city: query[:or_city].downcase.strip
+                  }, 
+                  term: {
+                   country: query[:or_country].downcase.strip
+                  }
+                ]
+             }
+         }
        end
        if(query[:city].blank? && query[:country].blank? && query[:tag_ids].blank?)
           @search_definition[:query] = { match_all: {} }
@@ -96,6 +108,9 @@ module WallSearch
                    must: []
                     }
                 }
+       end
+       if(query[:latitude].blank? && query[:longitude].blank? && query[:or_city].blank?)
+         @search_definition[:filter] = { match_all: {} }
        end
        if(query[:tag_ids].present?)
          @search_definition[:query][:bool][:must] << {
@@ -117,7 +132,14 @@ module WallSearch
                 country: query[:country].downcase.strip
                }
             }
-        end         
+        end 
+        if(query[:status].present?) 
+          @search_definition[:query][:bool][:must] << { 
+              term: {
+                  status: query[:status]
+                 }
+              }    
+        end  
         __elasticsearch__.search(@search_definition)
      end
   end

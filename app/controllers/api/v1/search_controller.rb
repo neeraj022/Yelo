@@ -11,9 +11,11 @@ class Api::V1::SearchController < Api::V1::BaseController
 
   private
     def set_search_params
-      @params = {latitude: params[:latitude].to_f, longitude: params[:longitude].to_f,
-                 city: params[:city], country: params[:country],
+      @params = {city: params[:city], country: params[:country],
                  type: params[:type], tag_ids: params[:tag_ids]}
+      params[:status] = true unless params[:status].present?
+      params[:latitude] = params[:latitude].to_f if params[:latitude].present?
+      params[:longitude] = params[:longitude].to_f if params[:longitude].present?
       params[:radius] ||= 20
       params[:per] ||= 20
       @params[:radius] = params[:radius].to_i 
@@ -22,7 +24,7 @@ class Api::V1::SearchController < Api::V1::BaseController
     end 
 
     def set_tag_ids
-      if(current_user.present? && params[:tag_ids].blank?)
+      if(current_user.present? && params[:tag_ids].blank? && params[:user_tag].present?)
         current_user.wall_tags
       else
         params[:tag_ids]
