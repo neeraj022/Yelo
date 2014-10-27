@@ -122,12 +122,12 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
 
     def send_sms
-      @sms = @user.send_sms
-      if(@sms[:status])
+      # @sms = @user.send_sms
+      # if(@sms[:status])
         render json: {status: Code[:status_success], serial_code: @user.serial_code}
-      else
-        render json: {status: Code[:status_error], serial_code: @user.serial_code, error_message: @sms[:error_message]}
-      end
+      # else
+      #   render json: {status: Code[:status_error], serial_code: @user.serial_code, error_message: @sms[:error_message]}
+      # end
     end
 end
 
