@@ -14,6 +14,17 @@ JSON.parse(open("#{Rails.root}/db/tags.json").read).each do |s|
    end
 end
 
+  admin_user = User.where(email: Rails.application.secrets.admin_email).first
+  if(admin_user.blank?)
+    admin_user  = User.new(push_id: "xxxxx", encrypt_device_id: "xxxxxxx", platform: "none")
+    admin_user.mobile_number = "1000000000"
+    admin_user.email = Rails.application.secrets.admin_email
+    admin_user.password = Rails.application.secrets.admin_password
+    admin_user.is_admin = true
+    admin_user.name = "admin"
+    admin_user.description = "xxxxx"
+    admin_user.save
+  end
 # JSON.parse(open("#{Rails.root}/db/sub_categories.json").read).each do |s|
 #   t = Tag.where(name: s["name"], _id: s["_id"]["$oid"]).first_or_create 
 # end

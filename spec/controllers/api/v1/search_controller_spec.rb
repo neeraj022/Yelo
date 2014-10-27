@@ -51,6 +51,11 @@ RSpec.describe Api::V1::SearchController, :type => :controller do
        expect(response.status).to eql(200)
        expect(json["search"].count).to eql(1)
     end
+     it "should give walls of a tag" do
+       get :search, {type: "wall", tag_ids: [@tag_ruby.id.to_s]}
+       expect(response.status).to eql(200)
+       expect(json["search"].count).to eql(2)
+    end
   end
 
 end
