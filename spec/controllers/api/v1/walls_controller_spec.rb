@@ -41,6 +41,11 @@ RSpec.describe Api::V1::WallsController, :type => :controller do
       expect(json["tag_users"]).to eql([])
       expect(json["chat_users"]).to eql([])
     end
+    it "it should close the wall with optional solver" do
+      get :wall_close, {id: @wall.id, is_solved: true}
+      expect(response.status).to eql(200)
+      expect(json["status"]).to eql("success")
+    end
     describe "update wall" do
       it "with valid params" do
         put :update, {id: @wall.id, wall: {message: "now android"}}

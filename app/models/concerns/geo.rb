@@ -23,7 +23,7 @@ module Geo
       self.country = country.downcase.strip
     end
     if city.present? 
-      self.country = city.downcase.strip
+      self.city = city.downcase.strip
     end
    if state.present? 
       self.state = state.downcase.strip

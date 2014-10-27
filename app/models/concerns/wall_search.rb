@@ -87,17 +87,11 @@ module WallSearch
        end
 
        if(query[:or_city].present? && query[:or_country].present? )
+         query[:country] = query[:or_country]
          @search_definition[:filter][:or] << {
-            bool: {
-              must:[
-                term: { 
-                   city: query[:or_city].downcase.strip
-                  }, 
-                  term: {
-                   country: query[:or_country].downcase.strip
-                  }
-                ]
-             }
+           term: { 
+                  city: query[:or_city].downcase.strip
+                }
          }
        end
        if(query[:city].blank? && query[:country].blank? && query[:tag_ids].blank?)
