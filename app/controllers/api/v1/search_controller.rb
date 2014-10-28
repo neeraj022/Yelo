@@ -14,7 +14,7 @@ class Api::V1::SearchController < Api::V1::BaseController
       @params = {city: params[:city], country: params[:country],
                  type: params[:type], tag_ids: params[:tag_ids],
                  or_city: params[:or_city], or_country: params[:or_country]}
-      params[:status] = true unless params[:status].present?
+      @params[:status] = true unless params[:status].present?
       @params[:latitude] = params[:latitude].to_f if params[:latitude].present?
       @params[:longitude] = params[:longitude].to_f if params[:longitude].present?
       params[:radius] ||= 20
