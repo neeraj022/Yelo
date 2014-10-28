@@ -94,7 +94,7 @@ module WallSearch
                 }
          }
        end
-       if(query[:city].blank? && query[:country].blank? && query[:tag_ids].blank?)
+       if(query[:status].blank? && query[:city].blank? && query[:country].blank? && query[:tag_ids].blank?)
           @search_definition[:query] = { match_all: {} }
        else
           @search_definition[:query] = {
