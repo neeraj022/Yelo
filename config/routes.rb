@@ -79,6 +79,7 @@ Rails.application.routes.draw do
       get "/users/:user_id/all_tags", to: "tags#all_user_tags"
       get "/walls/:id/connects", to: "walls#connects"
       post "/walls/:id/close", to: "walls#wall_close"
+      post "/abuse", to: "users#abuse"
       resources :users
       resources :ratings
       resources :listings

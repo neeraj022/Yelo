@@ -56,7 +56,7 @@ class Api::V1::WallsController < Api::V1::BaseController
   # GET /walls/:id/connects
   def connects
     @wall = Wall.where(_id: params[:id]).first
-    tag_users = User.get_users(@wall.tag_user_ids)
+    tag_users = @wall.get_tagged_users()
     chat_users = User.get_users(@wall.chat_user_ids)
     render json: {tag_users: tag_users, chat_users: chat_users}
   rescue => e

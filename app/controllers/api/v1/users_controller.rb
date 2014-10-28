@@ -84,6 +84,18 @@ class Api::V1::UsersController < Api::V1::BaseController
   rescue => e
     rescue_message(e)
   end
+
+  # post api/v1/abuse
+  def abuse
+    case params[:type]
+    when "wall"
+      wall = Wall.where(_id: params[:id]).first
+      wall.abuse(current_user.id)
+    end
+    render json: {status: "success"}
+  rescue => e
+    rescue_message(e)
+  end
   
   ## private methods ###################################
   private
@@ -120,7 +132,7 @@ class Api::V1::UsersController < Api::V1::BaseController
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
       end
     end
-
+   
     def send_sms
       # @sms = @user.send_sms
       # if(@sms[:status])

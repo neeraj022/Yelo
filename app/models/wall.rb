@@ -28,13 +28,14 @@ class Wall
   embeds_one  :wall_owner
   embeds_many :tagged_users
   embeds_one  :wall_info
+  has_many :report_abuses, as: :abuse_obj
   ################## filters #######################
   after_create :save_owner_and_statistic
   ################# validators ######################
   validates :message, :city, :country, :tag_id, :latitude, :longitude, presence: true
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
-  #validate :restrict_wall_creation, on: :create
+  # validate :restrict_wall_creation, on: :create
   validate :tag_presence
   ########### instance methods #######################
 
@@ -75,6 +76,14 @@ class Wall
     end
   end
 
+  def get_tagged_users
+    users = Array.new
+    self.tagged_users.each do |t|
+      users << {id: t.user_id.to_s, name: t.name, mobile_number: t.mobile_number}
+    end
+    users
+  end
+
   def save_image(image)
     self.create_wall_image(image: image)
   end
@@ -83,6 +92,18 @@ class Wall
     wall = Wall.where(_id: wall_id).first
     return false unless wall.present?
     wall.add_to_set(chat_user_ids: user_id)
+  end
+
+  def abuse(user_id)
+    abuse = self.report_abuses.where(user_id: user_id).first
+    if(abuse.blank?)
+      abuse = self.report_abuses.create(user_id: user_id)
+      self.abuse_count = (self.abuse_count += 1)
+      self.status = false if self.abuse_count >= AppSetting.max_abuse_count 
+      self.save
+    else
+      false
+    end
   end
 
 end

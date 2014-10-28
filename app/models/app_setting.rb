@@ -16,6 +16,7 @@ class AppSetting
   field :android_app_url,          type: String
   field :ios_app_url,              type: String
   field :windows_app_url,          type: String
+  field :max_abuse_count,          type: Integer, default: 10
   ############### class methods ############################
   class << self
     # in minutes
@@ -35,6 +36,15 @@ class AppSetting
         setting.summary_notify_interval
       else
         24
+      end
+    end
+
+    def max_abuse_count
+      setting = AppSetting.first
+      if setting
+        setting.max_abuse_count
+      else
+        10
       end
     end
 
