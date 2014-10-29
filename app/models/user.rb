@@ -121,7 +121,7 @@ class User
     self.interest_ids.concat(self.tags.map{|t| t[:id]})
   end
 
-  def connects
+  def connects_count
     self.statistic.connects
   end
 
