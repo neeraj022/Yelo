@@ -63,14 +63,18 @@ class Notification
       puts "started quick notification"
       notifications = Notification.where(n_status: Notification::N_STATUS[:FRESH])
       notifications.each do |n|
-        user = n.user
-        unless user.can_send_notification?(n.n_type)
-          n.save_notification_status(Notification::N_STATUS[:SUMMARY])
-          next
+        begin
+          user = n.user
+          unless user.can_send_notification?(n.n_type)
+            n.save_notification_status(Notification::N_STATUS[:SUMMARY])
+            next
+          end
+          n.save_notification_status(Notification::N_STATUS[:SENT])
+          obj = n.notify_obj
+          Notification.push_notify(user.platform, [user.push_id], obj)
+        rescue => e
+          n.destroy
         end
-        n.save_notification_status(Notification::N_STATUS[:SENT])
-        obj = n.notify_obj
-        Notification.push_notify(user.platform, [user.push_id], obj)
       end
     end
 
@@ -82,13 +86,17 @@ class Notification
         next unless c_wall_nfs.present?
         tags_hash = Hash.new
         c_wall_nfs.each do |n|
-          v_hash = n.n_value
-          n.save_notification_status(Notification::N_STATUS[:SENT])
-          if tags_hash.has_key?(v_hash[:tag_name])
-            tags_hash[v_hash[:tag_name]] = (tags_hash[v_hash[:tag_name]] += 1)
-          else
-            tags_hash[v_hash[:tag_name]] = 1 
-          end 
+          begin
+            v_hash = n.n_value
+            n.save_notification_status(Notification::N_STATUS[:SENT])
+            if tags_hash.has_key?(v_hash[:tag_name])
+              tags_hash[v_hash[:tag_name]] = (tags_hash[v_hash[:tag_name]] += 1)
+            else
+              tags_hash[v_hash[:tag_name]] = 1 
+            end
+          rescue => e 
+            n.destroy
+          end
         end
         obj = Notification.summary_wall_obj(tags_hash)
         Notification.push_notify(u.platform, [u.push_id], obj)
