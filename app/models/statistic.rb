@@ -9,6 +9,7 @@ class Statistic
   field :tdy_pst_cnt,     type: Integer,  default: 0
   field :last_sms_sent,   type: DateTime
   field :sms_count,       type: Integer, default: 0
+  field :connects,        type: Integer, default: 0
   ################## relations ####################
   embedded_in :user
 end

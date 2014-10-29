@@ -32,7 +32,8 @@ class Listing
     tag_ids.each do |id|
       tag = Tag.where(_id: id).first
       next unless tag.present?
-      l_tag = self.listing_tags.create!(tag_id: tag.id, tag_name: tag.name)
+      l_tag = self.listing_tags.new(tag_id: tag.id, tag_name: tag.name)
+      raise "tag not saved" unless l_tag.save
       tag.save_score
     end
     return {status: true}

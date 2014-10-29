@@ -79,7 +79,7 @@ class Wall
   def get_tagged_users
     users = Array.new
     self.tagged_users.each do |t|
-      users << {id: t.user_id.to_s, name: t.name, mobile_number: t.mobile_number}
+      users << {id: t.user_id.to_s, name: t.name, mobile_number: t.mobile_number,  image_url: t.image_url}
     end
     users
   end

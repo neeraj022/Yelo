@@ -44,7 +44,7 @@ class WallItem
     t_usr = wall.tagged_users.new(mobile_number: mobile_number, name: usr[:name],
                                        email: usr[:email])
     if(user.present?)
-      user.save_user_tags(wall.tag_id)
+      user.save_user_tags(wall.tag_id, self.user_id)
       t_usr.user_id = user.id
       t_usr.image_url = user.image_url
       t_usr.name = user.name

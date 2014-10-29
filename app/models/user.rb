@@ -79,6 +79,7 @@ class User
   has_many :notifications, dependent: :destroy
   has_many :chat_logs, dependent: :destroy
   has_many :ratings, dependent: :destroy
+  has_many :connects, class_name: "Connector"
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
   after_save :update_embed_docs
@@ -118,6 +119,10 @@ class User
 
   def wall_tags
     self.interest_ids.concat(self.tags.map{|t| t[:id]})
+  end
+
+  def connects
+    self.statistic.connects
   end
 
   def validate_profile?
@@ -161,11 +166,15 @@ class User
     {avg: avg, user_count: count}
   end
 
-  def save_user_tags(tag_id)
+  def save_user_tags(tag_id, tagged_by)
     user_tag = self.user_tags.where(tag_id: tag_id).first
-    return self.user_tags.create(tag_id: tag_id) unless user_tag.present?
+    unless user_tag.present?
+      user_tag = self.user_tags.create(tag_id: tag_id)
+    end
+    user_tag.connectors.where(user_id: tagged_by).first_or_create
     user_tag.count = user_tag.count += 1
     user_tag.save
+    user_tag
   end
   
   def ensure_statistic_and_setting
@@ -341,7 +350,7 @@ class User
       users = Array.new
       ids_arr.each do |id|
         u = User.where(_id: id).first
-        users << {id: u.id.to_s, name: u.name}
+        users << {id: u.id.to_s, name: u.name, image_url: u.image_url}
       end
       users
     end
