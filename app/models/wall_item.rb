@@ -31,7 +31,9 @@ class WallItem
         return {status: false, error_message: t_usr.errors.messages} 
       else
         v_hash = {wall_id: wall.id.to_s, message: wall.message, commented_by: self.name, tag_name: wall.tag_name}
-        Notification.save_notify(Notification::N_CONS[:WALL_PIN], v_hash, self.user.id)
+        if self.user.id != self.user_id
+          Notification.save_notify(Notification::N_CONS[:WALL_PIN], v_hash, self.user.id)
+        end
       end
     end
     return {status: true}
