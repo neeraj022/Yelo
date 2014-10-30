@@ -45,18 +45,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def verify_serial_code
     @user = User.where(mobile_number: params[:user][:mobile_number], serial_code: params[:user][:serial_code]).first
     if(@user.present?)
-      @user.serial_code = ""
-      @user.sms_verify = true
-      @user.is_present = true
-      @user.push_id = params[:user][:push_id]
-      @user.platform = params[:user][:platform]
-      @user.utc_offset = params[:user][:utc_offset]
-      @user.auth_token = ""
-      @user.skip_update_validation =  true
-      @user.verify_platform = true
-      @user.encrypt_device_id = params[:user][:encrypt_device_id]
-      @user.save!
-      render json: {id: @user.id.to_s, auth_token: @user.auth_token, is_present: @user.is_present}
+      save_verified_user
     else
       render json: {error_message: "user not present"}, status: Code[:error_code]
     end
@@ -81,17 +70,7 @@ class Api::V1::UsersController < Api::V1::BaseController
    @user = User.where(mobile_number: params[:user][:mobile_number]).first
    @call = @user.verify_missed_call(params[:user][:missed_call_number].sub(/^0+/, "")).body
    if(@call["status"] == "success")
-     @user.sms_verify = true
-     @user.is_present = true
-     @user.push_id = params[:user][:push_id]
-     @user.platform = params[:user][:platform]
-     @user.utc_offset = params[:user][:utc_offset]
-     @user.auth_token = ""
-     @user.skip_update_validation =  true
-     @user.verify_platform = true
-     @user.encrypt_device_id = params[:user][:encrypt_device_id]
-     @user.save!
-     render json: {id: @user.id.to_s, auth_token: @user.auth_token, is_present: @user.is_present}
+     save_verified_user
    else
      render json: {error_message: "Invalid"}, status: Code[:error_code]
    end
@@ -135,6 +114,20 @@ class Api::V1::UsersController < Api::V1::BaseController
   
   ## private methods ###################################
   private
+
+    def save_verified_user
+      @user.sms_verify = true
+      @user.push_id = params[:user][:push_id]
+      @user.platform = params[:user][:platform]
+      @user.utc_offset = params[:user][:utc_offset]
+      @user.auth_token = ""
+      @user.skip_update_validation =  true
+      @user.verify_platform = true
+      @user.encrypt_device_id = params[:user][:encrypt_device_id]
+      @user.save!
+      render json: {id: @user.id.to_s, auth_token: @user.auth_token, is_present: @user.is_present}
+    end
+    
     def set_mobile_number
       obj = User.mobile_number_format(params[:user][:mobile_number])
       params[:user][:mobile_number] = obj[:mobile_number]
