@@ -4,7 +4,7 @@ RSpec.describe Api::V1::RatingsController, :type => :controller do
   before(:each) do
     @tag = Tag.create(name: "ios", score: 2)
     @user1 = FactoryGirl.create(:user)
-    @user2 = User.create!(mobile_number: "8934567890", encrypt_device_id: "12345678", sms_verify: true)
+    @user2 = User.create!(mobile_number: "8934567890", encrypt_device_id: "12345678", mobile_verified: true)
     @listing = FactoryGirl.create(:listing)
     @listing.update_attributes(user_id: @user1.id)
     @listing.create_tags([@tag.id.to_s])

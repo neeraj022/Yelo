@@ -27,7 +27,9 @@ class User
   field :abuse_count,          type: Boolean, default: 0 
   field :is_admin,             type: Boolean, default: false  
   field :serial_code,          type: Integer
-  field :sms_verify,           type: Boolean, default: false
+  field :sms_verified,         type: Boolean, default: false
+  field :call_verified,        type: Boolean, default: false
+  field :mobile_verified,      type: Boolean, default: false
   field :auth_token,           type: String
   field :share_token,          type: String
   field :ext_image_url,        type: String
@@ -99,6 +101,8 @@ class User
   validates :description, :name, presence: true, on: :update, :if => :validate_profile?
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }, allow_blank: true, allow_nil: true
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }, allow_blank: true, allow_nil: true
+  ####################### scopes ############################
+  scope :allowed, -> { where(status: true, mobile_verified: true) }
   ##################### instance methods #####################
   def tags
     tags = Array.new
@@ -372,6 +376,14 @@ class User
       end
       users
     end
+
+    def save_inactive_user(num)
+      user =  User.where(mobile_number: num[:mobile_number]).first_or_initialize
+      user.country_code = num[:country_code]
+      user.skip_update_validation = true
+      user.save
+      user
+    end  
   
   end
   ## private methods

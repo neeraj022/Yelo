@@ -4,7 +4,7 @@ RSpec.describe Api::V1::ChatsController, :type => :controller do
   before(:each) do
     @tag = Tag.create(name: "ios", score: 2)
     @sender = FactoryGirl.create(:user)
-    @receiver = User.create!(mobile_number: "9123456789", encrypt_device_id: "12345678", sms_verify: true)
+    @receiver = User.create!(mobile_number: "9123456789", encrypt_device_id: "12345678", mobile_verified: true)
     @params = {message: "test", sender_id: @sender.id.to_s, receiver_id: @receiver.id.to_s,
                 reply_id: "", sent_time: Time.now}
   end

@@ -42,11 +42,10 @@ class WallItem
   def create_tag_user(wall, usr)
     full_num = User.mobile_number_format(usr[:mobile_number])
     mobile_number = full_num[:mobile_number]
-    user = User.where(mobile_number: mobile_number).first
+    user = User.allowed.where(mobile_number: mobile_number).first
     t_usr = wall.tagged_users.new(mobile_number: mobile_number, name: usr[:name],
                                        email: usr[:email])
     if(user.present?)
-      user.save_user_tags(wall.tag_id, self.user_id)
       t_usr.user_id = user.id
       t_usr.image_url = user.image_url
       t_usr.name = user.name
@@ -54,10 +53,12 @@ class WallItem
                 tag_name: wall.tag_name}
       Notification.save_notify(Notification::N_CONS[:USER_TAG], v_hash, user.id)
     else
+      user = User.save_inactive_user(full_num)
       send_wall_tag_sms(wall, full_num)
     end
-    self.add_to_set(tagged_user_ids: t_usr.id.to_s)
+    user.save_user_tags(wall.tag_id, self.user_id)
     t_usr.save
+    self.add_to_set(tagged_user_ids: t_usr.id.to_s)
     return t_usr
   end
 

@@ -5,7 +5,7 @@ FactoryGirl.define do
   	# sequence(:mobile_number) { |n| "988373838373" }
   	mobile_number '1234567890'
     description 'Test'
-    sms_verify 'true'
+    mobile_verified 'true'
     push_id '123213234'
     encrypt_device_id '324rm32n4kj'
     platform 'device_id'

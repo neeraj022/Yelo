@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'ostruct'
 
 RSpec.describe Api::V1::UsersController, :type => :controller do
   let(:user_attributes) {{user: {mobile_number: "+911234567890"}}}
@@ -22,8 +23,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       before(:each) do
         @user = FactoryGirl.create(:user)
         @params = {user: {mobile_number: @user.mobile_number.to_s, serial_code: @user.serial_code,
-                 push_id: "12345678", encrypt_device_id: "12345678", platform: "android"
-                  }}
+                 push_id: "12345678", encrypt_device_id: "12345678", platform: "android", 
+                 missed_call_number: "123456"}}
        end
       it "with valid serial code" do
          post :verify_serial_code, @params
@@ -38,6 +39,40 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
          post :verify_serial_code, @params
          expect(response.status).to eql(400)
          expect(json["error_message"]).to match(/.+/)
+      end
+      it "verify by call is success" do
+         c_param = {body: {"status" => "success", "keymatch" => "232432423", "otp_start" => "+12345"}}
+         call = OpenStruct.new c_param
+         User.any_instance.stub(:verify_missed_call).and_return(call)
+         post :verify_missed_call, @params
+         @refresh_user = User.find(@user.id)
+         expect(response.status).to eql(200)
+         expect(json["auth_token"]).not_to eql(@user.auth_token)
+         expect(json["auth_token"]).to eql(@refresh_user.auth_token)
+      end
+       it "verify by call fails" do
+         c_param = {body: {"status" => "error", "keymatch" => "232432423", "otp_start" => "+12345"}}
+         call = OpenStruct.new c_param
+         User.any_instance.stub(:verify_missed_call).and_return(call)
+         post :verify_missed_call, @params
+         expect(response.status).to eql(400)
+      end
+    end
+
+    describe "sms serial code to a mobile number" do
+      before(:each) do 
+        @user = FactoryGirl.create(:user)
+        @params = {user: {mobile_number: @user.mobile_number}}
+      end
+      it "should send serial code" do
+        User.any_instance.stub(:send_sms).and_return({status: true})
+        post :sms_serial_code, @params
+        expect(response.status).to eql(200)
+      end
+      it "throws error if user no present" do
+        User.any_instance.stub(:send_sms).and_return({status: true})
+        post :sms_serial_code, {user: {mobile_number: "3432"}}
+        expect(response.status).to eql(400)
       end
     end
     

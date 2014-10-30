@@ -70,6 +70,7 @@ class Api::V1::UsersController < Api::V1::BaseController
    @user = User.where(mobile_number: params[:user][:mobile_number]).first
    @call = @user.verify_missed_call(params[:user][:missed_call_number].sub(/^0+/, "")).body
    if(@call["status"] == "success")
+     @user.call_verified =  true
      save_verified_user
    else
      render json: {error_message: "Invalid"}, status: Code[:error_code]
@@ -116,7 +117,8 @@ class Api::V1::UsersController < Api::V1::BaseController
   private
 
     def save_verified_user
-      @user.sms_verify = true
+      @user.serial_code = ""
+      @user.mobile_verified = true
       @user.push_id = params[:user][:push_id]
       @user.platform = params[:user][:platform]
       @user.utc_offset = params[:user][:utc_offset]
