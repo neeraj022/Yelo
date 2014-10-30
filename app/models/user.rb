@@ -40,6 +40,8 @@ class User
   field :longitude,            type: String
   field :last_notify_sent_at,  type: String
   field :utc_offset,           type: Integer, default: 0
+  field :keymatch,             type: String
+  
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
@@ -135,6 +137,22 @@ class User
 
   def online?
     updated_at > 10.minutes.ago
+  end
+
+  def m_call_token
+    Rails.application.secrets.m_call_token
+  end
+  
+  def m_call_id
+    Rails.application.secrets.m_call_id
+  end
+
+  def send_missed_call
+    Unirest.get "https://www.cognalys.com/api/v1/otp/?access_token=#{self.m_call_token}&app_id=#{self.m_call_id}&mobile=#{self.full_mobile_number}"
+  end
+
+  def verify_missed_call(m_call_num)
+    Unirest.get"https://www.cognalys.com/api/v1/otp/confirm/?access_token=#{self.m_call_token}&app_id=#{self.m_call_id}&otp=#{m_call_num}&keymatch=#{self.keymatch}"
   end
   
   def save_rating_and_score

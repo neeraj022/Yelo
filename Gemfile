@@ -82,6 +82,8 @@ gem "amqp", "~> 1.5.0"
 
 gem "oj"
 
+gem "unirest"
+
 gem "elasticsearch", git: "git://github.com/elasticsearch/elasticsearch-ruby.git"
 
 gem "elasticsearch-model", git: "git://github.com/elasticsearch/elasticsearch-rails.git"

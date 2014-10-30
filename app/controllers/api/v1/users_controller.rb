@@ -1,10 +1,11 @@
 class Api::V1::UsersController < Api::V1::BaseController
-  before_action :authenticate_user!, except: [:show, :create, :verify_serial_code]
-  before_action :set_mobile_number, only: [:create, :verify_serial_code]
+  before_action :authenticate_user!, except: [:show, :create, :verify_serial_code, :verify_missed_call, :sms_serial_code]
+  before_action :set_mobile_number, only: [:create, :verify_serial_code, :verify_missed_call, :sms_serial_code]
   
   # POST '/users'
   def create
     @user = User.where(mobile_number: params[:user][:mobile_number]).first
+    @call =  @user.send_missed_call.body
     if(@user.present?)
       existing_user
     else
@@ -41,7 +42,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue_message(e)
   end
 
-  # POST 'users/verify'
+  # POST 'users/verify_sms'
   def verify_serial_code
     @user = User.where(mobile_number: params[:user][:mobile_number], serial_code: params[:user][:serial_code]).first
     if(@user.present?)
@@ -59,6 +60,40 @@ class Api::V1::UsersController < Api::V1::BaseController
     else
       render json: {error_message: "user not present"}, status: Code[:error_code]
     end
+  rescue => e
+    rescue_message(e)
+  end
+
+  # POST /sms_serial_code
+  def sms_serial_code
+    @user = User.where(mobile_number: params[:user][:mobile_number]).first
+    if(@user.present?)
+      send_sms
+    else
+      render json: {error_message: "user not present"}, status: Code[:error_code]
+    end
+  rescue => e
+    rescue_message(e)
+  end
+ 
+  # POST '/users/verify_call'
+  def verify_missed_call
+   @user = User.where(mobile_number: params[:user][:mobile_number]).first
+   @call = @user.verify_missed_call(params[:user][:missed_call_number].sub(/^0+/, "")).body
+   if(@call["status"] == "success")
+     @user.sms_verify = true
+     @user.push_id = params[:user][:push_id]
+     @user.platform = params[:user][:platform]
+     @user.utc_offset = params[:user][:utc_offset]
+     @user.auth_token = ""
+     @user.skip_update_validation =  true
+     @user.verify_platform = true
+     @user.encrypt_device_id = params[:user][:encrypt_device_id]
+     @user.save!
+     render json: {id: @user.id.to_s, auth_token: @user.auth_token, is_present: @user.is_present}
+   else
+     render json: {error_message: "Invalid"}, status: Code[:error_code]
+   end
   rescue => e
     rescue_message(e)
   end
@@ -116,18 +151,17 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
 
     def existing_user
-      if(@user.update_attributes(user_create_params.merge(serial_code: "",
-               skip_update_validation: true)))
-        send_sms
+      if(@user.update_attributes(keymatch: @call["keymatch"], serial_code:"", is_present: true, skip_update_validation: true))
+        render json: {status: Code[:status_success]}
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
       end
     end
 
     def create_new_user
-      @user = User.new(user_create_params)
+      @user = User.new(user_create_params.merge(keymatch: @call["keymatch"]))
       if(@user.save)
-        send_sms
+        render json: {status: Code[:status_success]}
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
       end
