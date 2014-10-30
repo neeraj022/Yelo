@@ -5,7 +5,6 @@ class Api::V1::UsersController < Api::V1::BaseController
   # POST '/users'
   def create
     @user = User.where(mobile_number: params[:user][:mobile_number]).first
-    @call =  @user.send_missed_call.body
     if(@user.present?)
       existing_user
     else
@@ -48,6 +47,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     if(@user.present?)
       @user.serial_code = ""
       @user.sms_verify = true
+      @user.is_present = true
       @user.push_id = params[:user][:push_id]
       @user.platform = params[:user][:platform]
       @user.utc_offset = params[:user][:utc_offset]
@@ -82,6 +82,7 @@ class Api::V1::UsersController < Api::V1::BaseController
    @call = @user.verify_missed_call(params[:user][:missed_call_number].sub(/^0+/, "")).body
    if(@call["status"] == "success")
      @user.sms_verify = true
+     @user.is_present = true
      @user.push_id = params[:user][:push_id]
      @user.platform = params[:user][:platform]
      @user.utc_offset = params[:user][:utc_offset]
@@ -151,7 +152,8 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
 
     def existing_user
-      if(@user.update_attributes(keymatch: @call["keymatch"], serial_code:"", is_present: true, skip_update_validation: true))
+      @call =  @user.send_missed_call.body
+      if(@user.update_attributes(keymatch: @call["keymatch"], serial_code:"", skip_update_validation: true))
         render json: {status: Code[:status_success], otp_start: @call["otp_start"]}
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
@@ -159,7 +161,9 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
 
     def create_new_user
-      @user = User.new(user_create_params.merge(keymatch: @call["keymatch"]))
+      @user = User.new(user_create_params)
+      @call =  @user.send_missed_call.body
+      @user.keymatch = @call["keymatch"]
       if(@user.save)
         render json: {status: Code[:status_success], otp_start: @call["otp_start"]}
       else
