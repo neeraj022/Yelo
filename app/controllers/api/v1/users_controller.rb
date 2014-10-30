@@ -152,7 +152,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
     def existing_user
       if(@user.update_attributes(keymatch: @call["keymatch"], serial_code:"", is_present: true, skip_update_validation: true))
-        render json: {status: Code[:status_success]}
+        render json: {status: Code[:status_success], otp_start: @call["otp_start"]}
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
       end
@@ -161,7 +161,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     def create_new_user
       @user = User.new(user_create_params.merge(keymatch: @call["keymatch"]))
       if(@user.save)
-        render json: {status: Code[:status_success]}
+        render json: {status: Code[:status_success], otp_start: @call["otp_start"]}
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
       end
