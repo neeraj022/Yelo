@@ -3,11 +3,9 @@ class NotificationWorker
   include Sidekiq::Worker
   sidekiq_options queue: "notification", retry: false
 
-  def perform(params)
-    case params[:type]
-  	when "wall_create"
-      Notification.save_wall(params[:wall_id]) 
-    end
+  def perform(n_id)
+    notification = Notification.where(_id: n_id).first
+    notification.send_notification if notification.present?
   end
 
 end

@@ -21,9 +21,9 @@
 
 set :output, "log/cron_log.log"
 
-every 1.minutes do
-  runner "Notification.notify"
-end
+# every 1.minutes do
+#   runner "Notification.notify"
+# end
 
 every 1.hours do
    runner "Notification.wall_summary_notify"

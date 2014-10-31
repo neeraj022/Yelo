@@ -28,6 +28,18 @@ class Notification
       Notification.wall_tag_obj(self)
     end
   end
+
+  def send_notification
+    user = self.user
+    unless user.can_send_notification?(self.n_type)
+      self.save_notification_status(Notification::N_STATUS[:SUMMARY])
+      return false
+    end
+    self.save_notification_status(Notification::N_STATUS[:SENT])
+    obj = self.notify_obj
+    Notification.push_notify(user.platform, [user.push_id], obj)
+  end
+ 
   ################ class methods ##################
   class << self
     def save_notify(n_type, n_value, user_id)
@@ -64,14 +76,7 @@ class Notification
       notifications = Notification.where(n_status: Notification::N_STATUS[:FRESH])
       notifications.each do |n|
         begin
-          user = n.user
-          unless user.can_send_notification?(n.n_type)
-            n.save_notification_status(Notification::N_STATUS[:SUMMARY])
-            next
-          end
-          n.save_notification_status(Notification::N_STATUS[:SENT])
-          obj = n.notify_obj
-          Notification.push_notify(user.platform, [user.push_id], obj)
+          n.send_notification
         rescue => e
           n.destroy
         end

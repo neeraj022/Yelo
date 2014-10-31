@@ -33,7 +33,9 @@ class WallItem
       else
         v_hash = {wall_id: wall.id.to_s, message: wall.message, commented_by: self.name, tag_name: wall.tag_name}
         if self.user.id != self.user_id
-          Notification.save_notify(Notification::N_CONS[:WALL_PIN], v_hash, self.user.id)
+          notify = Notification.save_notify(Notification::N_CONS[:WALL_PIN], v_hash, self.user.id)
+          notify.send_notification
+          # NotificationWorker.perform_async(notify.id.to_s)
         end
       end
     end
@@ -52,7 +54,9 @@ class WallItem
       t_usr.name = user.name
       v_hash = {wall_id: wall.id.to_s, tagged_by: self.name, message: wall.message, 
                 tag_name: wall.tag_name}
-      Notification.save_notify(Notification::N_CONS[:USER_TAG], v_hash, user.id)
+      notify = Notification.save_notify(Notification::N_CONS[:USER_TAG], v_hash, user.id)
+      # notify = NotificationWorker.perform_async(notify.id.to_s)
+      notify.send_notification
     else
       user = User.save_inactive_user(full_num)
       send_wall_tag_sms(wall, full_num)
