@@ -90,7 +90,7 @@ class Api::V1::WallsController < Api::V1::BaseController
 
     def wall_params
       params.require(:wall).permit(:tag_id, :message, :latitude, :longitude,
-      	                           :country, :city, :state, :address)
+      	                           :country, :city, :state, :address, :tmp_id)
     end
 
 end

@@ -38,7 +38,7 @@ class Api::V1::WallItemsController < Api::V1::BaseController
   private
    
     def wall_item_params
-      params.require(:wall_item).permit(:comment, :up_votes, :abuse_count)
+      params.require(:wall_item).permit(:comment, :up_votes, :abuse_count, :tmp_id)
     end
 
     def set_wall

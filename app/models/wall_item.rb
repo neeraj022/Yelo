@@ -2,6 +2,7 @@ class WallItem
   include Mongoid::Document
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
+  include Common
 
   field :user_id,             type: BSON::ObjectId
   field :comment,             type: String

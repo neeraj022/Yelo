@@ -2,6 +2,7 @@ class Rating
   include Mongoid::Document
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
+  include Common
 
   field :comment,       type: String
   field :stars,         type: Integer, default: 0

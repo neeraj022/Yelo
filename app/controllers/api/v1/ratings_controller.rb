@@ -63,6 +63,6 @@ class Api::V1::RatingsController < Api::V1::BaseController
   end
 
   def rating_params
-    params.require(:rating).permit(:comment, :stars, :user_id)
+    params.require(:rating).permit(:comment, :stars, :user_id, :tmp_id)
   end
 end

@@ -4,6 +4,7 @@ class User
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
   include Geo  
+  include Common
   # include UserSearch
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
