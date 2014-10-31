@@ -9,7 +9,7 @@ class Api::V1::TagsController < Api::V1::BaseController
     end
     usr_tag_ids ||= [] 
     usr_tag_arr ||= []
-    tags = Tag.where(:_id.nin => usr_tag_ids).asc(:score).limit(10)
+    tags = Tag.where(:_id.nin => usr_tag_ids).asc(:score)
     tag_arr = tags.map{|t| {id: t.id.to_s, name: t.name}}
     render json: {tags: tag_arr, user_tags: usr_tag_arr}
   rescue => e
