@@ -32,7 +32,7 @@ class WallItem
         return {status: false, error_message: t_usr.errors.messages} 
       else
         v_hash = {wall_id: wall.id.to_s, message: wall.message, commented_by: self.name, tag_name: wall.tag_name}
-        if self.user.id != self.user_id
+        if self.user.id.to_s != self.user_id.to_s
           notify = Notification.save_notify(Notification::N_CONS[:WALL_PIN], v_hash, self.user.id)
           notify.send_notification
           # NotificationWorker.perform_async(notify.id.to_s)

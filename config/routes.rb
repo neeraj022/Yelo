@@ -82,7 +82,7 @@ Rails.application.routes.draw do
       get "/walls/:id/connects", to: "walls#connects"
       post "/walls/:id/close", to: "walls#wall_close"
       post "/abuse", to: "users#abuse"
-      post "/walls/:id/destroy", to "walls#destroy"
+      post "/walls/:id/destroy", to: "walls#destroy"
       resources :users
       resources :ratings
       resources :listings

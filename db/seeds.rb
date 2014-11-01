@@ -19,22 +19,24 @@ JSON.parse(open("#{Rails.root}/db/tags.json").read).each do |s|
    # end
 end
 
-setting = Appsetting.first
+setting = AppSetting.first
 AppSetting.create unless setting.present?
 
-a_mobile = Rails.application.secrets.admin_mobile
+num = Rails.application.secrets.admin_mobile
+num = User.mobile_number_format(num)
 a_email = Rails.application.secrets.admin_email
-admin_user = User.where(mobile_number: a_mobile).first
+admin_user = User.where(mobile_number: num[:mobile_number]).first
 if(admin_user.blank?)
   admin_user  = User.new(push_id: "xxxxx", encrypt_device_id: "xxxxxxx", platform: "none")
-  admin_user.a_email = a_email
-  admin_user.email = Rails.application.secrets.admin_email
-  admin_user.password = Rails.application.secrets.admin_password
-  admin_user.is_admin = true
+  admin_user.mobile_number = num[:mobile_number]
+  admin_user.country_code = num[:country_code]
   admin_user.name = "admin"
   admin_user.description = "admin"
-  admin_user.save
 end
+admin_user.email = a_email
+admin_user.password = Rails.application.secrets.admin_password
+admin_user.is_admin = true
+admin_user.save
 
 
 # JSON.parse(open("#{Rails.root}/db/sub_categories.json").read).each do |s|

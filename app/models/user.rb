@@ -358,7 +358,7 @@ class User
   class << self
     
     def mobile_number_format(num)
-      num = num.sub(/^\+*0+/, "")
+      num = num.to_s.sub(/^\+*0+/, "")
       mobile_number = num.slice!(-(10-num.length), 10)
       {mobile_number: mobile_number, country_code: num}
     end
@@ -390,10 +390,14 @@ class User
     def send_welcome_message(id)
       num = Rails.application.secrets.w_mobile_number
       num = User.mobile_number_format(num) 
-      sender_id = User.where(mobile_number: num[:mobile_number]).first.id.to_s 
+      sender = User.where(mobile_number: num[:mobile_number]).first
       w_message = AppSetting.welcome_chat_message
-      str = "?sender_id=#{sender_id}&receiver_id=#{id}&message=#{w_message}&sent_at=#{Time.now.to_s}"
-      Unirest.get"http://thin.yelo.red/api/v1/chats/send/#{str}"
+      chat_url = Rails.application.secrets.chat_url
+      str = "?sender_id=#{sender.id.to_s}&receiver_id=#{id}&message=#{w_message}&sent_at=#{Time.now.to_s}"
+      token = 'Token token='+"\""+sender.auth_token+"\""+","+' device_id='+"\""+sender.encrypt_device_id+"\""
+      Unirest.post"#{chat_url}/api/v1/chats/send/#{str}", headers: {"Authorization" => token}
+    rescue => e
+      false
     end
   
   end
