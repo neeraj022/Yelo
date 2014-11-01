@@ -1,5 +1,6 @@
 class Api::V1::SearchController < Api::V1::BaseController
   before_action :set_search_params
+  after_action :send_welcome_message, only: [:search]
   
   # GET /search
   def search
@@ -29,6 +30,12 @@ class Api::V1::SearchController < Api::V1::BaseController
         current_user.wall_tags
       else
         params[:tag_ids]
+      end
+    end
+
+    def send_welcome_message
+      if(current_user.present? && !current_user.w_msg_sent)
+        User.send_welcome_message(current_user.id.to_s)
       end
     end
 

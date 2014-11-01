@@ -44,6 +44,7 @@ class User
   field :last_notify_sent_at,  type: String
   field :utc_offset,           type: Integer, default: 0
   field :keymatch,             type: String
+  field :w_msg_sent,           type: Boolean, default: false
   
   ## Recoverable
   field :reset_password_token,   type: String
