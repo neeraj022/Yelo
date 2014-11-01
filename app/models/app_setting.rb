@@ -4,11 +4,11 @@ class AppSetting
   include Mongoid::Timestamps::Updated
 
   field :posts_per_day,            type: Integer, default: 3
-  field :post_time_interval,       type: Integer, default: 10 # in minutes
+  field :wall_post_interval,       type: Integer, default: 10 # in minutes
   field :summary_notify_interval,  type: Integer, default: 24    
-  field :default_notify_code,      type: Integer, default: 1
-  field :wall_notify_radius,       type: Integer, default: 12
-  field :chat_reject_interval,     type: Integer, default: 6
+  field :default_notify_setting,   type: Integer, default: 1
+  field :wall_notify_radius,       type: Integer, default: 50
+  field :chat_reject_interval,     type: Integer, default: 1
   field :server_status,            type: Integer, default: 1
   field :server_message,           type: String
   field :sms_per_day,              type: Integer, default: 5
@@ -16,14 +16,15 @@ class AppSetting
   field :android_app_url,          type: String
   field :ios_app_url,              type: String
   field :windows_app_url,          type: String
-  field :max_abuse_count,          type: Integer, default: 10
+  field :max_abuse_count,          type: Integer, default: 2
+  field :welcome_chat_message,     type: String
   ############### class methods ############################
   class << self
     # in minutes
     def wall_post_interval
       setting = AppSetting.first
       if setting
-        setting.post_time_interval * 60
+        setting.wall_post_interval * 60
       else
         1 * 60
       end
@@ -44,7 +45,16 @@ class AppSetting
       if setting
         setting.max_abuse_count
       else
-        10
+        2
+      end
+    end
+
+    def welcome_chat_message
+      setting = AppSetting.first
+      if setting
+        setting.welcome_chat_message
+      else
+        "Welcome to yelo. This is Prasun and I am here to help you."
       end
     end
 
@@ -103,14 +113,14 @@ class AppSetting
       if setting
         setting.wall_notify_radius 
       else
-        12
+        50
       end
     end
 
     def default_notify_setting
       setting = AppSetting.first
       if setting
-        setting.default_notify_code
+        setting.default_notify_setting
       else
          1
       end

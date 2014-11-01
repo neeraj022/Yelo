@@ -10,6 +10,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     else
       create_new_user
     end
+    User.send_welcome_message(@user.id.to_s)
   rescue => e
     rescue_message(e)
   end
@@ -17,7 +18,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # GET '/users/:id'
   def show
     @user  = User.find(params[:id])
-    expires_in 5.minutes, :public => true
+    # expires_in 5.minutes, :public => true
     render json: @user
   rescue => e
     rescue_message(e)
@@ -68,7 +69,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # POST '/users/verify_call'
   def verify_missed_call
    @user = User.where(mobile_number: params[:user][:mobile_number]).first
-   @call = @user.verify_missed_call(params[:user][:missed_call_number].sub(/^0+/, "")).body
+   @call = @user.verify_missed_call(params[:user][:missed_call_number].sub(/^\+*0+/, "")).body
    if(@call["status"] == "success")
      @user.call_verified =  true
      save_verified_user

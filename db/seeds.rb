@@ -5,6 +5,11 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+num = Rails.application.secrets.w_mobile_number
+num = User.mobile_number_format(num)
+w_user = User.where(mobile_number: num[:mobile_number]).first_or_initialize
+w_user.country_code = num[:country_code]
+w_user.save
 
 JSON.parse(open("#{Rails.root}/db/tags.json").read).each do |s|
    group = Group.where(name: s.keys.first).first_or_create
@@ -14,17 +19,24 @@ JSON.parse(open("#{Rails.root}/db/tags.json").read).each do |s|
    # end
 end
 
-  admin_user = User.where(email: Rails.application.secrets.admin_email).first
-  if(admin_user.blank?)
-    admin_user  = User.new(push_id: "xxxxx", encrypt_device_id: "xxxxxxx", platform: "none")
-    admin_user.mobile_number = "1000000000"
-    admin_user.email = Rails.application.secrets.admin_email
-    admin_user.password = Rails.application.secrets.admin_password
-    admin_user.is_admin = true
-    admin_user.name = "admin"
-    admin_user.description = "xxxxx"
-    admin_user.save
-  end
+setting = Appsetting.first
+AppSetting.create unless setting.present?
+
+a_mobile = Rails.application.secrets.admin_mobile
+a_email = Rails.application.secrets.admin_email
+admin_user = User.where(mobile_number: a_mobile).first
+if(admin_user.blank?)
+  admin_user  = User.new(push_id: "xxxxx", encrypt_device_id: "xxxxxxx", platform: "none")
+  admin_user.a_email = a_email
+  admin_user.email = Rails.application.secrets.admin_email
+  admin_user.password = Rails.application.secrets.admin_password
+  admin_user.is_admin = true
+  admin_user.name = "admin"
+  admin_user.description = "admin"
+  admin_user.save
+end
+
+
 # JSON.parse(open("#{Rails.root}/db/sub_categories.json").read).each do |s|
 #   t = Tag.where(name: s["name"], _id: s["_id"]["$oid"]).first_or_create 
 # end

@@ -358,6 +358,7 @@ class User
   class << self
     
     def mobile_number_format(num)
+      num = num.sub(/^\+*0+/, "")
       mobile_number = num.slice!(-(10-num.length), 10)
       {mobile_number: mobile_number, country_code: num}
     end
@@ -385,6 +386,15 @@ class User
       user.save
       user
     end  
+
+    def send_welcome_message(id)
+      num = Rails.application.secrets.w_mobile_number
+      num = User.mobile_number_format(num) 
+      sender_id = User.where(mobile_number: num[:mobile_number]).first.id.to_s 
+      w_message = AppSetting.welcome_chat_message
+      str = "?sender_id=#{sender_id}&receiver_id=#{id}&message=#{w_message}&sent_at=#{Time.now.to_s}"
+      Unirest.get"http://thin.yelo.red/api/v1/chats/send/#{str}"
+    end
   
   end
   ## private methods
