@@ -21,9 +21,9 @@ class Notification
   def notify_obj
     case self.n_type
     when Notification::N_CONS[:USER_TAG]
-      Notification.create_wall_obj(self)
-    when Notification::N_CONS[:CREATE_WALL]
       Notification.user_tag_obj(self)
+    when Notification::N_CONS[:CREATE_WALL]
+      Notification.create_wall_obj(self)
     when Notification::N_CONS[:WALL_PIN]
       Notification.wall_tag_obj(self)
     end
