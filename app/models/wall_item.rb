@@ -61,7 +61,7 @@ class WallItem
       notify.send_notification
     else
       user = User.save_inactive_user(full_num)
-      send_wall_tag_sms(wall, full_num)
+      send_wall_tag_sms(t_usr) 
     end
     user.save_user_tags(wall.tag_id, self.user_id)
     t_usr.save
@@ -69,11 +69,11 @@ class WallItem
     return t_usr
   end
 
-  def send_wall_tag_sms(wall, full_num)
+  def send_wall_tag_sms(usr)
     @mobile_app_url ||= AppSetting.mobile_app_url
-    mobile_number = full_num[:mobile_number]
-    country_code = set_country_code(full_num[:country_code])
-    sms_log = SmsLog.where(mobile_number: mobile_number, country_code: country_code).first_or_create
+    sms_log = SmsLog.where(mobile_number: usr.mobile_number).first_or_initialize
+    sms_log.country_code = usr.country_code
+    sms_log.save
     msg = "#{self.name} tagged you in yelo app for a query: #{wall.message},
            Download app at #{@mobile_app_url[:android]}"
     sms_log.send_sms(msg)

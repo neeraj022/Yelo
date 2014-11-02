@@ -97,6 +97,7 @@ class User
                       numericality: true,
                       uniqueness: true,
                       length: { is: 10 }
+  validates :country_code, presence: true, numericality: true
   validates :email, uniqueness: true, allow_blank: true, allow_nil: true
   validates :push_id, :platform, :encrypt_device_id,
              presence: true, on: :update, :if => lambda { |u| u.validate_profile? || u.validate_platform? }
