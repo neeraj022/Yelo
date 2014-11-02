@@ -127,7 +127,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       @user.verify_platform = true
       @user.encrypt_device_id = params[:user][:encrypt_device_id]
       @user.save!
-      render json: {id: @user.id.to_s, auth_token: @user.auth_token, is_present: @user.is_present}
+      render json: {id: @user.id.to_s, auth_token: @user.auth_token, is_present: @user.is_present, updated_at: @user.updated_at}
     end
     
     def set_mobile_number

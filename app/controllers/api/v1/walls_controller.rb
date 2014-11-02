@@ -1,5 +1,5 @@
 class Api::V1::WallsController < Api::V1::BaseController
-  before_action :authenticate_user!, except: [:show, :user_wall]
+  before_action :authenticate_user!, except: [:show, :user_walls]
 
   # POST /walls/
   def create
@@ -24,7 +24,7 @@ class Api::V1::WallsController < Api::V1::BaseController
 
   # GET /users/:user_id/walls
   def user_walls
-    @user = User.where(_id: params[:user_id]).first
+    @user = User.where(_id: params[:user_id]).order("created_at DESC").first
     @walls = @user.walls
     render json: @walls
   rescue => e
