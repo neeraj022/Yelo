@@ -289,7 +289,7 @@ class User
   end
 
   def ensure_password
-    return if self.password.present?
+    return if self.encrypted_password.present?
     self.password = Devise.friendly_token
   end
 
