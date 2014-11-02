@@ -3,7 +3,7 @@ class TaggedUserSerializer < CustomSerializer
 
   def details
    if scope.present? && (scope.id.to_s == object.wall.user_id.to_s)
-     {mobile_number: object.mobile_number, email: object.email}
+     {mobile_number: object.full_mobile_number, email: object.email}
     else
      nil
     end

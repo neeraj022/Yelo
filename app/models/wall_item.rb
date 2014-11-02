@@ -45,9 +45,11 @@ class WallItem
   def create_tag_user(wall, usr)
     full_num = User.mobile_number_format(usr[:mobile_number])
     mobile_number = full_num[:mobile_number]
+    country_code = set_country_code(full_num[:country_code])
     user = User.allowed.where(mobile_number: mobile_number).first
     t_usr = wall.tagged_users.new(mobile_number: mobile_number, name: usr[:name],
-                                       email: usr[:email])
+                                      email: usr[:email], country_code: country_code)
+    return t_usr unless t_usr.valid?
     if(user.present?)
       t_usr.user_id = user.id
       t_usr.image_url = user.image_url
@@ -75,6 +77,8 @@ class WallItem
     msg = "#{self.name} tagged you in yelo app for a query: #{wall.message},
            Download app at #{@mobile_app_url[:android]}"
     sms_log.send_sms(msg)
+  rescue => e
+    false
   end
 
   def set_country_code(code)
