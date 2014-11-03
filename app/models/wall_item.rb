@@ -3,6 +3,7 @@ class WallItem
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
   include Common
+  include ActionView::Helpers::TextHelper
 
   field :user_id,             type: BSON::ObjectId
   field :comment,             type: String
@@ -74,8 +75,8 @@ class WallItem
     sms_log = SmsLog.where(mobile_number: usr.mobile_number).first_or_initialize
     sms_log.country_code = usr.country_code
     sms_log.save
-    msg = "#{self.name} tagged you in yelo app for a query: #{wall.message},
-           Download app at #{@mobile_app_url[:android]}"
+    msg = "hey #{self.name} just tagged you in an post on yelo app for #{truncate(wall.message, length: 12, separator: ' ')},
+           Download Link #{@mobile_app_url[:android]}"
     sms_log.send_sms(msg)
   rescue => e
     false
