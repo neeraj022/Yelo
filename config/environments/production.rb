@@ -72,4 +72,33 @@ Rails.application.configure do
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
+
+  #for error notification ############
+
+  config.middleware.use ExceptionNotification::Rack,
+  :email => {
+    :email_prefix => "yelo debug",
+    :sender_address => %{"notifier" <yeloapp@gmail.com>},
+    :exception_recipients => ["#{Rails.application.secrets.n_mail}"]
+  }
+
+  # added for devise and sending mail
+  config.action_mailer.default_url_options = { :host => 'http://www.yelo.red' }
+  #change false for production
+  config.action_mailer.perform_deliveries = true 
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+   :address              => "smtp.gmail.com",
+   :port                 => 587,
+   :enable_starttls_auto => true,
+   :user_name            => Rails.application.secrets.smtp_username,
+   :password             => Rails.application.secrets.smtp_password,
+   :domain               => 'yelo.red',
+   :authentication       => 'plain'
+ }
+
+
+
+
 end
