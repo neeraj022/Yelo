@@ -50,8 +50,8 @@ Rails.application.configure do
    :address              => "smtp.gmail.com",
    :port                 => 587,
    :enable_starttls_auto => true,
-   :user_name            => ENV["SMTP_USERNAME"],
-   :password             => ENV["SMTP_PASSWORD"],
+   :user_name            => Rails.application.secrets.smtp_username,
+   :password             => Rails.application.secrets.smtp_password,
    :domain               => 'yelo.red',
    :authentication       => 'plain'
  }
