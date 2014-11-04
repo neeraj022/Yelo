@@ -381,9 +381,9 @@ class User
       users
     end
 
-    def save_inactive_user(num)
-      user =  User.where(mobile_number: num[:mobile_number]).first_or_initialize
-      user.country_code = num[:country_code]
+    def save_inactive_user(mobile_number, country_code)
+      user =  User.where(mobile_number: mobile_number).first_or_initialize
+      user.country_code = country_code
       user.skip_update_validation = true
       user.save
       user

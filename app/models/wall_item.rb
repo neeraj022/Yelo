@@ -61,7 +61,7 @@ class WallItem
       # notify = NotificationWorker.perform_async(notify.id.to_s)
       notify.send_notification
     else
-      user = User.save_inactive_user(full_num)
+      user = User.save_inactive_user(mobile_number, country_code)
       send_wall_tag_sms(t_usr) 
     end
     user.save_user_tags(wall.tag_id, self.user_id)
