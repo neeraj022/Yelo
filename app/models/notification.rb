@@ -110,22 +110,22 @@ class Notification
 
     def create_wall_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "wall", message: "New post for #{v_hash[:tag_name]}: #{v_hash[:message]} created by #{v_hash[:wall_user]}", resource: {name:
+      {collapse_key: "wall", message: "New post for #{v_hash[:tag_name]}: #{v_hash[:message]} created by #{truncate(v_hash[:message], length: 10, separator: ' ')}", resource: {name:
        "create wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def user_tag_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "tag", message: "#{v_hash[:tagged_by]} tagged u for #{v_hash[:message]}", resource: {name:
+      {collapse_key: "tag", message: "#{v_hash[:tagged_by]} tagged u for #{truncate(v_hash[:message], length: 10, separator: ' ')}", resource: {name:
       "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def wall_tag_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "pin", message: "#{v_hash[:commented_by]} tagged on your wall #{v_hash[:message]}", resource: {name:
+      {collapse_key: "pin", message: "#{v_hash[:commented_by]} tagged on your wall #{truncate(v_hash[:message], length: 10, separator: ' ')}", resource: {name:
       "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
-
+    
     def summary_wall_obj(tags_hash)
      str = "New wall posts "
      tags_hash.each_pair do |k,v| 

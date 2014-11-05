@@ -7,5 +7,6 @@
 :logfile: ./log/sidekiq.log
 :pidfile: ./tmp/pids/sidekiq.pid
 :queues:
-  - [notification, 7]
+  - [notification, 6]
+  - [friendwall, 7]
   - [default, 5]

@@ -112,6 +112,14 @@ class Api::V1::UsersController < Api::V1::BaseController
   rescue => e
     rescue_message(e)
   end
+
+  # POST /upload_contacts
+  def upload_contacts
+    current_user.save_contacts(params[:mobile_numbers])
+    render json: {status: "success"}
+  rescue => e
+    rescue_message(e)
+  end
   
   ## private methods ###################################
   private
@@ -160,6 +168,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       @call =  @user.send_missed_call.body
       @user.keymatch = @call["keymatch"]
       if(@user.save)
+        Person.save_person(@user.mobile_number, @user.id, true)
         render json: {status: Code[:status_success], otp_start: @call["otp_start"], call_status: @call["status"]}
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  

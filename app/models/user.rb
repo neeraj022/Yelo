@@ -45,7 +45,7 @@ class User
   field :utc_offset,           type: Integer, default: 0
   field :keymatch,             type: String
   field :w_msg_sent,           type: Boolean, default: false
-  
+  field :h_m_num,              type: String
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
@@ -86,6 +86,8 @@ class User
   has_many :chat_logs, dependent: :destroy
   has_many :ratings, dependent: :destroy
   has_many :connects, class_name: "Connector"
+  embeds_many :contacts
+  has_one :people
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
   after_save :update_embed_docs
@@ -355,6 +357,17 @@ class User
     owner.name = self.name 
     owner.image_url = self.image_url if image_changed?
     owner.save
+  end
+
+  def save_contacts(numbers)
+    numbers.each do |n|
+      p = Person.save_person(n)
+      save_friend(p) if p.persisted?
+    end
+  end
+
+  def save_friend(p)
+    self.contacts.create(person_id: p.id)
   end
   ################# class methods ###########################
   class << self

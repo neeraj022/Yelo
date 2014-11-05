@@ -1,4 +1,4 @@
-# app/workers/chat_log_worker.rb
+
 class NotificationWorker
   include Sidekiq::Worker
   sidekiq_options queue: "notification", retry: false
