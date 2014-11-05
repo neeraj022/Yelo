@@ -113,8 +113,8 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue_message(e)
   end
 
-  # POST /upload_contacts
-  def upload_contacts
+  # POST /users/contacts
+  def contacts
     current_user.save_contacts(params[:mobile_numbers])
     render json: {status: "success"}
   rescue => e

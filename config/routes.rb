@@ -83,7 +83,7 @@ Rails.application.routes.draw do
       post "/walls/:id/close", to: "walls#wall_close"
       post "/abuse", to: "users#abuse"
       post "/walls/:id/destroy", to: "walls#destroy"
-      post "/users/upload_contacts", to: "users#upload_contacts"
+      post "/users/contacts", to: "users#contacts"
       resources :users
       resources :ratings
       resources :listings

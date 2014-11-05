@@ -369,6 +369,7 @@ class User
   def save_friend(p)
     self.contacts.create(person_id: p.id)
   end
+  
   ################# class methods ###########################
   class << self
     
