@@ -304,9 +304,22 @@ class User
     when Setting::NS_CODE[:NOTIFY_MUTE]
       return false
     when Setting::NS_CODE[:NOTIFY_SUMMARY]
-      return true if (type == Notification::N_CONS[:USER_TAG]) || (type == Notification::N_CONS[:WALL_PIN])
+      return true if is_instant(type)
     else
       return true
+    end
+  end
+
+  def is_instant(type)
+    case type
+    when Notification::N_CONS[:USER_TAG]
+      return true
+    when Notification::N_CONS[:WALL_PIN]
+      return true
+    when Notification::N_CONS[:CONTACT_WALL]
+      return true
+    else
+      return false
     end
   end
 

@@ -18,6 +18,7 @@ class AppSetting
   field :windows_app_url,          type: String
   field :max_abuse_count,          type: Integer, default: 2
   field :welcome_chat_message,     type: String
+  field :version_android,          type: String, default: 0
   ############### class methods ############################
   class << self
     # in minutes
@@ -102,9 +103,9 @@ class AppSetting
     def server_status
       setting = AppSetting.first
       if setting
-        {code: setting.server_status, message: setting.server_message}
+        {code: setting.server_status, message: setting.server_message, version_android: setting.version_android}
       else
-        {code: 1, message: "ok"}
+        {code: 1, message: "ok", version_android: 0}
       end
     end
 
