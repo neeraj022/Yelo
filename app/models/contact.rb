@@ -7,5 +7,7 @@ class Contact
   
   ################# validations #########################
   validates :person_id, presence: true, uniqueness: true
+  ################# relations ############################
+  embedded_in :user
 
 end
