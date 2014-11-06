@@ -360,7 +360,9 @@ class User
   end
 
   def save_contacts(numbers)
+    m_num = self.mobile_number.to_s
     numbers.each do |n|
+      next if m_num.include? n.to_s
       p = Person.save_person(n)
       save_friend(p) if p.persisted?
     end
@@ -368,6 +370,13 @@ class User
 
   def save_friend(p)
     self.contacts.create(person_id: p.id)
+  end
+
+  def app_contacts
+    contact_ids = self.contacts.map{|c| c.person_id}
+    persons = Person.where(:_id.in => contact_ids, is_present: true)
+    user_ids = persons.map{|p| p.user_id}.compact
+    users = User.where(:_id.in => user_ids)
   end
   
   ################# class methods ###########################

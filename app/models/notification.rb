@@ -10,7 +10,7 @@ class Notification
   ################### relation ###################
   belongs_to :user 
   ################  constants ####################
-  N_CONS = {USER_TAG: 1, CREATE_WALL: 2, WALL_PIN: 3}
+  N_CONS = {USER_TAG: 1, CREATE_WALL: 2, WALL_PIN: 3, CONTACT_WALL :4}
   N_STATUS = {FRESH: 0, SENT: 1, SEEN: 2, SUMMARY: 3}
   ################ instance methods ##############
   def save_notification_status(status)
@@ -26,6 +26,8 @@ class Notification
       Notification.create_wall_obj(self)
     when Notification::N_CONS[:WALL_PIN]
       Notification.wall_tag_obj(self)
+    when Notification.N_CONS[:CONTACT_WALL]
+      Notification.contact_wall_obj(self)
     end
   end
 
@@ -108,10 +110,28 @@ class Notification
       end    
     end
 
+    def save_contact_wall(wall_id)
+      wall = Wall.where(_id: wall_id).first
+      user = wall.user
+      contacts = user.app_contacts
+      v_hash = {wall_id: wall.id.to_s, created_by: user.name, message: wall.message, 
+                tag_name: wall.tag_name, created_number: user.mobile_number}
+      contacts.each do |c|
+        notification = Notification.save_notify(Notification::N_CONS[:CONTACT_WALL], v_hash, c.id)
+        notification.send_notification
+      end
+    end
+
     def create_wall_obj(n_obj)
       v_hash = n_obj.n_value
       {collapse_key: "wall", message: "New post for #{v_hash[:tag_name]}: #{v_hash[:message]} created by #{truncate(v_hash[:message], length: 10, separator: ' ')}", resource: {name:
        "create wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+    end
+
+    def contact_wall_obj(n_obj)
+      v_hash = n_obj.n_value
+      {collapse_key: "contact_wall", message: "your contact #{v_hash[:created_by]} posted on wall about #{truncate(v_hash[:message], length: 10, separator: ' ')}"}, resource: {name:
+       "contact wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def user_tag_obj(n_obj)

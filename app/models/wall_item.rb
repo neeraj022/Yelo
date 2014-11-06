@@ -52,8 +52,8 @@ class WallItem
                                       email: usr[:email], country_code: country_code)
     return t_usr unless t_usr.valid?
     if(user.present?)
-      t_usr.user_id = user.id
       t_usr.image_url = user.image_url
+      t_usr.user_id = user.id
       t_usr.name = user.name
       v_hash = {wall_id: wall.id.to_s, tagged_by: self.name, message: wall.message, 
                 tag_name: wall.tag_name}
@@ -65,6 +65,7 @@ class WallItem
       send_wall_tag_sms(t_usr) 
     end
     user.save_user_tags(wall.tag_id, self.user_id)
+    # t_usr.user_id = user.id
     t_usr.save
     self.add_to_set(tagged_user_ids: t_usr.id.to_s)
     return t_usr

@@ -45,12 +45,8 @@ class Person
   end
 
   def self.save_person(num, user_id =nil, presence=nil)
-    person = self.search(num)
-    if(person.blank?)
-      person = self.new(mobile_number: num)
-    else
-      person.mobile_number = num
-    end
+  	h_num = self.get_hash_number(num)
+    person = Person.where(h_m_num: h_num).first_or_initialize
     person.is_present = presence if presence.present?
     person.user_id = presence if user_id.present?
     person.save
