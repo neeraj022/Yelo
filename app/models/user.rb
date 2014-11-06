@@ -376,7 +376,7 @@ class User
     contact_ids = self.contacts.map{|c| c.person_id}
     persons = Person.where(:_id.in => contact_ids, is_present: true)
     user_ids = persons.map{|p| p.user_id}.compact
-    users = User.where(:_id.in => user_ids)
+    users = User.allowed.where(:_id.in => user_ids)
   end
   
   ################# class methods ###########################
