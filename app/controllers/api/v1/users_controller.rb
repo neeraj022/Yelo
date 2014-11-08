@@ -115,7 +115,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   # POST /users/contacts
   def contacts
-    current_user.save_contacts(params[:mobile_numbers])
+    current_user.save_contacts(params[:hash_mobile_numbers])
     render json: {status: "success"}
   rescue => e
     rescue_message(e)

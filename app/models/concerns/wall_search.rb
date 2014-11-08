@@ -17,6 +17,7 @@ module WallSearch
         indexes :city, analyzer: 'standard'
         indexes :country, analyzer: 'standard'
         indexes :state, analyzer: 'standard'
+        indexes :created_at, type: "date", format: "basic_date_time"
         indexes :loc, type: 'geo_point'
         indexes :tag_id, analyzer: 'standard'
         # indexes :message, type: 'multi_field' do

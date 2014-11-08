@@ -373,10 +373,10 @@ class User
   end
 
   def save_contacts(numbers)
-    m_num = self.mobile_number.to_s
+    m_num = Person.get_number_digest(self.mobile_number.to_s)
     numbers.each do |n|
-      next if m_num.include? n.to_s
-      p = Person.save_person(n)
+      next if m_num == n
+      p = Person.where(h_m_num: n).first_or_create
       save_friend(p) if p.persisted?
     end
   end

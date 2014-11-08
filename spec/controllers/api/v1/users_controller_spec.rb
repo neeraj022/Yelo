@@ -11,6 +11,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
          expect(json["status"]).to eql("success")
          expect(User.last.mobile_number).to eq(1234567890)
          expect(User.last.country_code).to eq(91)
+         user = User.last
+         expect(Person.last.h_m_num).to eq(Person.get_number_digest(user.mobile_number))
+         expect(Person.last.user_id).to eq(user.id)
         end
        it 'with invalid mobile number' do
          post :create, {user: {mobile_number: "+911"}}
@@ -102,6 +105,16 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
          get :interests, params
          expect(response.status).to eql(200)
          expect(json["user"]["interest_ids"]).to eql([tag.id.to_s])
+      end
+    end
+    describe "contacts" do
+      it "should updload user contacts" do
+        @user = FactoryGirl.create(:user)
+        authWithUser(@user)
+        params = {hash_mobile_numbers: ["#qwerty"]}
+        post :contacts, params
+        expect(response.status).to eql(200)
+        expect(Person.count).to eql(1)
       end
     end
   end

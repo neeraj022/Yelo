@@ -32,7 +32,7 @@ Rails.application.configure do
   # for error notifications
   config.middleware.use ExceptionNotification::Rack,
   :email => {
-    :email_prefix => "yelo debug",
+    :email_prefix => "yelo development",
     :sender_address => %{"notifier" <yeloapp@gmail.com>},
     :exception_recipients => ["#{Rails.application.secrets.n_mail}"]
   }
