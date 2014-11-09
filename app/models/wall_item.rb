@@ -26,14 +26,15 @@ class WallItem
 
   def save_tagged_users(tag_users)
     wall = self.wall
+    wall_user = wall.user
     tag_users.each do |t|
       t_usr = create_tag_user(wall, t)
       if t_usr.errors.present?
         return {status: false, error_message: t_usr.errors.messages} 
       else
         v_hash = {wall_id: wall.id.to_s, message: wall.message, commented_by: self.name, tag_name: wall.tag_name}
-        if self.user.id.to_s != self.user_id.to_s
-          notify = Notification.save_notify(Notification::N_CONS[:WALL_PIN], v_hash, self.user.id)
+        if(wall_user.id.to_s != self.user_id.to_s)
+          notify = Notification.save_notify(Notification::N_CONS[:WALL_PIN], v_hash, wall_user.id)
           notify.send_notification
           # NotificationWorker.perform_async(notify.id.to_s)
         end
@@ -75,8 +76,8 @@ class WallItem
     sms_log = SmsLog.where(mobile_number: usr.mobile_number).first_or_initialize
     sms_log.country_code = usr.country_code
     sms_log.save
-    msg = "hey #{self.name} just tagged you in an post on yelo app for #{wall.message.truncate(10)},
-           Download Link #{@mobile_app_url[:android]}"
+    msg = "#{self.name} tagged you in a post on yelo - #{wall.message.truncate(100)},
+           Download the app here #{@mobile_app_url[:android]}"
     sms_log.send_sms(msg)
   rescue => e
     false

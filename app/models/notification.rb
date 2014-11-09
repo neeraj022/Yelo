@@ -44,9 +44,10 @@ class Notification
  
   ################ class methods ##################
   class << self
-    def save_notify(n_type, n_value, user_id)
+    def save_notify(n_type, n_value, user_id, status=nil)
+      status ||= Notification::N_CONS[:FRESH]
       Notification.create(n_type: n_type,
-              n_value: n_value, user_id: user_id)
+              n_value: n_value, user_id: user_id, n_status: status)
     end
 
     def save_wall(id)
@@ -61,7 +62,7 @@ class Notification
       user_ids.each do |id|
       	v_hash = {wall_id: wall.id.to_s, tag_name: wall.tag_name, message: wall.message,
         wall_user: wall.wall_owner.name}
-        self.save_notify(Notification::N_CONS[:CREATE_WALL], v_hash, id)
+        self.save_notify(Notification::N_CONS[:CREATE_WALL], v_hash, id, Notification::N_STATUS[:SUMMARY])
       end
     end
 
