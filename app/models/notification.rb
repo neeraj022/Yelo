@@ -126,25 +126,25 @@ class Notification
 
     def create_wall_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "wall", message: "New post for #{v_hash[:tag_name]}: #{v_hash[:message]} created by #{v_hash[:message].truncate(100)}", resource: {name:
+      {collapse_key: "", message: "New post for #{v_hash[:tag_name]}: #{v_hash[:message]} created by #{v_hash[:message].truncate(100)}", resource: {name:
        "create wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def contact_wall_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "contact_wall", message: "your contact #{v_hash[:created_by]} posted on wall about #{v_hash[:message].truncate(100)}", resource: {name:
+      {collapse_key: "", message: "your contact #{v_hash[:created_by]} posted on wall about #{v_hash[:message].truncate(100)}", resource: {name:
        "contact wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def user_tag_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "tag", message: "#{v_hash[:tagged_by]} tagged u for #{v_hash[:message].truncate(100)}", resource: {name:
+      {collapse_key: "", message: "#{v_hash[:tagged_by]} tagged u for #{v_hash[:message].truncate(100)}", resource: {name:
       "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def wall_tag_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "pin", message: "#{v_hash[:commented_by]} tagged on your wall #{v_hash[:message].truncate(100)}", resource: {name:
+      {collapse_key: "", message: "#{v_hash[:commented_by]} tagged on your wall #{v_hash[:message].truncate(100)}", resource: {name:
       "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
     
@@ -153,7 +153,7 @@ class Notification
      tags_hash.each_pair do |k,v| 
          str += "#{v} in #{k},"
      end
-     {collapse_key: "summary", message: str, resource: {name:
+     {collapse_key: "", message: str, resource: {name:
     "wall summary", dest: nil}}
     end
 
