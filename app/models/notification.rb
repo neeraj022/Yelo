@@ -88,7 +88,7 @@ class Notification
 
     def wall_summary_notify
       puts "started summary notification"
-      User.all.each do |u|
+      User.allowed.each do |u|
         next unless u.can_send_summary_notification?
         c_wall_nfs = u.notifications.where(n_status: Notification::N_STATUS[:SUMMARY], n_type: Notification::N_CONS[:CREATE_WALL])
         next unless c_wall_nfs.present?
@@ -108,6 +108,7 @@ class Notification
         end
         obj = Notification.summary_wall_obj(tags_hash)
         Notification.push_notify(u.platform, [u.push_id], obj)
+        #u.update_column(last_notify_sent_at: Time.now)
       end    
     end
 
@@ -125,25 +126,25 @@ class Notification
 
     def create_wall_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "wall", message: "New post for #{v_hash[:tag_name]}: #{v_hash[:message]} created by #{v_hash[:message].truncate(10)}", resource: {name:
+      {collapse_key: "wall", message: "New post for #{v_hash[:tag_name]}: #{v_hash[:message]} created by #{v_hash[:message].truncate(100)}", resource: {name:
        "create wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def contact_wall_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "contact_wall", message: "your contact #{v_hash[:created_by]} posted on wall about #{v_hash[:message].truncate(10)}", resource: {name:
+      {collapse_key: "contact_wall", message: "your contact #{v_hash[:created_by]} posted on wall about #{v_hash[:message].truncate(100)}", resource: {name:
        "contact wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def user_tag_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "tag", message: "#{v_hash[:tagged_by]} tagged u for #{v_hash[:message].truncate(10)}", resource: {name:
+      {collapse_key: "tag", message: "#{v_hash[:tagged_by]} tagged u for #{v_hash[:message].truncate(100)}", resource: {name:
       "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def wall_tag_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "pin", message: "#{v_hash[:commented_by]} tagged on your wall #{v_hash[:message].truncate(10)}", resource: {name:
+      {collapse_key: "pin", message: "#{v_hash[:commented_by]} tagged on your wall #{v_hash[:message].truncate(100)}", resource: {name:
       "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
     
