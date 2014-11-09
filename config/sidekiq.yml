@@ -8,5 +8,5 @@
 :pidfile: ./tmp/pids/sidekiq.pid
 :queues:
   - [notification, 6]
-  - [contactwall, 7]
+  - [contact_wall, 7]
   - [default, 5]
