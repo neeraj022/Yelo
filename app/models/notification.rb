@@ -132,7 +132,7 @@ class Notification
 
     def contact_wall_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "contact_wall", message: "your contact #{v_hash[:created_by]} posted on wall about #{v_hash[:message].truncate(100)}", resource: {name:
+      {collapse_key: "contact_wall", message: "#{v_hash[:created_by]} posted on wall about #{v_hash[:message].truncate(100)}", resource: {name:
        "contact wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
