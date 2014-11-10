@@ -108,7 +108,7 @@ class Notification
         end
         obj = Notification.summary_wall_obj(tags_hash)
         Notification.push_notify(u.platform, [u.push_id], obj)
-        #u.update_column(last_notify_sent_at: Time.now)
+        u.update_column(last_notify_sent_at: Time.now)
       end    
     end
 
@@ -153,6 +153,7 @@ class Notification
      tags_hash.each_pair do |k,v| 
          str += "#{v} in #{k},"
      end
+     str = str.chomp(",")
      {collapse_key: "summary", message: str, resource: {name:
     "wall summary", dest: nil}}
     end
