@@ -10,7 +10,7 @@ set :repo_url, 'git@bitbucket.org:yelo/yeloapp.git'
  set :rvm1_ruby_version, "2.1.2"
 
  set :sidekiq_config, "#{current_path}/config/sidekiq.yml"
- set :sidekiq_env, "production"
+ set :sidekiq_env, "development"
 
 
 # set :scm, :git
