@@ -157,6 +157,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     def existing_user
       @call =  @user.send_missed_call.body
       if(@user.update_attributes(keymatch: @call["keymatch"], serial_code:"", skip_update_validation: true))
+        Person.save_person(@user.mobile_number, @user.id, true)
         render json: {status: Code[:status_success], otp_start: @call["otp_start"], call_status: @call["status"]}
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  

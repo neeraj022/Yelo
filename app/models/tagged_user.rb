@@ -10,6 +10,7 @@ class TaggedUser
   field :mobile_number,  type: Integer
   field :country_code,   type: Integer
   field :up_votes,       type: Integer, default: 0
+  field :is_present,     type: Integer, default: false
 
   ############## relations #############################
   embedded_in :wall

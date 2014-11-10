@@ -1,5 +1,5 @@
 class TaggedUserSerializer < CustomSerializer
-  attributes :id, :user_id, :name, :details, :image_url
+  attributes :id, :user_id, :name, :details, :image_url, :is_present
 
   def details
    if scope.present? && (scope.id.to_s == object.wall.user_id.to_s)

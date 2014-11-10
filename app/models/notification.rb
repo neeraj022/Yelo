@@ -151,9 +151,9 @@ class Notification
     def summary_wall_obj(tags_hash)
      str = "New wall posts "
      tags_hash.each_pair do |k,v| 
-         str += "#{v} in #{k},"
+         str += "#{v} in #{k}, "
      end
-     str = str.chomp(",")
+     str = str.strip.chomp(",")
      {collapse_key: "summary", message: str, resource: {name:
     "wall summary", dest: nil}}
     end
