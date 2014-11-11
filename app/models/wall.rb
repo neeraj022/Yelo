@@ -38,7 +38,10 @@ class Wall
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
   # validate :restrict_wall_creation, on: :create
   validate :tag_presence
+  ####################### scopes ############################
+  scope :allowed, -> { where(status: true) }
   ########### instance methods #######################
+
 
   def save_owner_and_statistic
     user = self.user

@@ -27,7 +27,7 @@ class Api::V1::WallsController < Api::V1::BaseController
   # GET /users/:user_id/walls
   def user_walls
     @user = User.where(_id: params[:user_id]).first
-    @walls = @user.walls.order("created_at DESC")
+    @walls = @user.walls.allowed.order("created_at DESC")
     render json: @walls
   rescue => e
     rescue_message(e)
