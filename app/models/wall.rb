@@ -42,7 +42,6 @@ class Wall
   scope :allowed, -> { where(status: true) }
   ########### instance methods #######################
 
-
   def save_owner_and_statistic
     user = self.user
     user.statistic.last_post = self.created_at

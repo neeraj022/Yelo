@@ -147,7 +147,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     def user_params
       params.require(:user).permit(:name, :mobile_number, :email, 
         :image, :ext_image_url, :description,
-         :platform, :country_code, :ext_image_url, :utc_offset, :push_id)
+         :platform, :country_code, :ext_image_url, :utc_offset, :push_id, :platform_version)
     end
 
     def user_create_params

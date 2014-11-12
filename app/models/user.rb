@@ -46,6 +46,7 @@ class User
   field :keymatch,             type: String
   field :w_msg_sent,           type: Boolean, default: false
   field :h_m_num,              type: String
+  field :platform_version,     type: String
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
@@ -88,6 +89,7 @@ class User
   has_many :connects, class_name: "Connector"
   embeds_many :contacts
   has_one :people
+  has_many :shares
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
   after_save :update_embed_docs
