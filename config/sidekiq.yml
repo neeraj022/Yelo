@@ -4,7 +4,7 @@
 
 :verbose: true
 :concurrency:  25
-:logfile: ./log/sidekiq.log
+:logfile: /data/rails/log/sidekiq.log
 :pidfile: ./tmp/pids/sidekiq.pid
 :queues:
   - [notification, 6]
