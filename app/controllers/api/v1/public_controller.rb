@@ -11,6 +11,8 @@ class Api::V1::PublicController < Api::V1::BaseController
     user = User.where(mobile_number: num[:mobile_number]).first
     count = user.shares.count
     render json: {share_count: count}
+  rescue => e
+    render json: {status: "No user present"}
   end
 
 end
