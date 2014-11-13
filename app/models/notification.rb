@@ -170,6 +170,7 @@ class Notification
     end
 
     def push_android(ids, obj)
+      return "" unless Rails.env == "production"
       gcm = GCM.new(Rails.application.secrets.android_api_key)
       # options = {data: {payload: obj.to_json}, collapse_key: obj["collapse_key"]}
       options = {data: {payload: obj.to_json}}
