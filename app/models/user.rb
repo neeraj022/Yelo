@@ -103,7 +103,7 @@ class User
                       length: { is: 10 }
   validates :country_code, presence: true, numericality: true
   validates :email, uniqueness: true, allow_blank: true, allow_nil: true
-  validates :push_id, :platform, :encrypt_device_id,
+  validates :platform, :encrypt_device_id,
              presence: true, on: :update, :if => lambda { |u| u.validate_profile? || u.validate_platform? }
   validates :description, :name, presence: true, on: :update, :if => :validate_profile?
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }, allow_blank: true, allow_nil: true
