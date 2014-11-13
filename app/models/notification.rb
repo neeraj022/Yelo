@@ -33,6 +33,7 @@ class Notification
 
   def send_notification
     user = self.user
+    return false unless user.push_id.present?
     unless user.can_send_notification?(self.n_type)
       self.save_notification_status(Notification::N_STATUS[:SUMMARY])
       return false
@@ -106,6 +107,7 @@ class Notification
             n.destroy
           end
         end
+        next unless u.push_id.present?
         obj = Notification.summary_wall_obj(tags_hash)
         Notification.push_notify(u.platform, [u.push_id], obj)
         u.update_column(last_notify_sent_at: Time.now)

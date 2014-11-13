@@ -73,7 +73,7 @@ class Api::V1::UsersController < Api::V1::BaseController
      @user.call_verified =  true
      save_verified_user
    else
-     render json: {error_message: "Invalid"}, status: Code[:error_code]
+     render json: {error_message: "Invalid", call_response: @call}, status: Code[:error_code]
    end
   rescue => e
     rescue_message(e)
