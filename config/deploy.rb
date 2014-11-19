@@ -8,7 +8,7 @@ set :repo_url, 'git@bitbucket.org:yelo/yeloapp.git'
 
  set :pty,  false
  
- set :rvm1_ruby_version, "2.1.2"
+ # set :rvm1_ruby_version, "2.1.2"
 
  set :sidekiq_config, "#{current_path}/config/sidekiq.yml"
  set :sidekiq_env, "production"

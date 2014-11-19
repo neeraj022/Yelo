@@ -21,6 +21,7 @@ class Wall
   field :location,        type: Array
   field :tag_user_ids,    type: Array
   field :chat_user_ids,   type: Array 
+  field :is_indexed,      type: Boolean, default: false
   ############### relations #######################
   belongs_to  :user, index: true, touch: true
   belongs_to  :tag,  index: true
@@ -31,7 +32,8 @@ class Wall
   embeds_one  :wall_info
   has_many :report_abuses, as: :abuse_obj
   ################## filters #######################
-  after_create :save_owner_and_statistic
+  before_create :save_owner_and_statistic
+  after_create :set_index_status
   ################# validators ######################
   validates :message, :city, :country, :tag_id, :latitude, :longitude, presence: true
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
@@ -46,12 +48,17 @@ class Wall
     user = self.user
     user.statistic.last_post = self.created_at
     user.save
-    self.create_wall_owner(user_id: user.id, name: user.name, image_url: user.image_url)
+    self.build_wall_owner(user_id: user.id, name: user.name, image_url: user.image_url)
   end
 
   def chat_users_count
     return self.chat_user_ids.length if self.chat_user_ids.present?
     0
+  end
+
+  def set_index_status
+    self.is_indexed = true
+    self.save
   end
 
   def tag_presence
