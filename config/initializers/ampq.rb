@@ -23,6 +23,8 @@ module ThinEM
       # end
       #-------------------
        puts "thin em started"
+       puts "#{Rails.application.secrets.rabbitmq_url}"
+       puts channel
     end
   end
 end

@@ -58,9 +58,11 @@ class WallItem
       t_usr.name = user.name
       v_hash = {wall_id: wall.id.to_s, tagged_by: self.name, message: wall.message, 
                 tag_name: wall.tag_name}
-      notify = Notification.save_notify(Notification::N_CONS[:USER_TAG], v_hash, user.id)
-      # notify = NotificationWorker.perform_async(notify.id.to_s)
-      notify.send_notification
+      if (self.user_id.to_s != user.id.to_s)          
+        notify = Notification.save_notify(Notification::N_CONS[:USER_TAG], v_hash, user.id)
+        # notify = NotificationWorker.perform_async(notify.id.to_s)
+        notify.send_notification
+      end
     else
       user = User.save_inactive_user(mobile_number, country_code)
       send_wall_tag_sms(t_usr) 
