@@ -25,7 +25,7 @@ class Api::V1::ListingsController < Api::V1::BaseController
     end
   end
  
-  # POST /listings/:id.json
+  # PUT /listings/:id.json
   def update
     if(@listing.update_attributes(listing_params))
       if(params[:tag_ids].present?)

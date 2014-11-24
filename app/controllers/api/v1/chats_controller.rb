@@ -4,10 +4,11 @@ class Api::V1::ChatsController < Api::V1::BaseController
   # POST /chat
   def send_chat
     if params[:sender_id]  == current_user.id.to_s
+      params[:message] = params[:message].to_s.truncate(600)
       ampq(params)
       render json: {status: "success"}
     else
-      render json: {status: "error", error_message: "sender is not you"}, status: Code[:error_code]
+      render json: {status: "error", error_message: "sender not found"}, status: Code[:error_code]
     end
   rescue => e
     rescue_message(e)
@@ -28,6 +29,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
       end
       obj[:server_sent_at] = Time.now.to_s
       if(obj[:status])
+        channel.queue("#{obj[:receiver_id]}queue", :auto_delete => false, durable: true)
         receiver_exchange = channel.fanout(obj[:receiver_id]+"exchange")
         receiver_exchange.publish(obj.to_json)
       end

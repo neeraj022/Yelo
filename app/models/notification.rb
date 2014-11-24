@@ -110,7 +110,7 @@ class Notification
         next unless u.push_id.present?
         obj = Notification.summary_wall_obj(tags_hash)
         Notification.push_notify(u.platform, [u.push_id], obj)
-        u.update_column(last_notify_sent_at: Time.now)
+        u.update_attributes(last_notify_sent_at: Time.now)
       end    
     end
 

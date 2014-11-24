@@ -90,5 +90,5 @@ class Chat
       end
     end
   end
-  
+
 end
