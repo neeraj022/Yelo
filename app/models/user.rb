@@ -336,7 +336,7 @@ class User
     interval = AppSetting.summary_notify_interval
     utc_offset = (self.utc_offset ||= 0)
     c_user_hour = Code.utc_time(utc_offset).hour
-    c_user_hour <= 20 && c_user_hour >= 11 && (diff_time <= interval)
+    c_user_hour <= 15 && c_user_hour >= 11 && (diff_time <= interval)
   end
 
   def notify_time_diff
