@@ -180,7 +180,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       # @sms = @user.send_sms
       # if(@sms[:status])
         encrypt_key = Rails.application.secrets.encrypt_key
-        key = AESCrypt.encrypt(@user.sms_serial_key, encrypt_key)
+        key = AESCrypt.encrypt(@user.serial_code, encrypt_key)
         render json: {status: Code[:status_success], serial_code: key}
       # else
       #   render json: {status: Code[:status_error], serial_code: @user.serial_code, error_message: @sms[:error_message]}
