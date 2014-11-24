@@ -35,7 +35,7 @@ class Api::V1::SearchController < Api::V1::BaseController
 
     def send_welcome_message
       if(current_user.present? && !current_user.w_msg_sent)
-        User.send_welcome_message(current_user.id.to_s)
+        current_user.send_welcome_message
         current_user.w_msg_sent = true
         current_user.save
       end

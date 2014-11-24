@@ -393,7 +393,20 @@ class User
     user_ids = persons.map{|p| p.user_id}.compact
     users = User.allowed.where(:_id.in => user_ids)
   end
-  
+
+  def send_welcome_message
+    id = self.id.to_s
+    num = Rails.application.secrets.w_mobile_number
+    num = User.mobile_number_format(num) 
+    sender = User.where(mobile_number: num[:mobile_number]).first
+    w_message = "Hey #{self.name},\n"+AppSetting.welcome_chat_message
+    chat_url = Rails.application.secrets.chat_url
+    str = "?sender_id=#{sender.id.to_s}&receiver_id=#{id}&message=#{w_message}&sent_at=#{Time.now.to_s}"
+    token = 'Token token='+"\""+sender.auth_token+"\""+","+' device_id='+"\""+sender.encrypt_device_id+"\""
+    Unirest.post"#{chat_url}/api/v1/chats/send/#{str}", headers: {"Authorization" => token}
+    rescue => e
+      false
+   end
   ################# class methods ###########################
   class << self
     
@@ -431,7 +444,7 @@ class User
       num = Rails.application.secrets.w_mobile_number
       num = User.mobile_number_format(num) 
       sender = User.where(mobile_number: num[:mobile_number]).first
-      w_message = "Hey #{self.name},\n"+AppSetting.welcome_chat_message
+      w_message = AppSetting.welcome_chat_message
       chat_url = Rails.application.secrets.chat_url
       str = "?sender_id=#{sender.id.to_s}&receiver_id=#{id}&message=#{w_message}&sent_at=#{Time.now.to_s}"
       token = 'Token token='+"\""+sender.auth_token+"\""+","+' device_id='+"\""+sender.encrypt_device_id+"\""
