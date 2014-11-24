@@ -129,35 +129,35 @@ class Notification
     def create_wall_obj(n_obj)
       v_hash = n_obj.n_value
       {collapse_key: "wall", message: "New post for #{v_hash[:tag_name]}: #{v_hash[:message]} created by #{v_hash[:message].truncate(100)}", resource: {name:
-       "create wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+       "New Post", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def contact_wall_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "contact_wall", message: "#{v_hash[:created_by]} posted on wall about #{v_hash[:message].truncate(100)}", resource: {name:
-       "contact wall", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+      {collapse_key: "contact_wall", message: "#{v_hash[:created_by]} posted on yelo: #{v_hash[:message].truncate(100)}", resource: {name:
+       "yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def user_tag_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "tag", message: "#{v_hash[:tagged_by]} tagged u for #{v_hash[:message].truncate(100)}", resource: {name:
-      "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+      {collapse_key: "tag", message: "#{v_hash[:tagged_by]} tagged you on: #{v_hash[:message].truncate(100)}", resource: {name:
+      "Tagged for #{v_hash[:tag_name]}", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def wall_tag_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "pin", message: "#{v_hash[:commented_by]} tagged on your wall #{v_hash[:message].truncate(100)}", resource: {name:
-      "tag", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+      {collapse_key: "pin", message: "your v_hash[:tag_name] post has a new tag from #{v_hash[:commented_by]}}", resource: {name:
+      "yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
     
     def summary_wall_obj(tags_hash)
-     str = "New wall posts "
-     tags_hash.each_pair do |k,v| 
-         str += "#{v} in #{k}, "
-     end
-     str = str.strip.chomp(",")
-     {collapse_key: "summary", message: str, resource: {name:
-    "wall summary", dest: nil}}
+      str = "New wall posts "
+      tags_hash.each_pair do |k,v| 
+          str += "#{v} in #{k}, "
+      end
+      str = str.strip.chomp(",")
+      {collapse_key: "summary", message: str, resource: {name:
+     "yelo", dest: nil}}
     end
 
     def push_notify(platform, push_ids, obj)
