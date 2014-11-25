@@ -15,42 +15,23 @@ class Api::V1::ChatsController < Api::V1::BaseController
   end
 
   def ampq(params)
-    EM.next_tick {
-      connection = AMQP.connect(:host => Rails.application.secrets.rabbitmq_url, :user=>Rails.application.secrets.rabbitmq_user, :pass => Rails.application.secrets.rabbitmq_password, :vhost => "/")
-      AMQP.channel ||= AMQP::Channel.new(connection)
-      channel  = AMQP.channel
-      channel.auto_recovery = true
-      begin
-        obj = Chat.set_chat(params) 
-      rescue => e
-        obj[:status] = false
-        e = "" if Rails.env == "production"
-        obj[:message] = "something went wrong #{e}"
-      end
-      obj[:server_sent_at] = Time.now.to_s
-      if(obj[:status])
-        channel.queue("#{obj[:receiver_id]}queue", :auto_delete => false, durable: true)
-        receiver_exchange = channel.fanout(obj[:receiver_id]+"exchange")
-        receiver_exchange.publish(obj.to_json)
-      end
-      sender_exchange = channel.fanout(obj[:sender_id]+"exchange") 
-      sender_exchange.publish(obj.to_json)
-      connection.on_tcp_connection_loss do |connection, settings|
-        # reconnect in 10 seconds, without enforcement
-        connection.reconnect(false, 10)
-      end
-      connection.on_error do |conn, connection_close|
-        puts <<-ERR
-        Handling a connection-level exception.
-        AMQP class id : #{connection_close.class_id},
-        AMQP method id: #{connection_close.method_id},
-        Status code   : #{connection_close.reply_code}
-        Error message : #{connection_close.reply_text}
-        ERR
-       conn.periodically_reconnect(30)
-      end
-      EventMachine::error_handler { |e| puts "error! in eventmachine #{e}" }
-    }
+    channel  = AMQP.channel
+    channel.auto_recovery = true
+    begin
+      obj = Chat.set_chat(params) 
+    rescue => e
+      obj[:status] = false
+      e = "" if Rails.env == "production"
+      obj[:message] = "something went wrong #{e}"
+    end
+    obj[:server_sent_at] = Time.now.to_s
+    if(obj[:status])
+      channel.queue("#{obj[:receiver_id]}queue", :auto_delete => false, durable: true)
+      receiver_exchange = channel.fanout(obj[:receiver_id]+"exchange")
+      receiver_exchange.publish(obj.to_json)
+    end
+    sender_exchange = channel.fanout(obj[:sender_id]+"exchange") 
+    sender_exchange.publish(obj.to_json)
   end
 
   # # POST /chats/seen
