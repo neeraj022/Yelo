@@ -12,6 +12,7 @@ class Api::V1::WallItemsController < Api::V1::BaseController
       render json: {error_message: @wall_item.errors.full_messages}, status: Code[:error_code]
     end
   rescue => e
+    @wall_item.destroy if @wall_item.persisted?
     rescue_message(e)
   end
 

@@ -40,6 +40,11 @@ class Code
     #z_time.hour
   end
 
+  def self.encrypt_aes(str)
+    encrypt_key = Rails.application.secrets.encrypt_key
+    Yelo::Aes.encrypt("salt-hs%$#%hjh", "96DDFA2EAD8C06D3AB445E118DC191D7", str, encrypt_key)
+  end
+
   def self.send_sms(num, msg)
     # sms_api_key = Rails.application.secrets.sms_api_key
     # request_url = "http://global.sinfini.com/api/v1/?api_key=#{sms_api_key}&method=sms&sender=yelo&to=#{num}&message=#{msg}"
