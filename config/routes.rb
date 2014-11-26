@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   devise_for :users
 
@@ -93,6 +94,11 @@ Rails.application.routes.draw do
         resources :wall_items
       end
     end
+  end
+
+
+  namespace :administrator do
+    get "/statistics/index", to: "statistics#index"
   end
 
 end
