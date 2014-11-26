@@ -20,7 +20,7 @@
 set :output, "log/cron_log.log"
 
 every 1.days do
-  Cron.destroy_old_notifications_and_chat
+  runner "Cron.destroy_old_notifications_and_chat"
 end
 #set :output, {:error => 'error.log', :standard => 'cron.log'}
 
