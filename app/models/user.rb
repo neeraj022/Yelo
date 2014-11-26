@@ -340,9 +340,10 @@ class User
   end
 
   def notify_time_diff
-    c_time = Time.now
+    c_time = Time.now.to_i
     n_time = self.last_notify_sent_at
     return 0 if n_time.blank?
+    n_time = Time.parse(self.last_notify_sent_at).to_i
     diff = ((c_time - n_time) / 3600).ceil
   end
   
