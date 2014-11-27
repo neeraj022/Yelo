@@ -29,7 +29,7 @@ class Api::V1::PublicController < Api::V1::BaseController
       notification = Notification.where(n_type: 4).last
     end
     obj = notification.notify_obj if params[:type] != "wall_summary"
-    Notification.push_notify("android", params[:push_id], obj)
+    Notification.push_notify("android", [params[:push_id]], obj)
     render json: {status: "success"}
   end
 
