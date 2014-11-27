@@ -320,6 +320,8 @@ class User
       return true
     when Notification::N_CONS[:CONTACT_WALL]
       return true
+    when Notification::N_CONS[:CREATE_WALL]
+      return true
     else
       return false
     end

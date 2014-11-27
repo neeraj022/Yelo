@@ -86,6 +86,7 @@ Rails.application.routes.draw do
       post "/walls/:id/destroy", to: "walls#destroy"
       post "/users/contacts", to: "users#contacts"
       get "/shares/:mobile_number", to: "public#shares"
+      get "/push", to: "public#push"
       resources :users
       resources :ratings
       resources :listings
