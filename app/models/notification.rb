@@ -163,10 +163,11 @@ class Notification
     def push_notify(platform, push_ids, obj)
       puts obj
       if(platform.downcase == "android")
-        self.push_android(push_ids, obj)
+        response = self.push_android(push_ids, obj)
       elsif(platform.downcase == "ios")
-        # self.push_ios([user.push_token], obj.to_json)
+        # response = self.push_ios([user.push_token], obj.to_json)
       end
+      response
     end
 
     def push_android(ids, obj)
@@ -176,6 +177,7 @@ class Notification
       options = {data: {payload: obj.to_json}}
       response = gcm.send(ids, options)
       puts response
+      response
     end
 
     def push_ios(ids, msg)
