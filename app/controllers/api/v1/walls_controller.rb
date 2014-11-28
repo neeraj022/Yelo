@@ -6,8 +6,8 @@ class Api::V1::WallsController < Api::V1::BaseController
     @wall = current_user.walls.new(wall_params)
     if @wall.save
       @wall.save_image(params[:image]) if params[:image].present?
-      # NotificationWorker.perform_async({type: "wall_create", wall_id: @wall.id.to_s})
-      Notification.save_wall(@wall.id.to_s)
+      # Notification.save_wall(@wall.id.to_s)
+      NewWallWorker.perform_async(@wall.id.to_s)
       ContactWallWorker.perform_async(@wall.id.to_s)
       # Notification.save_contact_wall(@wall.id)
       render json: @wall

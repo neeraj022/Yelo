@@ -7,6 +7,6 @@
 :logfile: ./log/sidekiq.log
 :pidfile: ./tmp/pids/sidekiq.pid
 :queues:
-  - [notification, 6]
+  - [new_wall, 6]
   - [contact_wall, 7]
   - [default, 5]

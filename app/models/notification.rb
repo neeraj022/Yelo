@@ -57,12 +57,15 @@ class Notification
       params = self.set_geo_params(wall)
       params[:tag_ids] = [wall.tag_id.to_s]
       params[:type] = "listing"
+      params[:radius] = 50
       listings = Search.query(params).records
       user_ids = listings.map{|l| l.user_id.to_s}.uniq
       user_ids.delete(wall.user_id.to_s)
-      user_ids.each do |id|
-      	v_hash = {wall_id: wall.id.to_s, tag_name: wall.tag_name, message: wall.message,
+      v_hash = {wall_id: wall.id.to_s, tag_name: wall.tag_name, message: wall.message,
         wall_user: wall.wall_owner.name}
+      notify_obj = self.create_wall_obj(v_hash)
+      self.send_new_wall_notifications(user_ids, notify_obj)
+      user_ids.each do |id|
         self.save_notify(Notification::N_CONS[:CREATE_WALL], v_hash, id, Notification::N_STATUS[:SUMMARY])
       end
     end
@@ -73,6 +76,20 @@ class Notification
       params[:longitude] = obj.longitude
       params[:radius] = AppSetting.wall_notify_radius
       params
+    end
+
+    def send_new_wall_notifications(user_ids, notify_obj)
+      users = User.where(:_id.in => user_ids)
+      android_push_ids = Array.new
+      ios_push_ids = Array.new
+      users.each do |u|
+        if(u.platform == "android")
+          android_push_ids << u.push_id if u.push_id.present?
+        elsif(u.platform == "ios")
+          ios_push_ids << u.push_id if u.push_id.present?
+        end
+      end
+      Notification.push_notify("android", android_push_ids, notify_obj) if android_push_ids.present?
     end
 
     def notify
@@ -127,7 +144,7 @@ class Notification
     end
 
     def create_wall_obj(n_obj)
-      v_hash = n_obj.n_value
+      v_hash = (n_obj.class.name == "Notification") ? n_obj.n_value : n_obj
       {collapse_key: "wall", message: "New post for #{v_hash[:tag_name]}: #{v_hash[:message]} created by #{v_hash[:message].truncate(100)}", resource: {name:
        "New Post", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
