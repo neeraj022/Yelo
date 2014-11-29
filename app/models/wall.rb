@@ -19,7 +19,7 @@ class Wall
   field :country,         type: String
   field :address,         type: String
   field :location,        type: Array
-  field :tag_user_ids,    type: Array
+  # field :tag_user_ids,    type: Array
   field :chat_user_ids,   type: Array 
   field :is_indexed,      type: Boolean, default: false
   ############### relations #######################

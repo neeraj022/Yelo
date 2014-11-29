@@ -402,7 +402,7 @@ class User
     num = Rails.application.secrets.w_mobile_number
     num = User.mobile_number_format(num) 
     sender = User.where(mobile_number: num[:mobile_number]).first
-    w_message = "Hey #{self.name},\n"+AppSetting.welcome_chat_message
+    w_message = "Hey #{self.name}!\n"+AppSetting.welcome_chat_message
     chat_url = Rails.application.secrets.chat_url
     str = "?sender_id=#{sender.id.to_s}&receiver_id=#{id}&message=#{w_message}&sent_at=#{Time.now.to_s}"
     token = 'Token token='+"\""+sender.auth_token+"\""+","+' device_id='+"\""+sender.encrypt_device_id+"\""

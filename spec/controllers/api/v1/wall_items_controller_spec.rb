@@ -32,9 +32,14 @@ RSpec.describe Api::V1::WallItemsController, :type => :controller do
   
   describe "destroy wall item" do
     it "should delete the wall" do
-      @wall_item = @wall.wall_items.create(comment: "test", user_id: @user.id)
+      post :create, @wall_params.merge(wall_id: @wall.id, tag_users: [{mobile_number: @user.mobile_number, name: "test"}])
+      @wall = @wall.reload
+      @wall_item = @wall.wall_items.last
+      tag_user_count = @wall.tagged_users.count
       delete :destroy, {wall_id: @wall.id.to_s, id: @wall_item.id.to_s}
       expect(@wall.reload.wall_items.count).to eq(0)
+      expect(@wall.reload.wall_items.count).to eq(0)
+      expect(@wall.tagged_users.count).not_to eq(tag_user_count)
     end
   end
 

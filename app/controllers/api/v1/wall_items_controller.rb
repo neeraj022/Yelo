@@ -30,6 +30,7 @@ class Api::V1::WallItemsController < Api::V1::BaseController
   def destroy
     @wall = Wall.where(_id: params[:wall_id]).first
     @wall_item = @wall.wall_items.where(_id: params[:id], user_id: current_user.id.to_s).first
+    @wall.tagged_users.where(:_id.in => @wall_item.tagged_user_ids).destroy
     @wall_item.destroy
     render json: { status: "success"}
   rescue => e

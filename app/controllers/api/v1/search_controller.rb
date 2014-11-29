@@ -5,9 +5,25 @@ class Api::V1::SearchController < Api::V1::BaseController
   # GET /search
   def search
   	@results  = Search.query(@params).page(params[:page]).per(params[:per]).records
-    render json: @results.to_a
+    @results = @results.to_a
+    if(@results.present?)
+      render json: @results.to_a
+    else
+      show_active_cities
+    end
   rescue => e
      rescue_message(e) 
+  end
+
+  def show_active_cities
+    str = "We are curretly active only in the following cities \n"
+    str += "(You can change your location under profile settings) \n"
+    # cities = Wall.collection.aggregate("$group" => { "_id" => "$city", count: {"$sum" =>  1} }).select{|w| w["count"] > 5}.map{|w| w["_id"]}
+    cities = Wall.collection.aggregate("$group" => {_id: {city: "$city", country: "$country"}, count: {"$sum" =>  1} }).select{|w| w["count"] > 5}.map{|w| w["_id"]["city"]}
+    cities.each do |c|
+      str += "#{c.capitalize}\n"
+    end
+    render json: {search:[], message: str}
   end
 
   private
