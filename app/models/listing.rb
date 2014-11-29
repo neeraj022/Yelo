@@ -22,7 +22,7 @@ class Listing
   belongs_to  :user, index: true, touch: true
   embeds_many :listing_tags
   ######################## filters ######################
-  validate :user_id, :city, :country, :latitude, :longitude, presence: true
+  validates :user_id, presence: true
   # validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   # validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
   ########################  instance methods #############
