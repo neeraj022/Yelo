@@ -77,6 +77,8 @@ GEM
       rack (>= 0.9.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap-sass (3.3.1.0)
+      sass (~> 3.2)
     bson (2.3.0)
     builder (3.2.2)
     cancancan (1.9.2)
@@ -400,6 +402,7 @@ DEPENDENCIES
   apipie-rails
   better_errors
   binding_of_caller
+  bootstrap-sass (~> 3.3.1)
   cancancan
   capistrano (~> 3.0.0)
   capistrano-bundler

@@ -47,6 +47,7 @@ class User
   field :w_msg_sent,           type: Boolean, default: false
   field :h_m_num,              type: String
   field :platform_version,     type: String
+  field :admin_type,           type: Integer, default: 0
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
