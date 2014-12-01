@@ -10,7 +10,7 @@ class SmsLog
 
   def can_send_sms?
   	diff_time = Code.time_diff_in_hours(Time.now, self.last_sms_sent)
-  	if diff_time <= AppSetting.tagged_user_sms_interval
+  	if diff_time >= AppSetting.tagged_user_sms_interval
   	  true
   	else
   	  false
