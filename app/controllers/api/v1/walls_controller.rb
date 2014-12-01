@@ -27,7 +27,7 @@ class Api::V1::WallsController < Api::V1::BaseController
   # GET /users/:user_id/walls
   def user_walls
     @user = User.where(_id: params[:user_id]).first
-    @walls = @user.walls.allowed.order("created_at DESC")
+    @walls = @user.walls.order("created_at DESC")
     render json: @walls
   rescue => e
     rescue_message(e)
@@ -70,6 +70,7 @@ class Api::V1::WallsController < Api::V1::BaseController
     set_mobile_number
     @wall = current_user.walls.where(_id: params[:id]).first
     @wall.status = false
+    @wall.is_closed = true
     @wall_info = @wall.build_wall_info(is_solved: params[:is_solved], s_name: params[:name], s_mobile_number: 
     @mobile_number, s_user_id: params[:user_id], s_country_code: @country_code)
     if(@wall.save)

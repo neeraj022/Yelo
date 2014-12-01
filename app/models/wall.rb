@@ -22,6 +22,7 @@ class Wall
   # field :tag_user_ids,    type: Array
   field :chat_user_ids,   type: Array 
   field :is_indexed,      type: Boolean, default: false
+  field :is_closed,       type: Boolean, default: false
   ############### relations #######################
   belongs_to  :user, index: true, touch: true
   belongs_to  :tag,  index: true
