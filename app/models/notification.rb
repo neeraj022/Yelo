@@ -145,7 +145,7 @@ class Notification
 
     def create_wall_obj(n_obj)
       v_hash = (n_obj.class.name == "Notification") ? n_obj.n_value : n_obj
-      {collapse_key: "wall", message: "New post in your interest ##{v_hash[:tag_name]} - #{v_hash[:message].truncate(100)}}", resource: {name:
+      {collapse_key: "wall", message: "New post in your interest ##{v_hash[:tag_name]} - #{v_hash[:message].truncate(100)}", resource: {name:
        "yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
