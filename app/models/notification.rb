@@ -164,7 +164,7 @@ class Notification
     def wall_tag_obj(n_obj)
       v_hash = n_obj.n_value
       {collapse_key: "pin", message: "You have a new tag from #{v_hash[:commented_by]} for your ##{v_hash[:tag_name]} post" , resource: {name:
-      "You've got yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+      "You got yelo'd", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
     
     def summary_wall_obj(tags_hash)
