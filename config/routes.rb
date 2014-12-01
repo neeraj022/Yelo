@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
 
 
+  get 'public/index'
+
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   devise_for :users
+  root 'public#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
@@ -100,6 +103,7 @@ Rails.application.routes.draw do
 
   namespace :administrator do
     get "/statistics/index", to: "statistics#index"
+    get "/wall/statistics", to: "statistics#wall_statistics"
   end
 
 end

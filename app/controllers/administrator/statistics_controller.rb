@@ -1,4 +1,4 @@
-class Administrator::StatisticsController < AdministartorController
+class Administrator::StatisticsController < Administrator::AdministratorController
   def index
     tag_users = Wall.where("tagged_users.is_present" => false)
     tag_user_ids  = tag_users.map{|t| t.user_id.to_s}
@@ -9,21 +9,50 @@ class Administrator::StatisticsController < AdministartorController
     render json: {tagged_users_from_sms: tag_users.count, verified_users: verified_users, users_today: users_today}
   end
 
-  # GET /wall/dates
-  def new_wall_statistics
-    render "new_wall_dates"
-  end
+  # # GET /wall/statistics
+  # def new_wall_statistics
+  #   render "new_wall_dates"
+  # end
 
   # GET /wall/summary
   def new_wall_summary
   	render "new_wall_summary"
   end
 
-  # POST /wall/dates
+  # GET /wall/statistics
   def wall_statistics
-  	start_date = Date.parse(Time.new(params[:year],params[:month]).to_s)
-  	end_date = start_date.end_of_month
-    render "wall_dates"
+  	 if(params[:type] == "month")
+       @walls = Wall.collection.aggregate(
+         {"$project" => {
+            "year" => {"$year" => "$created_at"}, 
+            "month" => {"$month" => "$created_at"},
+            "tagged_users" => {"$size" => { "$ifNull" => [ "$tagged_users", [] ] }}
+         }},
+         {"$group" => {
+            "_id" => {"year" => "$year", "month" => "$month"}, 
+            "wall_count" => {"$sum" => 1}, "tag_user_count" => {"$sum" => "$tagged_users"}
+         }}
+       )
+     elsif(params[:type] == "date")
+       start_date = Date.parse(params[:start_date])
+       end_date = Date.parse(params[:end_date])
+       @walls = Wall.collection.aggregate(
+         {
+          "$match" => { "created_at" => {'$gte' => start_date.beginning_of_day,'$lte' => end_date.end_of_day } } 
+         },
+         {"$project" => {
+            "year" => {"$year" => "$created_at"}, 
+            "month" => {"$month" => "$created_at"},
+            "date" => {"$dayOfMonth" => "$created_at"},
+            "tagged_users" => {"$size" => { "$ifNull" => [ "$tagged_users", [] ] }}
+         }},
+         {"$group" => {
+            "_id" => {"date" => "$date", "month" => "$month", "year" => "$year"}, 
+            "wall_count" => {"$sum" => 1}, "tag_user_count" => {"$sum" => "$tagged_users"}
+         }}
+       )
+     end
+    render "wall_statistics"
   end
 
   # POST /wall/summary
@@ -35,3 +64,5 @@ class Administrator::StatisticsController < AdministartorController
   end
 
 end
+
+

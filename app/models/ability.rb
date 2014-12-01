@@ -37,6 +37,7 @@ class Ability
       can :access, :rails_admin       # only allow admin users to access Rails Admin
       can :dashboard  
       can :read, :all
+      can :manage, :statistic
     end
   end
 end
