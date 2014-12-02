@@ -9,6 +9,11 @@ class Chat
   field :message,       type: String
   field :is_seen,       type: Boolean, default: false
   field :seen_at,       type: DateTime
+  ############## instance methids ###################
+  def chat_format
+    {message: message, sender_id: sender_id.to_s, receiver_id: receiver_id.to_s, created_at: created_at, 
+     reply_id: reply_id, id: id.to_s}
+  end
   ############## class methods ######################
   class << self
     

@@ -60,7 +60,24 @@ class Api::V1::ChatsController < Api::V1::BaseController
   
   # GET /notify
   def notify
-    Notification.wall_summary_notify
+    #Notification.wall_summary_notify
+  end
+
+  # GET /users/chats
+  def user_chats
+    c_obj = Array.new
+    chat_logs = current_user.chat_logs
+    chat_logs.each do |u|
+      ch = Hash.new
+      other_user = User.where(_id: u.chatter_id).first
+      next unless other_user.present?
+      ch[:user] = {name: other_user.name, id: other_user.id.to_s}
+      ch[:chats] = u.get_messages
+      c_obj << ch
+    end
+  render json: {chats: c_obj}
+  rescue => e
+    rescue_message(e)
   end
 
 end

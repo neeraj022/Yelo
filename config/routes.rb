@@ -90,6 +90,7 @@ Rails.application.routes.draw do
       post "/users/contacts", to: "users#contacts"
       get "/shares/:mobile_number", to: "public#shares"
       get "/push", to: "public#push"
+      get "/users/chats", to: "chats#user_chats"
       resources :users
       resources :ratings
       resources :listings
