@@ -144,27 +144,48 @@ class Notification
     end
 
     def create_wall_obj(n_obj)
+      opt = {tag_name: v_hash[:tag_name], post_message: v_hash[:message]}
+      default_msg =  "New post in your interest ##{v_hash[:tag_name]} - #{v_hash[:message].truncate(100)}"
+      str = self.message_format("interest_post_msg", opt, default_msg)
       v_hash = (n_obj.class.name == "Notification") ? n_obj.n_value : n_obj
-      {collapse_key: "wall", message: "New post in your interest ##{v_hash[:tag_name]} - #{v_hash[:message].truncate(100)}", resource: {name:
+      {collapse_key: "wall", message: str, resource: {name:
        "yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def contact_wall_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "contact_wall", message: "#{v_hash[:created_by]} posted on yelo: #{v_hash[:message].truncate(100)}", resource: {name:
+      opt = {post_owner: v_hash[:created_by], tag_name: v_hash[:tag_name], post_message: v_hash[:message]}
+      default_msg =  "#{v_hash[:created_by]} posted on yelo: #{v_hash[:message].truncate(100)}"
+      str = self.message_format("contact_post_msg", opt, default_msg)
+      {collapse_key: "contact_wall", message: str, resource: {name:
        "yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def user_tag_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "tag", message: "#{v_hash[:tagged_by]} tagged you on - #{v_hash[:message].truncate(100)}", resource: {name:
+      opt = {tagged_by: v_hash[:tagged_by], tag_name: v_hash[:tag_name], post_message: v_hash[:message]}
+      default_msg =  "#{v_hash[:tagged_by]} tagged you on - #{v_hash[:message].truncate(100)}"
+      str = self.message_format("post_tag_msg", opt, default_msg)
+      {collapse_key: "tag", message: str, resource: {name:
       "You got TAG'd", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def wall_tag_obj(n_obj)
       v_hash = n_obj.n_value
-      {collapse_key: "pin", message: "You have a new tag from #{v_hash[:commented_by]} for your ##{v_hash[:tag_name]} post" , resource: {name:
+      opt = {commented_by: v_hash[:commented_by], tag_name: v_hash[:tag_name], post_message: v_hash[:message]}
+      default_msg =  "You have a new tag from #{v_hash[:commented_by]} for your ##{v_hash[:tag_name]} post"
+      str = self.message_format("post_follow_msg", opt, default_msg)
+      {collapse_key: "pin", message: str , resource: {name:
       "You got yelo'd", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+    end
+
+    def message_format(type, opt={}, default_msg=nil)
+      str = AppSetting.first.send(type)
+      return default_msg unless str.present?
+      opt.each_pair do  |k, v|
+        str.gsub!(/\[#{k.to_s}\]/, v.to_s.truncate(140))
+      end
+      str
     end
     
     def summary_wall_obj(tags_hash)

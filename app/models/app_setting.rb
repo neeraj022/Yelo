@@ -19,6 +19,11 @@ class AppSetting
   field :max_abuse_count,          type: Integer, default: 2
   field :welcome_chat_message,     type: String
   field :version_android,          type: String, default: 0
+  field :contact_post_msg,         type: String
+  field :interest_post_msg,        type: String
+  field :post_follow_msg,          type: String
+  field :post_tag_msg,             type: String
+  field :tag_sms_msg,              type: String
   ############### class methods ############################
   class << self
     # in minutes

@@ -79,8 +79,10 @@ class WallItem
     sms_log = SmsLog.where(mobile_number: usr.mobile_number).first_or_initialize
     sms_log.country_code = usr.country_code
     sms_log.save
-    msg = "#{self.name} tagged you in a post on yelo - #{wall.message.truncate(100)},
+    opt = {post_message: wall.message.truncate(100), tagged_by: self.name}
+    default_msg = "#{self.name} tagged you in a post on yelo - #{wall.message.truncate(100)},
            Download the app here #{@mobile_app_url[:android]}"
+    msg = Notification.message_format("tag_sms_msg", opt, default_msg)
     sms_log.send_sms(msg)
   rescue => e
     false
