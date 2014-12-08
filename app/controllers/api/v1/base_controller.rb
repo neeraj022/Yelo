@@ -19,7 +19,7 @@ class Api::V1::BaseController < ActionController::API
 
   def rescue_message(e)
     render json: {error_message: Code.error_message(e), status: Code[:status_error] }, status: Code[:error_code]
-    ExceptionNotifier.notify_exception(e, data: {params: params})
+    # ExceptionNotifier.notify_exception(e, data: {params: params})
   end
 
   private

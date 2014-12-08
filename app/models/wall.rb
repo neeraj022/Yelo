@@ -105,6 +105,23 @@ class Wall
     wall.add_to_set(chat_user_ids: user_id)
   end
 
+  def tagged_user_comments
+    users = Array.new
+    self.wall_items.each do |i|
+      u = Hash.new
+      u[:comment] = i.comment
+      names = i.tagged_users.map{|t| t.name }
+      u[:names] = names
+      users << u
+    end
+    users
+  end
+
+  def tagged_user_recommendations(user_id)
+    tg_id = self.tagged_users.where(user_id: user_id).first.id.to_s
+    wall_items = self.wall_items.where(:tagged_user_ids  => tg_id).first.comment
+  end
+
   def abuse(user_id)
     abuse = self.report_abuses.where(user_id: user_id).first
     if(abuse.blank?)

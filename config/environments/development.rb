@@ -30,12 +30,12 @@ Rails.application.configure do
   config.assets.raise_runtime_errors = true
 
   # for error notifications
-  config.middleware.use ExceptionNotification::Rack,
-  :email => {
-    :email_prefix => "yelo development",
-    :sender_address => %{"notifier" <yeloapp@gmail.com>},
-    :exception_recipients => ["#{Rails.application.secrets.n_mail}"]
-  }
+  # config.middleware.use ExceptionNotification::Rack,
+  # :email => {
+  #   :email_prefix => "yelo development",
+  #   :sender_address => %{"notifier" <yeloapp@gmail.com>},
+  #   :exception_recipients => ["#{Rails.application.secrets.n_mail}"]
+  # }
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
