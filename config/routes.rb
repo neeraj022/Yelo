@@ -91,9 +91,9 @@ Rails.application.routes.draw do
       get "/shares/:mobile_number", to: "public#shares"
       get "/push", to: "public#push"
       get "/users/chats", to: "chats#user_chats"
-      get "/users/recommends/tags", to: "users#tag_recommends"
+      get "/users/:user_id/recommends/tags", to: "users#tag_recommends"
       get "/users/:user_id/recommendations/tags", to: "users#tag_recommendations"
-      get "/users/recommends", to: "users#recommends"
+      get "/users/:user_id/recommends", to: "users#recommends"
       get "/users/:user_id/recommendations", to: "users#recommendations"
       resources :users
       resources :ratings

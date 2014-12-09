@@ -121,11 +121,12 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue_message(e)
   end
 
-  # GET /users/recommends/tags
+  # GET /users/:user_id/recommends/tags
   def tag_recommends
+    params[:user_id] = BSON::ObjectId.from_string(params[:user_id])
     @tag_obj = Wall.collection.aggregate(
          {
-          "$match" => { "wall_items.user_id" => current_user.id} 
+          "$match" => { "wall_items.user_id" => params[:user_id]} 
          },
         {"$group" => {
             "_id" => {"tag_id" => "$tag_id"}, 
@@ -152,10 +153,11 @@ class Api::V1::UsersController < Api::V1::BaseController
     render json: {tags: @tags}
   end
 
-  # GET /users/recommends
+  # GET /users/:user_id/recommends
   def recommends
+    params[:user_id] = BSON::ObjectId.from_string(params[:user_id])
     t_users = Hash.new
-    walls = Wall.where("wall_items.user_id" => current_user.id)
+    walls = Wall.where("wall_items.user_id" => params[:user_id])
     if(params[:tag_id].present?)
       walls = walls.where(tag_id: params[:tag_id])
     end
