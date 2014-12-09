@@ -75,6 +75,16 @@ class Tag
       tags_array = tags.map{|t| {id: t.id.to_s, name: t.name}}
       tags_array
     end
+
+    def get_tag_from_group(t_obj)
+      return {} if t_obj.blank?
+      tags = Array.new
+      t_obj.each do |t|
+        tg = Tag.where(_id: t["_id"]["tag_id"]).first
+        tags << {name: tg.name, id: tg.id.to_s, count: t["tag_count"]  }
+      end
+      tags
+    end
  
   end
 end

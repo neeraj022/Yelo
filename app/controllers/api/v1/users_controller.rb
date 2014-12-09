@@ -121,17 +121,52 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue_message(e)
   end
 
+  # GET /users/recommends/tags
+  def tag_recommends
+    @tag_obj = Wall.collection.aggregate(
+         {
+          "$match" => { "wall_items.user_id" => current_user.id} 
+         },
+        {"$group" => {
+            "_id" => {"tag_id" => "$tag_id"}, 
+            "tag_count" => {"$sum" => 1}}
+         })
+    @tags = Tag.get_tag_from_group(@tag_obj)
+    render json: {tags: @tags}
+  rescue => e
+    rescue_message(e)
+  end
+
+  # GET /users/:user_id/recommendations/tags
+  def tag_recommendations
+    params[:user_id] = BSON::ObjectId.from_string(params[:user_id])
+    @tag_obj = Wall.collection.aggregate(
+     {
+      "$match" => { "tagged_users.user_id" => params[:user_id]} 
+     },
+    {"$group" => {
+        "_id" => {"tag_id" => "$tag_id"}, 
+        "tag_count" => {"$sum" => 1}}
+     })
+    @tags = Tag.get_tag_from_group(@tag_obj)
+    render json: {tags: @tags}
+  end
 
   # GET /users/recommends
   def recommends
     t_users = Hash.new
     walls = Wall.where("wall_items.user_id" => current_user.id)
+    if(params[:tag_id].present?)
+      walls = walls.where(tag_id: params[:tag_id])
+    end
     walls.each do |w|
       tag_name = w.tag_name
       h_obj = (t_users[tag_name.to_sym] ||= Array.new)
       h_obj << {wall_id: w.id.to_s, tagged_users: w.tagged_user_comments}
     end
     render json: {recommends: t_users}
+  rescue => e
+    rescue_message(e)
   end
 
   # GET /users/:user_id/recommendations
@@ -139,12 +174,17 @@ class Api::V1::UsersController < Api::V1::BaseController
     params[:user_id] = BSON::ObjectId.from_string(params[:user_id])
     recommendations = Hash.new
     walls = Wall.where("tagged_users.user_id" => params[:user_id])
+    if(params[:tag_id].present?)
+      walls = walls.where(tag_id: params[:tag_id])
+    end
     walls.each do |w|
       tag_name = w.tag_name
       h_obj = (recommendations[tag_name.to_sym] ||= Array.new)
       h_obj << {wall_id: w.id.to_s, comments: w.tagged_user_recommendations(params[:user_id])}
     end
     render json: {recommendations: recommendations}
+  rescue => e
+    rescue_message(e)
   end
   
   ## private methods ###################################
