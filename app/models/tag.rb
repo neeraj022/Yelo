@@ -85,6 +85,31 @@ class Tag
       end
       tags
     end
- 
+
+    def get_user_tag_recommends(t_obj, user_id)
+      return {} if t_obj.blank?
+      tag_hash = Hash.new
+      t_obj.each do |t|
+        t["_id"]["user_ids"].reject! {|u| u != user_id}
+        tg = Tag.where(_id: t["_id"]["tag_id"]).first
+        tg_obj = tag_hash[tg.name.to_sym] ||= Array.new
+        tg_obj << {name: tg.name, id: tg.id.to_s, count:  t["_id"]["user_ids"].count}
+      end
+     tags = Tag.formatted_user_tag_recommends(tag_hash)
+    end
+    
+    def formatted_user_tag_recommends(tag_hash)
+      tags = Array.new
+      tag_hash.each_pair do |k, v|
+        count = 0
+        name = v[0][:name]
+        id = v[0][:id]
+        v.each do |t|
+          count += t[:count] 
+        end
+       tags << {name: name, id: id, count: count }
+      end
+      tags
+    end
   end
 end

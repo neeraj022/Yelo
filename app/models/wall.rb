@@ -105,9 +105,9 @@ class Wall
     wall.add_to_set(chat_user_ids: user_id)
   end
 
-  def tagged_user_comments
+  def tagged_user_comments(user_id)
     users = Array.new
-    self.wall_items.each do |i|
+    self.wall_items.where(user_id: user_id).each do |i|
       u = Hash.new
       u[:comment] = i.comment
       names = i.tagged_users.map{|t| t.name }

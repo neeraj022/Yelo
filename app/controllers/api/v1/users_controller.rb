@@ -125,14 +125,22 @@ class Api::V1::UsersController < Api::V1::BaseController
   def tag_recommends
     params[:user_id] = BSON::ObjectId.from_string(params[:user_id])
     @tag_obj = Wall.collection.aggregate(
-         {
-          "$match" => { "wall_items.user_id" => params[:user_id]} 
-         },
-        {"$group" => {
-            "_id" => {"tag_id" => "$tag_id"}, 
-            "tag_count" => {"$sum" => 1}}
-         })
-    @tags = Tag.get_tag_from_group(@tag_obj)
+      { "$unwind" => '$wall_items' },
+      {
+        "$match" => { "wall_items.user_id" => params[:user_id]} 
+      },
+      {
+      "$project" => {
+          "tag_id" => "$tag_id",
+          "user_id" => "$wall_items.user_id",
+          "tag_name" => "$tag_name"
+         }
+        },
+      {"$group" => {
+            "_id" => {"tag_id" => "$tag_id", "tag_name" => "$tag_name"}, "count" =>  {"$sum" => 1}}
+      },
+    )
+    @tags = @tag_obj.map{|t| {name: t[:_id][:tag_name], id: t[:_id][:tag_id].to_s, count: t[:count] }}
     render json: {tags: @tags}
   rescue => e
     rescue_message(e)
@@ -151,6 +159,8 @@ class Api::V1::UsersController < Api::V1::BaseController
      })
     @tags = Tag.get_tag_from_group(@tag_obj)
     render json: {tags: @tags}
+  rescue => e
+    rescue_message(e)
   end
 
   # GET /users/:user_id/recommends
@@ -163,8 +173,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
     walls.each do |w|
       tag_name = w.tag_name
-      # h_obj = (t_users[tag_name.to_sym] ||= Array.new)
-      t_users  << {tag_name: tag_name, wall_id: w.id.to_s, tagged_users: w.tagged_user_comments}
+      t_users  << {tag_name: tag_name, wall_id: w.id.to_s, tagged_users: w.tagged_user_comments(params[:user_id])}
     end
     render json: {recommends: t_users}
   rescue => e
