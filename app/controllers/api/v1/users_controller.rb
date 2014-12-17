@@ -146,6 +146,24 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue_message(e)
   end
 
+  #  # GET /users/:user_id/recommends/tags
+  # def tag_recommends
+  #   params[:user_id] = BSON::ObjectId.from_string(params[:user_id])
+  #   @tag_obj = Wall.collection.aggregate(
+  #        {
+  #         "$match" => { "wall_items.user_id" => params[:user_id]} 
+  #        },
+  #       {"$group" => {
+  #           "_id" => {"tag_id" => "$tag_id", "user_ids" => "$wall_items.user_id"}
+  #         }
+  #        })
+  #   binding.pry
+  #   @tags = Tag.get_user_tag_recommends(@tag_obj, params[:user_id])
+  #   render json: {tags: @tags}
+  # rescue => e
+  #   rescue_message(e)
+  # end
+
   # GET /users/:user_id/recommendations/tags
   def tag_recommendations
     params[:user_id] = BSON::ObjectId.from_string(params[:user_id])
@@ -173,7 +191,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
     walls.each do |w|
       tag_name = w.tag_name
-      t_users  << {tag_name: tag_name, wall_id: w.id.to_s, tagged_users: w.tagged_user_comments(params[:user_id])}
+      t_users  << {tag_name: tag_name, wall_id: w.id.to_s, tagged_user: w.tagged_user_comments(params[:user_id])}
     end
     render json: {recommends: t_users}
   rescue => e
@@ -190,8 +208,8 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
     walls.each do |w|
       tag_name = w.tag_name
-      # h_obj = (recommendations[tag_name.to_sym] ||= Array.new)
-      recommendations << {tag_name: tag_name, wall_id: w.id.to_s, comments: w.tagged_user_recommendations(params[:user_id])}
+      rec = w.tagged_user_recommendations(params[:user_id])
+      recommendations << {tag_name: tag_name, wall_id: w.id.to_s, comment: rec[:comment], image_url: rec[:image_url]}
     end
     render json: {recommendations: recommendations}
   rescue => e

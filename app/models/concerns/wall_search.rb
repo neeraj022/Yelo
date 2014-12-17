@@ -15,6 +15,7 @@ module WallSearch
     settings index: { number_of_shards: 1, number_of_replicas: 0 } do
       mapping do
         indexes :city, analyzer: 'standard'
+        indexes :message, analyzer: 'standard'
         indexes :country, analyzer: 'standard'
         indexes :state, analyzer: 'standard'
         indexes :created_at, type: "date", format: "date_time"
@@ -38,7 +39,8 @@ module WallSearch
     #
     def as_indexed_json(options={})
       {id: self.id.to_s, tag_id: self.tag_id.to_s, loc: location_coordinates, country: self.country,
-       city: self.city, state: self.state, created_at: self.created_at, status: self.status}
+       city: self.city, state: self.state, created_at: self.created_at, status: self.status, message: self.message, is_abuse: self.is_abuse,
+      is_closed: is_closed}
     end
 
     # Search in title and content fields for `query`, include highlights in response
@@ -95,7 +97,7 @@ module WallSearch
                 }
          }
        end
-       if(query[:status].blank? && query[:city].blank? && query[:country].blank? && query[:tag_ids].blank?)
+       if(query[:post].blank? && query[:status].blank? && query[:city].blank? && query[:country].blank? && query[:tag_ids].blank?)
           @search_definition[:query] = { match_all: {} }
        else
           @search_definition[:query] = {
@@ -111,6 +113,13 @@ module WallSearch
          @search_definition[:query][:bool][:must] << {
             terms:  { 
               tag_id: query[:tag_ids]
+            } 
+          }
+       end
+       if(query[:post].present?)
+         @search_definition[:query][:bool][:must] << {
+            match:  { 
+              message: query[:post]
             } 
           }
        end

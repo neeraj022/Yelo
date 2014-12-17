@@ -23,6 +23,7 @@ class Wall
   field :chat_user_ids,   type: Array 
   field :is_indexed,      type: Boolean, default: false
   field :is_closed,       type: Boolean, default: false
+  field :is_abuse,        type: Boolean, default: false
   ############### relations #######################
   belongs_to  :user, index: true, touch: true
   belongs_to  :tag,  index: true
@@ -106,20 +107,20 @@ class Wall
   end
 
   def tagged_user_comments(user_id)
-    users = Array.new
+    users = Hash.new
     self.wall_items.where(user_id: user_id).each do |i|
-      u = Hash.new
-      u[:comment] = i.comment
-      names = i.tagged_users.map{|t| t.name }
-      u[:names] = names
-      users << u
+      users[:comment] = i.comment
+      tg = i.tagged_users.first
+      users[:name] = tg.name
+      users[:image_url] = tg.image_url
     end
     users
   end
 
   def tagged_user_recommendations(user_id)
     tg_id = self.tagged_users.where(user_id: user_id).first.id.to_s
-    wall_items = self.wall_items.where(:tagged_user_ids  => tg_id).first.comment
+    wall_item = self.wall_items.where(:tagged_user_ids  => tg_id).first
+    {comment: wall_item.comment, image_url: wall_item.image_url}
   end
 
   def abuse(user_id)
@@ -127,7 +128,10 @@ class Wall
     if(abuse.blank?)
       abuse = self.report_abuses.create(user_id: user_id)
       self.abuse_count = (self.abuse_count += 1)
-      self.status = false if self.abuse_count >= AppSetting.max_abuse_count 
+      if self.abuse_count >= AppSetting.max_abuse_count 
+        self.status = false
+        self.is_abuse = true
+      end
       self.save
     else
       false

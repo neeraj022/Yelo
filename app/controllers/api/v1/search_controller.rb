@@ -39,6 +39,7 @@ class Api::V1::SearchController < Api::V1::BaseController
       @params[:radius] = params[:radius].to_i 
       @params[:per]  = params[:per].to_i
       @params[:tag_ids] = set_tag_ids
+      @params[:post] = params[:post] if params[:post].present?
     end 
 
     def set_tag_ids
