@@ -7,6 +7,8 @@ class Person
   field :user_id,    type: BSON::ObjectId
   field :h_m_num,    type: BSON::ObjectId
   field :is_present, type: Boolean, default: false
+  
+  embeds_many :c_names
 
   index "h_m_num" => 1
 

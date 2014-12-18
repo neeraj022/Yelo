@@ -88,6 +88,7 @@ Rails.application.routes.draw do
       post "/abuse", to: "users#abuse"
       post "/walls/:id/destroy", to: "walls#destroy"
       post "/users/contacts", to: "users#contacts"
+      post "/users/contacts_and_names", to: "users#contacts_with_name"
       get "/shares/:mobile_number", to: "public#shares"
       get "/push", to: "public#push"
       get "/users/chats", to: "chats#user_chats"

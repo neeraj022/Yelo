@@ -121,6 +121,15 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue_message(e)
   end
 
+
+  # POST /users/contacts_and_names
+  def contacts_with_name
+    current_user.save_contacts_with_name(params[:contacts])
+    render json: {status: "success"}
+  # rescue => e
+  #   rescue_message(e)
+  end
+
   # GET /users/:user_id/recommends/tags
   def tag_recommends
     params[:user_id] = BSON::ObjectId.from_string(params[:user_id])

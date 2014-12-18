@@ -116,6 +116,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         expect(response.status).to eql(200)
         expect(Person.count).to eql(1)
       end
+      it "should updload user contacts with names" do
+        @user = FactoryGirl.create(:user)
+        authWithUser(@user)
+        params = {contacts: [{hash_mobile_number: "#qwerty", name: "test"}]}
+        post :contacts_with_name, params
+        expect(response.status).to eql(200)
+        expect(Person.count).to eql(1)
+        expect(Person.last.c_names.first.name).to eql("test")
+      end
     end
   end
 end

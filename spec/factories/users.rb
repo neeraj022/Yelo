@@ -15,6 +15,7 @@ FactoryGirl.define do
     longitude '77.5667'
     country 'india'
     city 'bangalore'
+    serial_code '22334324'
   end
 end
 
