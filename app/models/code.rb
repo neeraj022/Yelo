@@ -22,6 +22,11 @@ class Code
      end
    end
 
+   def self.email_regex
+     str = '^(|(([A-Za-z0-9]+_+)|([A-Za-z0-9]+\-+)|([A-Za-z0-9]+\.+)|([A-Za-z0-9]+\++))*[A-Za-z0-9]+@((\w+\-+)|(\w+\.))*\w{1,63}\.[a-zA-Z]{2,6})$'
+     return Regexp.new(str, Regexp::IGNORECASE)
+   end
+
   def self.serialized_json(obj, class_name = nil)
     if obj.kind_of?(Array)
       ActiveModel::ArraySerializer.new(obj).as_json

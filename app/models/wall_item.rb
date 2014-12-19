@@ -65,7 +65,7 @@ class WallItem
       end
     else
       user = User.save_inactive_user(mobile_number, country_code)
-      send_wall_tag_sms(t_usr) 
+      send_wall_tag_email_sms(t_usr, usr[:email]) 
     end
     user.save_user_tags(wall.tag_id, self.user_id)
     t_usr.user_id = user.id
@@ -74,7 +74,7 @@ class WallItem
     return t_usr
   end
 
-  def send_wall_tag_sms(usr)
+  def send_wall_tag_email_sms(usr, email=nil)
     @mobile_app_url ||= AppSetting.mobile_app_url
     sms_log = SmsLog.where(mobile_number: usr.mobile_number).first_or_initialize
     sms_log.country_code = usr.country_code
@@ -84,6 +84,7 @@ class WallItem
            Download the app here #{@mobile_app_url[:android]}"
     msg = Notification.message_format("tag_sms_msg", opt, default_msg)
     sms_log.send_sms(msg)
+    EmailWorker.perform_async("refer", email, wall.message, self.name)
   rescue => e
     false
   end
