@@ -80,7 +80,7 @@ class WallItem
     sms_log.country_code = usr.country_code
     sms_log.save
     opt = {post_message: wall.message.truncate(100), tagged_by: self.name}
-    default_msg = "#{self.name} tagged you in a post on yelo - #{wall.message.truncate(100)},
+    default_msg = "#{self.name} referred you in a post on yelo - #{wall.message.truncate(100)},
            Download the app here #{@mobile_app_url[:android]}"
     msg = Notification.message_format("tag_sms_msg", opt, default_msg)
     sms_log.send_sms(msg)

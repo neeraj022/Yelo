@@ -1,6 +1,6 @@
 class Api::V1::WallsController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:show, :user_walls]
-
+  before_action :truncate_wall_msg
   # POST /walls/
   def create
     @wall = current_user.walls.new(wall_params)
@@ -96,4 +96,7 @@ class Api::V1::WallsController < Api::V1::BaseController
       	                           :country, :city, :state, :address, :tmp_id)
     end
 
+    def truncate_wall_msg
+      params[:wall][:message] =  params[:wall][:message].to_s.truncate(600) if params[:wall].present?
+    end
 end
