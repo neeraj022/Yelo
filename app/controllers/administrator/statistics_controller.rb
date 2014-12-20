@@ -1,8 +1,12 @@
 class Administrator::StatisticsController < Administrator::AdministratorController
   def index
-    tag_users = Wall.where("tagged_users.is_present" => false)
-    tag_user_ids  = tag_users.map{|t| t.user_id.to_s}
-    tag_users = User.where(:id.in => tag_user_ids, mobile_verified: true)
+    walls = Wall.where("tagged_users.is_present" => false)
+    tag_user_ids = Array.new
+    walls.each do |w|
+      t = w.tagged_users.where(is_present: false).map{|i| i.mobile_number}
+      tag_user_ids.concat( t ) 
+    end
+    tag_users = User.where(:mobile_number.in => tag_user_ids, mobile_verified: true)
     verified_users =  User.where(mobile_verified: true).count
     date = Date.today
     users_today = User.where(created_at: date.beginning_of_day..date.end_of_day, mobile_verified: true).count

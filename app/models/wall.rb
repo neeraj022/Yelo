@@ -138,4 +138,13 @@ class Wall
     end
   end
 
+  def self.email_obj(wall_id, item_id)
+    wall = Wall.where(_id: wall_id).first
+    item = wall.wall_items.where(_id: item_id).first
+    tg_user = wall.tagged_users.where(:_id.in => item.tagged_user_ids).first
+    {msg: wall.message, referred_by: item.name, referrer: tg_user.name, tag_name: wall.tag_name, email: tg_user.email}
+  rescue => e
+    false
+  end
+
 end
