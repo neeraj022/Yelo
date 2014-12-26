@@ -84,7 +84,7 @@ class WallItem
            Download the app here #{@mobile_app_url[:android]}"
     msg = Notification.message_format("tag_sms_msg", opt, default_msg)
     sms_log.send_sms(msg)
-    EmailWorker.perform_async("refer", email, nil, self.name, name, self.wall.tag_name)
+    EmailWorker.perform_async("refer", email, wall.message.truncate(100), self.name, name, self.wall.tag_name, self.wall.wall_owner.name)
   rescue => e
     false
   end
