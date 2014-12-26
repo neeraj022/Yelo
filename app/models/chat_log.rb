@@ -12,7 +12,9 @@ class ChatLog
     chats = Array.new
     items = self.chat_items
     items.each do |i|
-      chats <<  Chat.where(_id: i.chat_id).first.chat_format
+      c = Chat.where(_id: i.chat_id).first
+      next if c.blank?
+      chats <<  c.chat_format
     end
     chats
   end
