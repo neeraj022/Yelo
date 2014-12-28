@@ -57,7 +57,7 @@ class Notification
       params = self.set_geo_params(wall)
       params[:tag_ids] = [wall.tag_id.to_s]
       params[:type] = "listing"
-      params[:radius] = 10
+      params[:radius] = 50
       listings = Search.query(params).records
       user_ids = listings.map{|l| l.user_id.to_s}.uniq
       user_ids.delete(wall.user_id.to_s)
@@ -144,10 +144,10 @@ class Notification
     end
 
     def create_wall_obj(n_obj)
+      v_hash = (n_obj.class.name == "Notification") ? n_obj.n_value : n_obj
       opt = {tag_name: v_hash[:tag_name], post_message: v_hash[:message]}
       default_msg =  "New post in your interest ##{v_hash[:tag_name]} - #{v_hash[:message].truncate(100)}"
       str = self.message_format("interest_post_msg", opt, default_msg)
-      v_hash = (n_obj.class.name == "Notification") ? n_obj.n_value : n_obj
       {collapse_key: "wall", message: str, resource: {name:
        "yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
@@ -164,7 +164,7 @@ class Notification
     def user_tag_obj(n_obj)
       v_hash = n_obj.n_value
       opt = {tagged_by: v_hash[:tagged_by], tag_name: v_hash[:tag_name], post_message: v_hash[:message]}
-      default_msg =  "#{v_hash[:tagged_by]} tagged you on - #{v_hash[:message].truncate(100)}"
+      default_msg =  "#{v_hash[:tagged_by]} referred you on - #{v_hash[:message].truncate(100)}"
       str = self.message_format("post_tag_msg", opt, default_msg)
       {collapse_key: "tag", message: str, resource: {name:
       "You got TAG'd", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
@@ -173,7 +173,7 @@ class Notification
     def wall_tag_obj(n_obj)
       v_hash = n_obj.n_value
       opt = {commented_by: v_hash[:commented_by], tag_name: v_hash[:tag_name], post_message: v_hash[:message]}
-      default_msg =  "You have a new tag from #{v_hash[:commented_by]} for your ##{v_hash[:tag_name]} post"
+      default_msg =  "You have a new referral from #{v_hash[:commented_by]} for your ##{v_hash[:tag_name]} post"
       str = self.message_format("post_follow_msg", opt, default_msg)
       {collapse_key: "pin", message: str , resource: {name:
       "You got yelo'd", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
