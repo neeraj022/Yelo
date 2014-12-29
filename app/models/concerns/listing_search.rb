@@ -52,12 +52,12 @@ module ListingSearch
         @search_definition[:facets][key.to_sym][:facet_filter][:and] ||= []
         @search_definition[:facets][key.to_sym][:facet_filter][:and]  |= [f]
       end
-
-
       @search_definition = {
           query: {}
         }
-
+      if(query[:size].present?)
+        @search_definition[:size] = query[:size]
+      end
       if(query[:latitude].present? && query[:longitude].present?)
          @search_definition[:filter] = {
               geo_distance: {

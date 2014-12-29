@@ -58,6 +58,7 @@ class Notification
       params[:tag_ids] = [wall.tag_id.to_s]
       params[:type] = "listing"
       params[:radius] = 50
+      params[:size] = 0
       listings = Search.query(params).records
       user_ids = listings.map{|l| l.user_id.to_s}.uniq
       user_ids.delete(wall.user_id.to_s)
