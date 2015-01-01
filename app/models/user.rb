@@ -235,7 +235,8 @@ class User
   end
 
   def sms
-    res = Code.send_sms(self.full_mobile_number, self.serial_code)
+    msg = "yelo verification code: #{self.serial_code}"
+    res = Code.send_sms(self.full_mobile_number, msg)
   end
 
   def full_mobile_number
