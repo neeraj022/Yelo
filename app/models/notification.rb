@@ -177,7 +177,7 @@ class Notification
       default_msg =  "You have a new referral from #{v_hash[:commented_by]} for your ##{v_hash[:tag_name]} post"
       str = self.message_format("post_follow_msg", opt, default_msg)
       {collapse_key: "pin", message: str , resource: {name:
-      "You got yelo'd", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+      "You've been referred", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def message_format(type, opt={}, default_msg=nil)
