@@ -22,7 +22,6 @@ class SmsLog
       # msg = URI.encode(msg)
       res = Code.send_sms(self.full_mobile_number, msg)
       Rails.logger.info res
-      Rails.logger.info Rails.application.secrets.sms_api_key
       self.last_sms_sent = Time.now
       self.save
     end

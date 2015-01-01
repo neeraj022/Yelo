@@ -235,10 +235,7 @@ class User
   end
 
   def sms
-    sms_api_key = Rails.application.secrets.sms_api_key
-    request_url = "http://global.sinfini.com/api/v1/?api_key=#{sms_api_key}&method=sms&sender=yelo&to=#{self.full_mobile_number}&message=#{self.serial_code}"
-    response = open(request_url).read
-    response
+    res = Code.send_sms(self.full_mobile_number, self.serial_code)
   end
 
   def full_mobile_number
