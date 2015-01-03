@@ -110,6 +110,7 @@ Rails.application.routes.draw do
   namespace :administrator do
     get "/statistics/index", to: "statistics#index"
     get "/wall/statistics", to: "statistics#wall_statistics"
+    get "/walls/tags", to: "statistics#tag_summary"
   end
 
 end

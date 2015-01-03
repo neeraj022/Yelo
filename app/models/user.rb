@@ -224,7 +224,7 @@ class User
         return {status: true, response: self.sms}
       else
         msg = "only #{AppSetting.sms_per_day} verfication sms per day"
-        return {status: false, response: self.sms, error_message: msg}
+        return {status: false, error_message: msg}
       end
     else
       statistic.last_sms_sent = Time.now

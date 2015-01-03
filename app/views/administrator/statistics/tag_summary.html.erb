@@ -1,0 +1,7 @@
+<!--[{"_id"=>{"tag"=>"public relationship managers"}, "post_count"=>1, "tag_user_count"=>1}, {"_id"=>{"tag"=>"and"}, "post_count"=>54, "tag_user_count"=>63}] -->
+<% @walls.each do |w| %>
+  <h4><%=w["_id"]["tag"]%></h4>
+  <p>Total number of walls: <%=w["post_count"]%></p>
+  <p>Total number of Tags: <%=w["tag_user_count"]%></p>
+  <p>Total number of chats: <%=w["chat_count"]%></p>
+<% end %>
