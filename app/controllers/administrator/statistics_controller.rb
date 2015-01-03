@@ -69,7 +69,7 @@ class Administrator::StatisticsController < Administrator::AdministratorControll
     render "wall_summary"
   end
 
-  # POST /wall/tags
+  # GET /wall/tags
   def tag_summary
     @walls = Wall.collection.aggregate(
     {"$project" => {
@@ -84,6 +84,12 @@ class Administrator::StatisticsController < Administrator::AdministratorControll
      }}
     )
    render "tag_summary"
+  end
+
+  # GET /users
+  def user_summary
+    @users = User.all.allowed.page(params[:page]).per(200)
+    render "user_summary"
   end
 
 end

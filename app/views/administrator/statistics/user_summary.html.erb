@@ -1,0 +1,23 @@
+ <table border="1" style="width:100%">
+  <tr>
+    <th>Name</th>
+    <th>No of post</th>
+    <th>No of chats</th> 
+    <th>No of referrals</th>
+    <th>Referred count</th>
+    <th>No of requests</th>
+  </tr>
+<% @users.each do |u|%>
+    <tr>
+      <td><%=u.name%></td>
+	  <td><%=u.walls.count%></td>
+	  <td><%=u.chat_logs.count%></td>
+	  <td><%=u.statistic.present? ? u.connects_count : 0%></td>
+	  <td><%=u.total_tagged%></td>
+	  <td><%=u.sign_in_count%></td>
+   </tr>
+<% end %>
+
+</table>
+
+<%= paginate @users %>
