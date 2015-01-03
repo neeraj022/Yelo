@@ -215,7 +215,7 @@ class User
   def send_sms
     statistic = self.statistic
     last_sms_date = statistic.last_sms_sent.to_date if statistic.last_sms_sent.present?
-    last_sms_date ||= Time.now.to_date
+    last_sms_date ||= 1.month.ago.to_date
     present_date = Time.now.to_date
     if(last_sms_date == present_date)
       if(AppSetting.sms_per_day >= statistic.sms_count)

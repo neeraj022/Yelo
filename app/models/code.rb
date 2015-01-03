@@ -62,8 +62,7 @@ class Code
     #     :body => msg
     #  )
     # ss
-    #sms_api_key = Rails.application.secrets.sms_api_key
-    sms_api_key = "76912A02SOJwLLw0b54a5617c"
+    sms_api_key = Rails.application.secrets.sms_api_key
     sms = Unirest.get "https://control.msg91.com/api/sendhttp.php?authkey=#{sms_api_key}&mobiles=#{num}&message=#{msg}&sender=YELOOO&route=4"
     sms
   end
