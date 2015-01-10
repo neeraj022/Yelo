@@ -98,6 +98,8 @@ gem 'twilio-ruby', '~> 3.11'
 
 gem 'aescrypt'
 
+gem 'to_xls-rails'
+
 group :test do
   gem 'elasticsearch-extensions'
 end

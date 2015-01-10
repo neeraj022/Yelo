@@ -57,7 +57,7 @@ class Notification
       params = self.set_geo_params(wall)
       params[:tag_ids] = [wall.tag_id.to_s]
       params[:type] = "listing"
-      params[:radius] = 50
+      params[:radius] = 10
       params[:size] = 10000
       listings = Search.query(params).records
       user_ids = listings.map{|l| l.user_id.to_s}.uniq

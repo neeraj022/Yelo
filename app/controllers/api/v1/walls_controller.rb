@@ -65,7 +65,7 @@ class Api::V1::WallsController < Api::V1::BaseController
     rescue_message(e)
   end
  
-  # post /walls/:id/close
+  # POST /walls/:id/close
   def wall_close
     set_mobile_number
     @wall = current_user.walls.where(_id: params[:id]).first
@@ -80,6 +80,18 @@ class Api::V1::WallsController < Api::V1::BaseController
     end
   rescue => e
     rescue_message(e)
+  end
+
+  # GET /walls/chat_users
+  def chat_users
+    @wall = current_user.walls.where(_id: params[:id]).first
+    user_ids = @wall.chat_user_ids
+    obj = Array.new
+    users = User.where(:_id.in => user_ids) 
+    users.each do |u|
+      obj << {id: u.id.to_s, name: u.name, image_url: u.image_url}
+    end
+    render json {chat_users: obj}
   end
   
   private

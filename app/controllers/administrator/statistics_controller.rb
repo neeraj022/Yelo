@@ -30,11 +30,13 @@ class Administrator::StatisticsController < Administrator::AdministratorControll
          {"$project" => {
             "year" => {"$year" => "$created_at"}, 
             "month" => {"$month" => "$created_at"},
-            "tagged_users" => {"$size" => { "$ifNull" => [ "$tagged_users", [] ] }}
+            "tagged_users" => {"$size" => { "$ifNull" => [ "$tagged_users", [] ] }},
+            "chat_count" => {"$size" => { "$ifNull" => ["$chat_user_ids", [] ] }}
          }},
          {"$group" => {
             "_id" => {"year" => "$year", "month" => "$month"}, 
-            "wall_count" => {"$sum" => 1}, "tag_user_count" => {"$sum" => "$tagged_users"}
+            "wall_count" => {"$sum" => 1}, "tag_user_count" => {"$sum" => "$tagged_users"},
+            "chat_count" => {"$sum" => "$chat_count"}
          }}
        )
      elsif(params[:type] == "date")
@@ -58,7 +60,17 @@ class Administrator::StatisticsController < Administrator::AdministratorControll
          }}
        )
      end
-    render "wall_statistics"
+     if request.format == "html"
+       render "wall_statistics"
+     elsif request.format == "xls"
+       @walls_array = Array.new
+       @walls.each do |w|
+        date = w["_id"]["date"].to_s+"/"+w["_id"]["month"].to_s+"/"+w["_id"]["year"].to_s
+        @walls_array << { date: date, :"total number of walls" => w["wall_count"], :"total number of tags" => w["tag_user_count"],
+                        :"total number of chats" => w["chat_count"]}
+     end
+      send_data(@walls_array.to_xls)
+    end
   end
 
   # POST /wall/summary
@@ -83,13 +95,32 @@ class Administrator::StatisticsController < Administrator::AdministratorControll
         "chat_count" => {"$sum" => "$chat_count"} 
      }}
     )
-   render "tag_summary"
+    if request.format == "html"
+       render "tag_summary"
+    elsif request.format == "xls"
+     @walls_array = Array.new
+     @walls.each do |w|
+      @walls_array << { :"total number of walls" => w["post_count"], :"total number of tags" => w["tag_user_count"],
+                        :"total number of chats" => w["chat_count"]}
+     end
+      send_data(@walls_array.to_xls)
+    end
   end
 
-  # GET /users
+  # GET /statistics/users
   def user_summary
-    @users = User.all.allowed.page(params[:page]).per(200)
-    render "user_summary"
+    if request.format == "html"
+      @users = User.all.allowed.page(params[:page]).per(200)
+      render "user_summary"
+    elsif request.format == "xls"
+      @users = User.all.allowed
+      @usr_array = Array.new
+      @users.each do |u| 
+        referrals = u.statistic.present? ? u.connects_count : 0
+        @usr_array << {:name => u.name, :"no of post" => u.walls.count, :"no of chats" => u.chat_logs.count, :"no of referrals" => referrals, :"referred count" => u.total_tagged, :"no of requests" => u.sign_in_count }
+      end
+       send_data(@usr_array.to_xls)
+    end
   end
 
 end
