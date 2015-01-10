@@ -91,7 +91,7 @@ class Api::V1::WallsController < Api::V1::BaseController
     users.each do |u|
       obj << {id: u.id.to_s, name: u.name, image_url: u.image_url}
     end
-    render json {chat_users: obj}
+    render json: {chat_users: obj}
   end
   
   private
