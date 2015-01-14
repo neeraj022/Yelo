@@ -267,6 +267,14 @@ class User
     end
   end
 
+  def profile_image
+    if  self.image.blank? || self.image.url.include?("fallback")
+      false
+    else
+      true
+    end
+  end
+
   def mobile_number_filter
     if mobile_number_changed? && mobile_number.length > 10
       num =  self.mobile_number
