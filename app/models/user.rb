@@ -472,8 +472,18 @@ class User
     rescue => e
       false
     end
-  
+
+    def set_mobile_number(user, num)
+      num = self.mobile_number_format(num)
+      code = num[:country_code]
+      mobile = num[:mobile_number]
+      if(code.blank?)
+        code = user.country_code
+      end
+      return {mobile_number: mobile, country_code: code}
+    end
   end
+
   ## private methods
   private
     def generate_authentication_token

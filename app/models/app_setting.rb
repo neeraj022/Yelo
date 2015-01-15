@@ -24,6 +24,7 @@ class AppSetting
   field :post_follow_msg,          type: String
   field :post_tag_msg,             type: String
   field :tag_sms_msg,              type: String
+  field :wall_share_msg,           type: String
   ############### class methods ############################
   class << self
     # in minutes

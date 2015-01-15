@@ -27,6 +27,12 @@ class Code
      return Regexp.new(str, Regexp::IGNORECASE)
    end
 
+   def self.phone_regex
+     #str = "^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$"
+    str = "^[0-9\+]{7,13}$"
+    return Regexp.new(str)
+   end
+
   def self.serialized_json(obj, class_name = nil)
     if obj.kind_of?(Array)
       ActiveModel::ArraySerializer.new(obj).as_json

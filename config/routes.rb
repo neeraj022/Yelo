@@ -96,6 +96,7 @@ Rails.application.routes.draw do
       get "/users/:user_id/recommendations/tags", to: "users#tag_recommendations"
       get "/users/:user_id/recommends", to: "users#recommends"
       get "/users/:user_id/recommendations", to: "users#recommendations"
+      post "/sms_share", to: "users#sms_share"
       resources :users
       resources :ratings
       resources :listings

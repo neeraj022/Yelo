@@ -224,8 +224,34 @@ class Api::V1::UsersController < Api::V1::BaseController
   rescue => e
     rescue_message(e)
   end
+
+  # POST /share_sms
+  def sms_share
+    wall = Wall.find(params[:wall_id])
+    # opt = {post_owner: current_user.name, tag_name: wall.tag_name, post_message: wall.message}
+    # default_msg =  "#{current_user.name} posted on yelo: #{wall.message.truncate(100)}"
+    # str = Notification.message_format("contact_post_msg", opt, default_msg)
+    # str += "! Download app at www.yelo.red"
+    str = "#{current_user.name} posted on yelo: #{wall.message.truncate(100)}! Download app at www.yelo.red"
+    params[:phone_numbers][0..5].each do |s|
+       if s =~ Code.phone_regex 
+          send_sms_share(s, str)
+       end
+    end
+    render json: {status: "success"}
+  end
+
+  def send_sms_share(num, msg)
+    number = User.set_mobile_number(current_user, num)
+    sms_log = SmsLog.where(mobile_number: number[:mobile_number]).first_or_initialize
+    sms_log.country_code = number[:country_code]
+    sms_log.last_sms_sent = 1.month.ago
+    sms_log.save
+    sms_log = sms_log.reload
+    sms_log.send_sms(msg)
+  end
   
-  ## private methods ###################################
+  ############## private methods ###################################
   private
 
     def save_verified_user
