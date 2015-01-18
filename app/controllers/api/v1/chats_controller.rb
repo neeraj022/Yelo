@@ -29,6 +29,10 @@ class Api::V1::ChatsController < Api::V1::BaseController
       channel.queue("#{obj[:receiver_id]}queue", :auto_delete => false, durable: true)
       receiver_exchange = channel.fanout(obj[:receiver_id]+"exchange")
       receiver_exchange.publish(obj.to_json)
+      rec = User.where(_id: obj[:receiver_id]).first
+      unless rec.online?
+        rec.alert_notify
+      end
     end
     sender_exchange = channel.fanout(obj[:sender_id]+"exchange") 
     sender_exchange.publish(obj.to_json)

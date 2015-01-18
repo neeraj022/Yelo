@@ -31,7 +31,7 @@ module ListingSearch
     # Customize the JSON serialization for Elasticsearch
     #
     def as_indexed_json(options={})
-      {id: self.id.to_s, user_id: self.user_id.to_s, loc: location_coordinates, tag_ids:  self.tag_ids,
+      {id: self.id.to_s, user_id: self.user_id.to_s, loc: location_coordinates, tag_id:  self.tag_id,
       country: self.country.to_s, city: self.city.to_s, state: self.state.to_s,
       address: self.address.to_s}
     end

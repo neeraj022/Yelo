@@ -11,6 +11,7 @@ class Tag
   ################# relations ################
   belongs_to :group
   has_many :walls
+  has_many :keywords
   ################## filters #################
   after_save :update_embed_docs
   ############## validators  #################

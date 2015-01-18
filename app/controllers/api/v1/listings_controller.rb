@@ -1,28 +1,20 @@
 class Api::V1::ListingsController < Api::V1::BaseController
-  before_action :authenticate_user!, except: [:show, :create, :user_listings]
+  before_action :authenticate_user!, except: [:show, :user_listings]
   before_action :set_listing, only: [:update]
  
   # POST /listings.json
   def create
     raise "No more than one listing" if current_user.listings.first.present?
     @listing = current_user.listings.new(listing_params) 
-    if(@listing.valid?)
-      save_tags
+    if(@listing.save)
+      @listing.save_keywords(params[:keywords])
+      @listing.save_links(params[:links])
+      render json: @listing
     else
       render json: {error_message: @listing.errors.full_messages}, status: Code[:error_code]
     end
   rescue => e
      rescue_message(e)  
-  end
-
-  def save_tags
-    @list_tags_save = @listing.create_tags(params[:tag_ids])
-    if @list_tags_save[:status]
-       render json: @listing
-    else
-      @listing.destroy if request.method == "POST"
-      render json: {error_message: @list_tags_save[:error_message]}, status: Code[:error_code]
-    end
   end
  
   # PUT /listings/:id.json
@@ -59,7 +51,7 @@ class Api::V1::ListingsController < Api::V1::BaseController
     # Never trust parameters from the scary internet, only allow the white list through.
     def listing_params
       params.require(:listing).permit(:latitude, :longitude, :country, :city, 
-        :state, :zipcode, :address)
+        :state, :zipcode, :address, :tag_id, :description)
     end
 
 end
