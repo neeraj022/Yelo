@@ -19,13 +19,11 @@ class Api::V1::ListingsController < Api::V1::BaseController
  
   # PUT /listings/:id.json
   def update
-    if(@listing.update_attributes(listing_params))
-      if(params[:tag_ids].present?)
-        @listing.listing_tags.destroy
-        save_tags
-      else
-        render json: @listing
-      end
+    @listing.update_attributes(listing_params) if params[:listing].present?
+    @listing.save_keywords(params[:keywords]) if params[:keywords].present?
+    @listing.save_links(params[:links]) if params[:links].present?
+    if(!@listing.errors.present?)
+       render json: @listing
     else
       render json: {status: Code[:status_error], error_message: @listing.errors.full_messages}, status: Code[:error_code]
     end
