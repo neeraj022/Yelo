@@ -11,6 +11,7 @@ class Keyword
   belongs_to :tag
   ####### filters ######################
   before_save :save_format_word
+  before_create :save_word_id
   ####### validation ###################
   validates :tag_id, :name, presence: true
   validate :word_uniqueness
@@ -24,6 +25,12 @@ class Keyword
    
   def save_format_word
     self.name = Keyword.format_word(self.name)
+  end
+
+  def save_word_id
+    if self.word_id.blank?
+      self.word_id = self.id
+    end
   end
 
   ##########  class methods ###################

@@ -24,7 +24,7 @@ class Wall
   field :is_closed,       type: Boolean, default: false
   field :is_abuse,        type: Boolean, default: false
   field :keyword_ids,     type: Array
-  fied  :keywords,        type: Array
+  field  :keywords,       type: Array
   ############### relations #######################
   belongs_to  :user, index: true, touch: true
   belongs_to  :tag,  index: true

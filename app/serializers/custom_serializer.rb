@@ -12,4 +12,8 @@ class CustomSerializer < ActiveModel::Serializer
   def created_at
     object.created_at.to_s
   end
+
+  def word_id
+    object.word_id.to_s
+  end
 end

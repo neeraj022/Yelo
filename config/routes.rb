@@ -97,6 +97,9 @@ Rails.application.routes.draw do
       get "/users/:user_id/recommends", to: "users#recommends"
       get "/users/:user_id/recommendations", to: "users#recommendations"
       post "/sms_share", to: "users#sms_share"
+      get  "/suggestions", to: "community#suggestions"
+      get  "/tag_list/:group_id", to: "community#tag_list"
+      get  "/group_list", to: "community#group_list"
       resources :users
       resources :ratings
       resources :listings
