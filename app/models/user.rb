@@ -139,7 +139,7 @@ class User
   def alert_notify
     obj = {collapse_key: "alert", message: "", resource: {name:
       "chat alert", dest: ""}}
-    Notification.push_notify(self.plat_form, [self.push_id], obj)
+    Notification.push_notify(self.platform, [self.push_id], obj)
   end
 
   def connects_count

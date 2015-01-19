@@ -7,4 +7,7 @@ class ListingLink
   field :url,         type: String
   ############# relation #############
   embedded_in :listing 
+  ############# validation ###########
+  validates :name, :url, presence: true
+  validates :url, format: { with: URI.regexp }, if: Proc.new { |a| a.url.present? }
 end
