@@ -29,7 +29,7 @@ class Api::V1::CommunityController < Api::V1::BaseController
    # GET /group_list
    def group_list
      @groups = Group.all
-     render json: @groups
+     render json: @groups, root: :groups
    end
 
 end

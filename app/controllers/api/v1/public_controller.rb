@@ -15,6 +15,7 @@ class Api::V1::PublicController < Api::V1::BaseController
     render json: {status: "No user present"}
   end
 
+  # GET /push
   def push
     case params[:type]
     when "wall_summary"
@@ -27,8 +28,11 @@ class Api::V1::PublicController < Api::V1::BaseController
       notification = Notification.where(n_type: 1).last
     when "contact_wall"
       notification = Notification.where(n_type: 4).last
+    when "chat"
+      obj = {collapse_key: "alert", message: "", resource: {name:
+      "chat alert", dest: ""}}
     end
-    obj = notification.notify_obj if params[:type] != "wall_summary"
+    obj = notification.notify_obj if (params[:type] != "wall_summary" && params[:type] != "chat")
     response = Notification.push_notify("android", [params[:push_id]], obj)
     render json: {status: "success", gcm: response.to_s}
   end
