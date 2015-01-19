@@ -100,6 +100,7 @@ Rails.application.routes.draw do
       get  "/suggestions", to: "community#suggestions"
       get  "/tag_list/:group_id", to: "community#tag_list"
       get  "/group_list", to: "community#group_list"
+      get  "/top_tags", to: "community#top_tags"
       resources :users
       resources :ratings
       resources :listings

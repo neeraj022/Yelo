@@ -1,6 +1,6 @@
 set :application, 'yeloapp'
-set :repo_url, 'git@bitbucket.org:yelo/yeloapp.git'
-#set :repo_url, 'git@bitbucket.org:suras/yeloapp.git'
+#set :repo_url, 'git@bitbucket.org:yelo/yeloapp.git'
+set :repo_url, 'git@bitbucket.org:suras/yeloapp.git'
 
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 

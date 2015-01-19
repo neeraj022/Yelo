@@ -32,4 +32,26 @@ class Api::V1::CommunityController < Api::V1::BaseController
      render json: @groups, root: :groups
    end
 
+   # GET /top_tags
+   def top_tags
+     @list = Array.new
+     @tags = Listing.collection.aggregate(
+       {"$group" => {
+         "_id" => {"tag_id" => "$tag_id"}, 
+          "tag_count" => {"$sum" => 1, } 
+       }},
+       { "$sort" => { "tag_count" => -1 } }
+      )
+     @tags.each do |t|
+       tag = Tag.where(_id: t["_id"]["tag_id"]).first
+       next if tag.blank?
+       words = Keyword.where(tag_id: tag.id).limit(10)
+       words = Code.serialized_json(words.to_a)
+       @list << {name: tag.name, id: tag.id.to_s, keywords: words}
+     end
+     render json: {tags: @list}
+   end
+
 end
+
+
