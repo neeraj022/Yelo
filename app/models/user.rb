@@ -91,7 +91,6 @@ class User
   embeds_many :contacts
   has_one :people
   has_many :shares
-  has_one :push_notify
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
   after_save :update_embed_docs

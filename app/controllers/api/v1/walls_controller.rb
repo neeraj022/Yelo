@@ -1,6 +1,7 @@
 class Api::V1::WallsController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:show, :user_walls]
   before_action :truncate_wall_msg
+  before_action :set_group_id, only: [:create, :update]
   # POST /walls/
   def create
     @wall = current_user.walls.new(wall_params)
@@ -14,8 +15,8 @@ class Api::V1::WallsController < Api::V1::BaseController
     else
       render json: {error_message: @wall.errors.full_messages}, status: Code[:error_code]
     end
-  rescue => e
-    rescue_message(e)
+  # rescue => e
+  #   rescue_message(e)
   end
 
   # GET /wall/:id
@@ -105,10 +106,16 @@ class Api::V1::WallsController < Api::V1::BaseController
 
     def wall_params
       params.require(:wall).permit(:tag_id, :message, :latitude, :longitude,
-      	                           :country, :city, :state, :address, :tmp_id)
+      	                           :country, :city, :state, :address, :tmp_id, :group_id, :keywords)
     end
 
     def truncate_wall_msg
       params[:wall][:message] =  params[:wall][:message].to_s.truncate(600) if params[:wall].present?
+    end
+
+    def set_group_id
+      if(params[:tag_id].present?)
+         params[:group_id] = Tag.find(params[:tag_id]).first.group_id
+      end
     end
 end

@@ -9,6 +9,7 @@ class Wall
   field :message,         type: String
   field :user_id,         type: BSON::ObjectId
   field :tag_id,          type: BSON::ObjectId
+  field :group_id,        type: BSON::ObjectId
   field :tag_name,        type: String
   field :status,          type: Boolean, default: true
   field :abuse_count,     type: Integer, default: 0
@@ -24,7 +25,7 @@ class Wall
   field :is_closed,       type: Boolean, default: false
   field :is_abuse,        type: Boolean, default: false
   field :keyword_ids,     type: Array
-  field  :keywords,       type: Array
+  field :keywords,        type: Array
   ############### relations #######################
   belongs_to  :user, index: true, touch: true
   belongs_to  :tag,  index: true
@@ -38,11 +39,11 @@ class Wall
   before_create :save_owner_and_statistic
   after_create :set_index_status
   ################# validators ######################
-  validates :message, :city, :country, :tag_id, :latitude, :longitude, presence: true
+  validates :message, :city, :country, :group_id, :latitude, :longitude, presence: true
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
   # validate :restrict_wall_creation, on: :create
-  validate :tag_presence
+  validate :tag_presence, :group_presence
   ####################### scopes ############################
   scope :allowed, -> { where(status: true) }
   ########### instance methods #######################
@@ -64,6 +65,11 @@ class Wall
     self.save
   end
 
+  def group_name
+    g_name = Group.find(self.group_id)
+    g_name.name
+  end
+
   def tag_presence
     if(self.tag_id.present?)
       tag = Tag.where(_id: self.tag_id).first
@@ -71,6 +77,15 @@ class Wall
         self.tag_name = tag.name
       else
         errors.add(:base, "The given tag id is not present")
+      end
+    end
+  end
+
+  def group_presence
+    if(self.group_id.present?)
+      group = Group.where(_id: self.group_id).first
+      if(!group.present?)
+        errors.add(:base, "The given group id is not present")
       end
     end
   end

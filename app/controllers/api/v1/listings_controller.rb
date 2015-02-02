@@ -4,7 +4,7 @@ class Api::V1::ListingsController < Api::V1::BaseController
  
   # POST /listings.json
   def create
-    raise "No more than one listing" if current_user.listings.first.present?
+    # raise "No more than one listing" if current_user.listings.first.present?
     @listing = current_user.listings.new(listing_params) 
     if(@listing.save)
       @listing.save_keywords(params[:keywords])
