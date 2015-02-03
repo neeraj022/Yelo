@@ -56,6 +56,7 @@ class Notification
       return false unless wall.present?
       params = self.set_geo_params(wall)
       params[:tag_ids] = [wall.tag_id.to_s]
+      params[:keyword_ids] = wall.keyword_ids
       params[:type] = "listing"
       params[:radius] = 10
       params[:size] = 10000

@@ -84,7 +84,7 @@ module ListingSearch
                 ]
             
        end
-       if( query[:city].blank? && query[:country].blank? && query[:tag_ids].blank?)
+       if( query[:city].blank? && query[:country].blank? && query[:tag_ids].blank? && query[:keyword_ids].blank?)
           @search_definition[:query] = { match_all: {} }
        else
           @search_definition[:query] = {
@@ -109,7 +109,7 @@ module ListingSearch
           }
        end
 
-      if(query[:keword_ids].present?)
+      if(query[:keyword_ids].present?)
           @search_definition[:query][:bool][:must] << {
             terms:{
                 keyword_ids: query[:keyword_ids]

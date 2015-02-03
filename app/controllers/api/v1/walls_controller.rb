@@ -1,7 +1,7 @@
 class Api::V1::WallsController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:show, :user_walls]
   before_action :truncate_wall_msg
-  before_action :set_group_id, only: [:create, :update]
+  before_action :set_wall, only: [:create, :update]
   # POST /walls/
   def create
     @wall = current_user.walls.new(wall_params)
@@ -106,16 +106,19 @@ class Api::V1::WallsController < Api::V1::BaseController
 
     def wall_params
       params.require(:wall).permit(:tag_id, :message, :latitude, :longitude,
-      	                           :country, :city, :state, :address, :tmp_id, :group_id, :keywords)
+      	                           :country, :city, :state, :address, :tmp_id, :group_id, keywords: [])
     end
 
     def truncate_wall_msg
       params[:wall][:message] =  params[:wall][:message].to_s.truncate(600) if params[:wall].present?
     end
 
-    def set_group_id
-      if(params[:tag_id].present?)
-         params[:group_id] = Tag.find(params[:tag_id]).first.group_id
+    def set_wall
+      if(params[:wall][:tag_id].present?)
+         params[:wall][:group_id] = Tag.find(params[:wall][:tag_id]).group_id.to_s
+      end
+      if(params[:wall][:keywords].present?)
+        params[:wall][:keywords] = params[:wall][:keywords][0..3]
       end
     end
 end

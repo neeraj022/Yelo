@@ -116,6 +116,16 @@ class Wall
     self.create_wall_image(image: image)
   end
 
+  def keyword_ids
+    keyword_ids = Array.new
+    self.keywords.each do |k|
+      w = Keyword.where(tag_id: self.tag_id, name: /#{k}/).first
+      next if w.blank?
+      keyword_ids << w.id.to_s
+    end
+    keyword_ids
+  end
+
   def self.save_wall_chat_user(wall_id, user_id)
     wall = Wall.where(_id: wall_id).first
     return false unless wall.present?
