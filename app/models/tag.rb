@@ -3,15 +3,17 @@ class Tag
   include Mongoid::Timestamps::Created
   include Mongoid::Timestamps::Updated
 
-  field :name, type: String
-  field :group_id, type: String
-  field :granularity, type: Integer, default: 1
-  field :score, type: Integer, default: 0
-  field :status, type: Boolean, default: false
+  field :name,         type: String
+  field :color,        type: String
+  field :group_id,     type: String
+  field :granularity,  type: Integer, default: 1
+  field :score,        type: Integer, default: 0
+  field :status,       type: Boolean, default: false
   ################# relations ################
   belongs_to :group
   has_many :walls
   has_many :keywords
+  has_many :listings
   ################## filters #################
   after_save :update_embed_docs
   ############## validators  #################

@@ -2,6 +2,7 @@ set :application, 'yeloapp'
 #set :repo_url, 'git@bitbucket.org:yelo/yeloapp.git'
 set :repo_url, 'git@bitbucket.org:suras/yeloapp.git'
 
+set :branch, ENV['BRANCH'] || 'master'
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
  set :deploy_to, '/home/deploy/yelo'

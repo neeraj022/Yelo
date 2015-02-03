@@ -1,3 +1,3 @@
 class GroupSerializer < CustomSerializer
-  attributes :id, :name
+  attributes :id, :name, :color
 end

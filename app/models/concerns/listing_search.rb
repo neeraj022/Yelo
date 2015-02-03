@@ -17,7 +17,7 @@ module ListingSearch
         indexes :country, analyzer: 'standard'
         indexes :state, analyzer: 'standard'
         indexes :loc, type: 'geo_point'
-        indexes :tag_ids, analyzer: 'standard'
+        # indexes :tag_ids, analyzer: 'standard'
       end
     end
 
@@ -32,8 +32,9 @@ module ListingSearch
     #
     def as_indexed_json(options={})
       {id: self.id.to_s, user_id: self.user_id.to_s, loc: location_coordinates, tag_id:  self.tag_id,
-      country: self.country.to_s, city: self.city.to_s, state: self.state.to_s,
-      address: self.address.to_s}
+      tag_name: self.tag_name, country: self.country.to_s, city: self.city.to_s, state: self.state.to_s,
+      address: self.address.to_s, keyword_ids: self.keyword_ids, keyword_names: self.keyword_names, 
+      group_id: self.group_id, group_name: self.group_name}
     end
 
     # Search in title and content fields for `query`, include highlights in response
@@ -92,13 +93,30 @@ module ListingSearch
                     }
                 }
        end
-       if(query[:tag_ids].present?)
+       if(query[:tag_id].present?)
          @search_definition[:query][:bool][:must] << {
-            terms:  { 
-              tag_ids: query[:tag_ids]
+            term:  { 
+              tag_id: query[:tag_id]
             } 
           }
        end
+
+      if(query[:group_id].present?)
+         @search_definition[:query][:bool][:must] << {
+            term:  { 
+              group_id: query[:group_id]
+            } 
+          }
+       end
+
+      if(query[:keword_ids].present?)
+          @search_definition[:query][:bool][:must] << {
+            terms:{
+                keyword_ids: query[:keyword_ids]
+              }
+            }
+        end 
+
        if(query[:city].present?)
           @search_definition[:query][:bool][:must] << {
             term:{
@@ -113,7 +131,6 @@ module ListingSearch
                }
             }
         end
-
         __elasticsearch__.search(@search_definition)
      end
   end

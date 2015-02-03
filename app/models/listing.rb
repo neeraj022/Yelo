@@ -25,11 +25,18 @@ class Listing
   belongs_to  :user, index: true, touch: true
   embeds_many :listing_keywords
   embeds_many :listing_links
-  ######################## filters ######################
+  belongs_to :tag
+  ####################  filters          #######################
+  after_initialize :init
+  ######################## validations #######################
   validates :user_id, :tag_id, presence: true
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
-  ########################  instance methods #############
+  ########################  instance methods #################
+
+   def init
+    
+   end
 
   def save_keywords(words)
     self.listing_keywords.destroy_all
@@ -52,7 +59,23 @@ class Listing
   end
 
   def tag_name
-    Tag.where(_id: tag_id).first.name
+    @tag_name ||= Tag.where(_id: tag_id).first.name
+  end
+
+  def group_id
+    @group_id ||= Group.find(self.tag.group_id).id.to_s
+  end
+
+  def group_name
+    @group_name ||= Group.find(group_id).name
+  end
+
+  def keyword_ids
+    @keyword_ids ||= self.listing_keywords.map{|k| k.keyword_id.to_s}
+  end
+
+  def keyword_names
+    @keyword_names ||= Keyword.where(:_id.in => keyword_ids).map{|k| k.name}
   end
 
 end

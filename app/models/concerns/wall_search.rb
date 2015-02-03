@@ -40,7 +40,7 @@ module WallSearch
     def as_indexed_json(options={})
       {id: self.id.to_s, tag_id: self.tag_id.to_s, loc: location_coordinates, country: self.country,
        city: self.city, state: self.state, created_at: self.created_at, status: self.status, message: self.message, is_abuse: self.is_abuse,
-      is_closed: is_closed}
+      is_closed: is_closed, keywords: self.keywords, group_id: self.group_id.to_s}
     end
 
     # Search in title and content fields for `query`, include highlights in response
@@ -106,9 +106,11 @@ module WallSearch
                     }
                 }
        end
+      
        if(query[:latitude].blank? && query[:longitude].blank? && query[:or_city].blank?)
          @search_definition[:filter] = { match_all: {} }
        end
+      
        if(query[:tag_ids].present?)
          @search_definition[:query][:bool][:must] << {
             terms:  { 
@@ -116,13 +118,31 @@ module WallSearch
             } 
           }
        end
-       if(query[:post].present?)
+       
+       if(query[:group_id].present?)
+         @search_definition[:query][:bool][:must] << {
+            term:  { 
+              group_id: query[:group_id]
+            } 
+          }
+       end
+
+      if(query[:keywords].present?)
+          @search_definition[:query][:bool][:must] << {
+            terms:{
+                keywords: query[:keywords]
+              }
+            }
+      end 
+      
+      if(query[:post].present?)
          @search_definition[:query][:bool][:must] << {
             match:  { 
               message: query[:post]
             } 
           }
        end
+       
        if(query[:city].present?)
           @search_definition[:query][:bool][:must] << {
             term:{
