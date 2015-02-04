@@ -106,7 +106,7 @@ class User
   validates :email, uniqueness: true, allow_blank: true, allow_nil: true
   validates :platform, :encrypt_device_id,
              presence: true, on: :update, :if => lambda { |u| u.validate_profile? || u.validate_platform? }
-  validates :description, :name, presence: true, on: :update, :if => :validate_profile?
+  validates :name, presence: true, on: :update, :if => :validate_profile?
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }, allow_blank: true, allow_nil: true
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }, allow_blank: true, allow_nil: true
   ####################### scopes ############################

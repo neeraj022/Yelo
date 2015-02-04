@@ -121,6 +121,7 @@ group :development do
   gem 'pry'
   gem 'quiet_assets'
   gem  'rails_layout'
+  gem 'railroady'
 end
 
 

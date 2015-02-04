@@ -3,6 +3,7 @@ class ChatLog
 
   field :user_id,    type: BSON::ObjectId
   field :chatter_id, type: BSON::ObjectId
+  field :status,     type: Integer, default: 0
   ############### relations ##############
   belongs_to  :user
   embeds_many :chat_items

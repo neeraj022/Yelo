@@ -78,4 +78,10 @@ class Listing
     @keyword_names ||= Keyword.where(:_id.in => keyword_ids).map{|k| k.name}
   end
 
+  def referral_count
+    user = self.user
+    count = user.user_tags.where(tag_id: self.id).count
+    count
+  end
+
 end
