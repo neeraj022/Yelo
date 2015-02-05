@@ -8,7 +8,7 @@ class ListingLink
   ############# relation #############
   embedded_in :listing 
   ############# validation ###########
-  validates :name, :url, presence: true
+  # validates :name, :url, presence: true
   validates :url, format: { with: URI.regexp }, if: Proc.new { |a| a.url.present? }
 
   def image_url
