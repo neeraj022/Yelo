@@ -33,7 +33,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       @user.ext_image_url = params[:user][:ext_image_url]
     end
     if(@user.update_attributes(user_params.merge(is_present: true)))
-      render json: @user
+      render json: @user, serializer: UserProfileSerializer
     else
       render json: {error_message: @user.errors.full_messages},  status: Code[:error_code]
     end
