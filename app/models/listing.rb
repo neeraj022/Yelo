@@ -32,6 +32,7 @@ class Listing
   validates :user_id, :tag_id, presence: true
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
+  validates_uniqueness_of :user_id, :scope => :tag_id
   ########################  instance methods #################
 
    def init
@@ -52,7 +53,7 @@ class Listing
   def save_links(links)
     self.listing_links.destroy_all
     links.each do |l|
-      l = JSON.parse(l)
+      # l = JSON.parse(l)
       next if (l["name"].blank? || l["url"].blank?)
       self.listing_links.create(name: l["name"], url: l["url"])
     end
