@@ -16,4 +16,8 @@ class CustomSerializer < ActiveModel::Serializer
   def word_id
     object.word_id.to_s
   end
+
+  def group_id
+    object.group_id.to_s
+  end
 end
