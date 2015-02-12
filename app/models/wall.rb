@@ -146,7 +146,7 @@ class Wall
   def tagged_user_recommendations(user_id)
     tg_id = self.tagged_users.where(user_id: user_id).first.id.to_s
     wall_item = self.wall_items.where(:tagged_user_ids  => tg_id).first
-    {comment: wall_item.comment, image_url: wall_item.image_url, name: wall_item.name, user_id: wall_item.user_id.to_s}
+    {comment: wall_item.comment, image_url: wall_item.image_url, name: wall_item.name, user_id: wall_item.user_id.to_s, id: wall_item.id.to_s}
   end
 
   def abuse(user_id)

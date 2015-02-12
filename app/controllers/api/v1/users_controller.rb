@@ -218,7 +218,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     walls.each do |w|
       tag_name = w.tag_name
       rec = w.tagged_user_recommendations(params[:user_id])
-      recommendations << {tag_name: tag_name, wall_id: w.id.to_s, comment: rec[:comment], image_url: rec[:image_url], name: rec[:name], user_id: rec[:user_id]}
+      recommendations << {id: rec[:id], tag_name: tag_name, wall_id: w.id.to_s, comment: rec[:comment], image_url: rec[:image_url], name: rec[:name], user_id: rec[:user_id]}
     end
     render json: {recommendations: recommendations}
   rescue => e
