@@ -6,7 +6,4 @@ class WallSerializer < CustomSerializer
   has_one  :wall_owner
   has_many :wall_items
 
-  def wall_chats
-    chat_users = User.get_users(object.chat_user_ids)
-  end
 end
