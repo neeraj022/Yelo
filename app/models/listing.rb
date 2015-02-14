@@ -71,6 +71,10 @@ class Listing
     @group_name ||= Group.find(group_id).name
   end
 
+  def group_color
+    @group_color ||= Group.find(group_id).color
+  end
+
   def keyword_ids
     @keyword_ids ||= self.listing_keywords.map{|k| k.keyword_id.to_s}
   end

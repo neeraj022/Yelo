@@ -29,12 +29,14 @@ class Wall
   ############### relations #######################
   belongs_to  :user, index: true, touch: true
   belongs_to  :tag,  index: true
+  belongs_to  :group
   embeds_many :wall_items
   embeds_one  :wall_image
   embeds_one  :wall_owner
   embeds_many :tagged_users
   embeds_one  :wall_info
-  has_many :report_abuses, as: :abuse_obj
+  has_many    :report_abuses, as: :abuse_obj
+  embeds_many :wall_chat_users
   ################## filters #######################
   before_create :save_owner_and_statistic
   after_create :set_index_status
@@ -66,8 +68,11 @@ class Wall
   end
 
   def group_name
-    g_name = Group.find(self.group_id)
-    g_name.name
+    self.group.name
+  end
+
+  def group_color
+    self.group.color
   end
 
   def tag_presence
@@ -130,6 +135,7 @@ class Wall
     wall = Wall.where(_id: wall_id).first
     return false unless wall.present?
     wall.add_to_set(chat_user_ids: user_id)
+    wall_chat_user = wall.wall_chat_users.where(user_id: user_id).first_or_create
   end
 
   def tagged_user_comments(user_id)
@@ -176,6 +182,8 @@ class Wall
       last_chat = Chat.where(sender_id: id, receiver_id: self.user_id).last
       if last_chat.blank?
         last_chat = 1.months.ago
+      else
+        last_chat = last_chat.created_at
       end
       users << {id: u.id.to_s, name: u.name, image_url: u.image_url, last_chat: last_chat.to_s}
     end
