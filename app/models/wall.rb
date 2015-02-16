@@ -76,10 +76,10 @@ class Wall
   end
 
   def tag_name
-    if self.tag_name.blank?
+    if super.blank?
       self.group_name
     else
-      self.tag_name
+      super()
     end
   end
 
