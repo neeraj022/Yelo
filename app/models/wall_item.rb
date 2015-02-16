@@ -32,7 +32,7 @@ class WallItem
       if t_usr.errors.present?
         return {status: false, error_message: t_usr.errors.messages} 
       else
-        v_hash = {wall_id: wall.id.to_s, message: wall.message, commented_by: self.name, tag_name: wall.tag_name}
+        v_hash = {wall_id: wall.id.to_s, message: wall.message, commented_by: self.name, tag_name: wall.tag_or_group_name}
         if(wall_user.id.to_s != self.user_id.to_s)
           notify = Notification.save_notify(Notification::N_CONS[:WALL_PIN], v_hash, wall_user.id)
           notify.send_notification
@@ -57,7 +57,7 @@ class WallItem
       t_usr.is_present = true
       t_usr.name = user.name
       v_hash = {wall_id: wall.id.to_s, tagged_by: self.name, message: wall.message, 
-                tag_name: wall.tag_name}
+                tag_name: wall.tag_or_group_name}
       if (self.user_id.to_s != user.id.to_s)          
         notify = Notification.save_notify(Notification::N_CONS[:USER_TAG], v_hash, user.id)
         # notify = NotificationWorker.perform_async(notify.id.to_s)
@@ -84,7 +84,7 @@ class WallItem
            Download the app here bit.ly/yelooo"
     msg = Notification.message_format("tag_sms_msg", opt, default_msg)
     sms_log.send_sms(msg)
-    EmailWorker.perform_async("refer", email, wall.message.truncate(100), self.name, name, self.wall.tag_name, self.wall.wall_owner.name)
+    EmailWorker.perform_async("refer", email, wall.message.truncate(100), self.name, name, self.wall.tag_or_group_name, self.wall.wall_owner.name)
   rescue => e
     false
   end

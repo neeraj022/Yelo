@@ -75,11 +75,11 @@ class Wall
     self.group.color
   end
 
-  def tag_name
-    if super.blank?
+  def tag_or_group_name
+    if self.tag_name.blank?
       self.group_name
     else
-      super()
+      self.tag_name
     end
   end
 
