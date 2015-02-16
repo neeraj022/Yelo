@@ -75,6 +75,14 @@ class Wall
     self.group.color
   end
 
+  def tag_name
+    if self.tag_name.blank?
+      self.group_name
+    else
+      self.tag_name
+    end
+  end
+
   def tag_presence
     if(self.tag_id.present?)
       tag = Tag.where(_id: self.tag_id).first
