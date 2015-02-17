@@ -68,6 +68,13 @@ class WallItem
       send_wall_tag_email_sms(t_usr, usr[:email], usr[:name]) 
     end
     user.save_user_tags(wall.tag_id, self.user_id)
+    listing = user.listings.where(tag_id: wall.tag_id).first_or_initialize
+    if(!listing.persisted?)
+      listing.l_type = 0
+      listing.latitude = wall.latitude
+      listing.longitude =  wall.longitude
+      listing.save
+    end
     t_usr.user_id = user.id
     t_usr.save
     self.add_to_set(tagged_user_ids: t_usr.id.to_s)

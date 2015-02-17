@@ -19,6 +19,7 @@ class Listing
   field :zipcode,         type: String
   field :tag_id,          type: BSON::ObjectId
   field :referred_count,  type: Integer
+  field :l_type,          type: Integer, default: 1
   #################### index ###########################
   index({ location: "2d" }, { min: -200, max: 200 })
   ################### relations #########################
