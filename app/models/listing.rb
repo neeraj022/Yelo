@@ -32,7 +32,7 @@ class Listing
   validates :user_id, :tag_id, presence: true
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
-  validates_uniqueness_of :tag_id, :scope => :_id
+  validates_uniqueness_of :tag_id, :scope => :user_id
   ########################  instance methods #################
 
    def init
