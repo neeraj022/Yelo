@@ -186,12 +186,28 @@ class Wall
     get_chat_users(self.chat_user_ids)
   end
 
+  # def get_chat_users(ids_arr)
+  #   ids_arr ||= []
+  #   users = Array.new
+  #   ids_arr.each do |id|
+  #     u = User.where(_id: id).first
+  #     last_chat = Chat.where(sender_id: id, receiver_id: self.user_id).last
+  #     if last_chat.blank?
+  #       last_chat = 1.months.ago
+  #     else
+  #       last_chat = last_chat.created_at
+  #     end
+  #     users << {id: u.id.to_s, name: u.name, image_url: u.image_url, last_chat: last_chat.to_s}
+  #   end
+  #   users
+  # end
+
   def get_chat_users(ids_arr)
     ids_arr ||= []
     users = Array.new
     ids_arr.each do |id|
       u = User.where(_id: id).first
-      last_chat = Chat.where(sender_id: id, receiver_id: self.user_id).last
+      last_chat = self.wall_chat_users.where(user_id: id).last
       if last_chat.blank?
         last_chat = 1.months.ago
       else
