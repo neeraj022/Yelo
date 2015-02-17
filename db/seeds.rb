@@ -12,11 +12,11 @@ w_user.country_code = num[:country_code]
 w_user.save
 
 JSON.parse(open("#{Rails.root}/db/tags.json").read).each do |s|
-   group = Group.where(name: s.keys.first).first_or_create
-   # s[s.keys.first].each do |t|
-      # puts "#{s.keys.first}#{t}"
-      group.tags.where(name: s.keys.first).first_or_create
-   # end
+  group = Group.where(name: s.keys.first.downcase).first_or_create
+  s[s.keys.first].each do |t|
+    # puts "#{s.keys.first}#{t}"
+    group.tags.where(name: t.downcase).first_or_create
+  end
 end
 
 setting = AppSetting.first
