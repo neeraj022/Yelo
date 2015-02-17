@@ -85,7 +85,7 @@ class Listing
 
   def referral_count
     user = self.user
-    count = user.user_tags.where(tag_id: self.id).count
+    count = user.user_tags.where(tag_id: self.tag_id).count
     count
   end
 
