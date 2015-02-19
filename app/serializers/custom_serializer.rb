@@ -13,6 +13,10 @@ class CustomSerializer < ActiveModel::Serializer
     object.created_at.to_s
   end
 
+  def updated_at
+    object.updated_at.to_s
+  end
+
   def word_id
     object.word_id.to_s
   end
