@@ -40,7 +40,7 @@ module WallSearch
     def as_indexed_json(options={})
       {id: self.id.to_s, tag_id: self.tag_id.to_s, loc: location_coordinates, country: self.country,
        city: self.city, state: self.state, created_at: self.created_at, status: self.status, message: self.message, is_abuse: self.is_abuse,
-      is_closed: is_closed, keywords: self.keywords, group_id: self.group_id.to_s}
+      is_closed: is_closed, keywords: self.keywords, group_id: self.group_id.to_s, updated_at: self.updated_at}
     end
 
     # Search in title and content fields for `query`, include highlights in response
@@ -64,7 +64,7 @@ module WallSearch
           filter: {}
         }
       @search_definition[:sort] ||= []
-      @search_definition[:sort] << { created_at: {order: "desc"}}
+      @search_definition[:sort] << { updated_at: {order: "desc"}}
       @search_definition[:filter][:or] ||= []
       if(query[:latitude].present? && query[:longitude].present?)
          @search_definition[:filter][:or] << {

@@ -19,6 +19,26 @@ JSON.parse(open("#{Rails.root}/db/tags.json").read).each do |s|
   end
 end
 
+# colors = ["#eb1460","#3e50b4","#009587", "#2095f2", "#4bae4f", "#5f7c8a", "#6639b6", "#fe9700", "#fe5621", "#785447", "#006064", "#9b26af"]
+
+colors_hash = {arts: "#9C27B0", business: "#03A9F4", design: "#FF5722", education: "#3F51B5",
+               events: "#CDDC39", home: "#607D8B", travel: "#673AB7", tech: "#E91E63", 
+               lifestyle: "#F44336", community: "#00968"}
+ 
+ # col = 0
+ # Group.all.each do |g|
+ #   g.color = colors[col]
+ #   g.save
+ #   col += 1
+ #   col = 0  if col > colors.length 
+ # end
+
+colors_hash.each_pair do |k, v|
+  g = Group.where(name: k).first
+  g.color = v
+  g.save
+end
+
 setting = AppSetting.first
 AppSetting.create unless setting.present?
 

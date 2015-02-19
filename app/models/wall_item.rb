@@ -16,6 +16,10 @@ class WallItem
   belongs_to :user
   ############### validators ##############################
   validates :user_id,  presence: true
+  ################## filters #############################
+  after_save do
+    wall.touch
+  end
   ############### instance methods #########################
   
   def tagged_users
