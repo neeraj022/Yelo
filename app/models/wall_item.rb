@@ -17,11 +17,7 @@ class WallItem
   ############### validators ##############################
   validates :user_id,  presence: true
   ################## filters #############################
-  after_save do
-    wall.touch
-  end
   ############### instance methods #########################
-  
   def tagged_users
     return [] unless self.tagged_user_ids
     tagged_users = self.wall.tagged_users.where(:_id.in =>  self.tagged_user_ids)
@@ -44,6 +40,8 @@ class WallItem
         end
       end
     end
+    wall.updated_at = Time.Now 
+    wall.save
     return {status: true}
   end
 
