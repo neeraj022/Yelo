@@ -23,7 +23,7 @@ end
 
 colors_hash = {arts: "#9C27B0", business: "#03A9F4", design: "#FF5722", education: "#3F51B5",
                events: "#CDDC39", home: "#607D8B", travel: "#673AB7", tech: "#E91E63", 
-               lifestyle: "#F44336", community: "#00968"}
+               lifestyle: "#F44336", community: "#009688"}
  
  # col = 0
  # Group.all.each do |g|

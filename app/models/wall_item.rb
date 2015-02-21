@@ -40,7 +40,7 @@ class WallItem
         end
       end
     end
-    wall.updated_at = Time.Now 
+    wall.updated_at = Time.now 
     wall.save
     return {status: true}
   end
@@ -69,7 +69,7 @@ class WallItem
       user = User.save_inactive_user(mobile_number, country_code)
       send_wall_tag_email_sms(t_usr, usr[:email], usr[:name]) 
     end
-    user.save_user_tags(wall.tag_id, self.user_id)
+    user.save_user_tags(wall.tag_id, self.user_id) if wall.tag_id.present?
     listing = user.listings.where(tag_id: wall.tag_id).first_or_initialize
     if(!listing.persisted?)
       listing.l_type = 0
