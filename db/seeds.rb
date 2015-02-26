@@ -97,7 +97,13 @@ admin_user.save
 # end
 
 
-
+# User.all.each do |u|
+#   s = u.statistic
+#   if(s.present?)
+#     s.connects = 0
+#     s.save
+#   end
+# end
 
 
 

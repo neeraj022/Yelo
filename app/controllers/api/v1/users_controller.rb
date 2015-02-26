@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::BaseController
-  before_action :authenticate_user!, except: [:show, :create, :verify_serial_code, :verify_missed_call, :sms_serial_code]
+  before_action :authenticate_user!, except: [:ping, :show, :create, :verify_serial_code, :verify_missed_call, :sms_serial_code]
   before_action :set_mobile_number, only: [:create, :verify_serial_code, :verify_missed_call, :sms_serial_code]
   
   # POST '/users'
@@ -21,6 +21,11 @@ class Api::V1::UsersController < Api::V1::BaseController
     render json: @user
   rescue => e
     rescue_message(e)
+  end
+
+  # GET /ping
+  def ping
+    render json: {status: :success}
   end
 
   # PUT/PATCH '/users/id'

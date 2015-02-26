@@ -3,13 +3,13 @@
 {"tech": ["programming", "dev-ops", "hardware", "gaming", "science/engineering", "networking"]},
 {"lifestyle": ["counseling", "sports", "wellness", "healthcare", "food", "fashion"]},
 {"business": ["management", "legal", "finance", "startups", "journalism", "marketing"]},
-{"design": ["interaction-design", "visual-design", "architecture", "industrial-design", "fashion-design"]},
+{"design": ["ui-design", "visual-design", "architecture", "industrial-design", "fashion-design"]},
 {"home": ["handyman", "domestic-help", "technician/repair", "local-services", "property", "logistics"]},
 {"travel":["Tours", "Accomodation", "Ticketing"]},
 {"education": ["Sciences", "Mathematics", "Languages", "Vocational", "it"]},
 {"events": ["event-management", "entertainment"]},
-{"community": ["renting/sharing", "social-activism"]}
-{"startups": ["founders", "recruitment", "investment", "growth-hacking"] }
+{"community": ["renting/sharing", "social-activism"]},
+{"startups": ["founders", "recruitment", "investment", "growth-hacking"]}
 ]
 
 

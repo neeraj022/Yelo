@@ -101,6 +101,7 @@ Rails.application.routes.draw do
       get  "/tag_list/:group_id", to: "community#tag_list"
       get  "/group_list", to: "community#group_list"
       get  "/top_tags", to: "community#top_tags"
+      get  "/ping", to: "users#ping"
       resources :users
       resources :ratings
       resources :listings
