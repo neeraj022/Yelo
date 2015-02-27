@@ -21,9 +21,9 @@ end
 
 # colors = ["#eb1460","#3e50b4","#009587", "#2095f2", "#4bae4f", "#5f7c8a", "#6639b6", "#fe9700", "#fe5621", "#785447", "#006064", "#9b26af"]
 
-colors_hash = {arts: "#9C27B0", business: "#03A9F4", design: "#FF5722", education: "#3F51B5",
+colors_hash = {arts: "#9C27B0", business: "#2196F3", design: "#FF5722", education: "#3F51B5",
                events: "#CDDC39", home: "#607D8B", travel: "#673AB7", tech: "#E91E63", 
-               lifestyle: "#F44336", community: "#009688"}
+               lifestyle: "#F44336", community: "#009688", startups: "#00BCD4"}
  
  # col = 0
  # Group.all.each do |g|
