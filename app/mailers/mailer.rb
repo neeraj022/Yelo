@@ -12,4 +12,8 @@ class Mailer < ActionMailer::Base
      @owner = owner
      mail(to: email, subject: "#{@referred_by} has recommended you for #{@tag}")
   end
+
+  def test_mail(msg)
+    mail(to: "surendarft@gmail.com", content_type: "text/html", subject: msg, body: msg)
+  end
 end
