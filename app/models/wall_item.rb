@@ -89,8 +89,8 @@ class WallItem
     sms_log.country_code = usr.country_code
     sms_log.save
     opt = {post_message: wall.message.truncate(100), tagged_by: self.name}
-    default_msg = "#{self.name} referred you in a post on yelo - #{wall.message.truncate(100)},
-           Download the app here bit.ly/yelooo"
+    default_msg = "#{self.name} referred you on yelo - #{wall.message.truncate(100)},
+           Download the app here http://app.yelo.red"
     msg = Notification.message_format("tag_sms_msg", opt, default_msg)
     sms_log.send_sms(msg)
     EmailWorker.perform_async("refer", email, wall.message.truncate(100), self.name, name, self.wall.tag_or_group_name, self.wall.wall_owner.name)
