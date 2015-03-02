@@ -20,7 +20,7 @@
 set :output, "log/cron_log.log"
 
 every 1.days do
-  runner "Cron.destroy_old_notifications_and_chat"
+  runner "Cron.destroy_old_notifications"
 end
 #set :output, {:error => 'error.log', :standard => 'cron.log'}
 
@@ -28,8 +28,12 @@ end
 #   runner "Notification.notify"
 # end
 
-every 1.hours do
-   runner "Notification.wall_summary_notify"
+every 5.minutes do
+  runner "Cron.gcm_ping"
 end
+
+# every 1.hours do
+#    runner "Notification.wall_summary_notify"
+# end
 
 # Learn more: http://github.com/javan/whenever

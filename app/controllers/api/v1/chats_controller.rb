@@ -33,6 +33,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
       unless rec.online?
         rec.alert_notify
         # GcmChatWorker.perform_in(5.minutes, rec.id.to_s)
+          GcmPing.where(user_id: rec.id).first_or_create
       end
     end
     sender_exchange = channel.fanout(obj[:sender_id]+"exchange") 

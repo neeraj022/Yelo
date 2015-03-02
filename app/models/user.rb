@@ -402,10 +402,10 @@ class User
   def save_contacts_with_name(c_array)
     m_num = Person.get_number_digest(self.mobile_number.to_s)
     c_array.each do |n|
-      next if m_num == n[:hash_mobile_number]
-      p = Person.where(h_m_num: n[:hash_mobile_number]).first_or_create
+      next if m_num == n["hash_mobile_number"]
+      p = Person.where(h_m_num: n["hash_mobile_number"]).first_or_create
       save_friend(p) if p.persisted?
-      p.c_names.create(name: n[:name], user_id: self.id)
+      p.c_names.create(name: n["name"], user_id: self.id)
     end
   end
 
