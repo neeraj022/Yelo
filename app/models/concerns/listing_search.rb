@@ -31,7 +31,7 @@ module ListingSearch
     # Customize the JSON serialization for Elasticsearch
     #
     def as_indexed_json(options={})
-      {id: self.id.to_s, user_id: self.user_id.to_s, loc: location_coordinates, tag_id:  self.tag_id,
+      {id: self.id.to_s, user_id: self.user_id.to_s, loc: location_coordinates, tag_id:  self.tag_id.to_s,
       tag_name: self.tag_name, country: self.country.to_s, city: self.city.to_s, state: self.state.to_s,
       address: self.address.to_s, keyword_ids: self.keyword_ids, keyword_names: self.keyword_names, 
       group_id: self.group_id, group_name: self.group_name}
@@ -84,7 +84,7 @@ module ListingSearch
                 ]
             
        end
-       if( query[:city].blank? && query[:country].blank? && query[:tag_ids].blank? && query[:keyword_ids].blank?)
+       if( query[:city].blank? && query[:country].blank? && query[:tag_id].blank? && query[:keyword_ids].blank?)
           @search_definition[:query] = { match_all: {} }
        else
           @search_definition[:query] = {

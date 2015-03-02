@@ -67,9 +67,9 @@ class Notification
         wall_user: wall.wall_owner.name}
       notify_obj = self.create_wall_obj(v_hash)
       self.send_new_wall_notifications(user_ids, notify_obj)
-      user_ids.each do |id|
-        self.save_notify(Notification::N_CONS[:CREATE_WALL], v_hash, id, Notification::N_STATUS[:SUMMARY])
-      end
+      # user_ids.each do |id|
+      #   self.save_notify(Notification::N_CONS[:CREATE_WALL], v_hash, id, Notification::N_STATUS[:SUMMARY])
+      # end
     end
 
     def set_geo_params(obj)
@@ -169,7 +169,7 @@ class Notification
       default_msg =  "#{v_hash[:tagged_by]} referred you on - #{v_hash[:message].truncate(100)}"
       str = self.message_format("post_tag_msg", opt, default_msg)
       {collapse_key: "tag", message: str, resource: {name:
-      "You got TAG'd", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+      "Referred on yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def wall_tag_obj(n_obj)
@@ -178,7 +178,7 @@ class Notification
       default_msg =  "You have a new referral from #{v_hash[:commented_by]} for your ##{v_hash[:tag_name]} post"
       str = self.message_format("post_follow_msg", opt, default_msg)
       {collapse_key: "pin", message: str , resource: {name:
-      "You've been referred", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+      "Referral on yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
     end
 
     def message_format(type, opt={}, default_msg=nil)
