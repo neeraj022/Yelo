@@ -40,7 +40,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
     sender_exchange.publish(obj.to_json)
   end
 
-  # # POST /chats/seen
+  ## POST /chats/seen
   def set_seen
   	time =  Time.parse(params[:created_at]) 
     time += 1.minutes
