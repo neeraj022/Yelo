@@ -238,7 +238,8 @@ class Api::V1::UsersController < Api::V1::BaseController
     # default_msg =  "#{current_user.name} posted on yelo: #{wall.message.truncate(100)}"
     # str = Notification.message_format("contact_post_msg", opt, default_msg)
     # str += "! Download app at www.yelo.red"
-    str = "#{current_user.name} posted on yelo: #{wall.message.truncate(100)}! Download app at www.yelo.red"
+    # str = "#{current_user.name} posted on yelo: #{wall.message.truncate(100)}! Download app at www.yelo.red"
+    str = "Your friend #{current_user.name} has asked you for help on #{wall.message.truncate(100)}. Download now bit.ly/yelooo"
     params[:phone_numbers][0..5].each do |s|
        if s =~ Code.phone_regex 
           send_sms_share(s, str)
