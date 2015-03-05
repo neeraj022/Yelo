@@ -25,6 +25,8 @@ class AppSetting
   field :post_tag_msg,             type: String
   field :tag_sms_msg,              type: String
   field :wall_share_msg,           type: String
+  field :friend_referral_points,   type: Integer, default: 10
+  field :claim_points,             type: Integer, default: 50
   ############### class methods ############################
   class << self
     # in minutes
@@ -132,5 +134,14 @@ class AppSetting
          1
       end
     end
+    
+    def friend_referral_points
+      return 5
+    end
+
+    def claim_points
+      return 25
+    end
+
   end
 end

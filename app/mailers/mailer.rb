@@ -16,4 +16,10 @@ class Mailer < ActionMailer::Base
   def test_mail(msg)
     mail(to: "surendarft@gmail.com", content_type: "text/html", subject: msg, body: msg)
   end
+
+  def claim_mail(user)
+    @name = user.name
+    @mobile_number = user.mobile_number
+    mail(to: "surendarft@gmail.com", content_type: "text/html", subject: "Yelo Claim")
+  end
 end

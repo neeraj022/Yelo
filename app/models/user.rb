@@ -445,7 +445,14 @@ class User
     def register_referral(referral_id, device_id)
       user = self.where(share_token: referral_id).first
       raise "no user found for given share token" unless user.present?
-      Share.where(user_id: user.id, device_id: device_id).first_or_create!
+      share = Share.where(device_id: device_id).first
+      if(share.blank?)
+        Share.where(user_id: user.id, device_id: device_id).first_or_create!
+        statistic = user.statistic
+        count = AppSetting.friend_referral_points
+        statistic.f_r_score = (statistic.f_r_score += count)
+        statistic.save
+      end
     end
 
     def get_users(ids_arr)
@@ -487,6 +494,13 @@ class User
         code = user.country_code
       end
       return {mobile_number: mobile, country_code: code}
+    end
+
+    def send_chat_message(sender, receiver, msg)
+      chat_url = Rails.application.secrets.chat_url
+      str = "?sender_id=#{sender.id.to_s}&receiver_id=#{receiver.id.to_s}&message=#{msg}&sent_at=#{Time.now.to_s}"
+      token = 'Token token='+"\""+sender.auth_token+"\""+","+' device_id='+"\""+sender.encrypt_device_id+"\""
+      Unirest.post"#{chat_url}/api/v1/chats/send/#{str}", headers: {"Authorization" => token}
     end
   end
 

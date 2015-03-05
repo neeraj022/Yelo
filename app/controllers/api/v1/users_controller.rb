@@ -131,8 +131,8 @@ class Api::V1::UsersController < Api::V1::BaseController
   def contacts_with_name
     current_user.save_contacts_with_name(params[:contacts])
     render json: {status: "success"}
-  # rescue => e
-  #   rescue_message(e)
+  rescue => e
+    rescue_message(e)
   end
 
   # GET /users/:user_id/recommends/tags
@@ -256,6 +256,32 @@ class Api::V1::UsersController < Api::V1::BaseController
     sms_log.save
     sms_log = sms_log.reload
     sms_log.send_sms(msg)
+  end
+
+  # GET /users/claim
+  def claim
+    statistic = current_user.statistic
+    points = statistic.f_r_score
+    claim_points = AppSetting.claim_points
+    if(points >= claim_points)
+      statistic.f_r_score = (points - claim_points)
+      statistic.f_r_claims = (statistic.f_r_claims += 1)
+      statistic.save
+      claim_notification
+      render json: {status: "success"}
+    else
+      render json: {status: "error"}
+    end
+  end
+
+  def claim_notification
+    num = Rails.application.secrets.w_mobile_number
+    num = User.mobile_number_format(num) 
+    yelo = User.where(mobile_number: num[:mobile_number]).first
+    msg = "Your claim has been processed. you will hear from us in a week"
+    User.send_chat_message(current_user, yelo, msg)
+    User.send_chat_message(yelo, current_user, msg)
+    Mailer.claim_mail(current_user).deliver
   end
   
   ############## private methods ###################################

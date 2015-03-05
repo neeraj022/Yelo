@@ -10,6 +10,9 @@ class Statistic
   field :last_sms_sent,   type: DateTime
   field :sms_count,       type: Integer, default: 0
   field :connects,        type: Integer, default: 0
+  field :f_r_score,       type: Integer, default: 0
+  field :f_r_claims,      type: Integer, default: 0
   ################## relations ####################
   embedded_in :user
 end
+ 
