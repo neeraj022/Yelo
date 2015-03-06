@@ -103,6 +103,7 @@ Rails.application.routes.draw do
       get  "/top_tags", to: "community#top_tags"
       get  "/ping", to: "users#ping"
       get  "/users/claim", to: "users#claim"
+      get  "/users/friend_referral_score", to: "users#friend_referral_score"
       resources :users
       resources :ratings
       resources :listings

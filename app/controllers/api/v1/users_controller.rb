@@ -283,6 +283,12 @@ class Api::V1::UsersController < Api::V1::BaseController
     User.send_chat_message(yelo, current_user, msg)
     Mailer.claim_mail(current_user).deliver
   end
+
+  # GET /friend_referral_score
+  def friend_referral_score
+    score = current_user.statistic.f_r_score
+    render json: {score: score}
+  end
   
   ############## private methods ###################################
   private
