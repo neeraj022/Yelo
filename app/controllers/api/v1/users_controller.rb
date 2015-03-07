@@ -268,9 +268,9 @@ class Api::V1::UsersController < Api::V1::BaseController
       statistic.f_r_claims = (statistic.f_r_claims += 1)
       statistic.save
       claim_notification
-      render json: {status: "success"}
+      render json: {status: "success", balance: statistic.f_r_score}
     else
-      render json: {status: "error"}
+      render json: {status: "error"}, status: Code[:error_code]
     end
   end
 
