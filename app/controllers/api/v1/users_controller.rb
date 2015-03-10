@@ -237,7 +237,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   # GET /users/top_week_recommends
   def top_week_recommends
-    today = Wall.first.created_at
+    today = Time.now
     @users = Wall.collection.aggregate(
     {"$match" => {
         "created_at" => { "$gte" => today.at_beginning_of_week, "$lte" => today.at_end_of_week },
