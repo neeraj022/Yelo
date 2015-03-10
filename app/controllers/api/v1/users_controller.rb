@@ -100,8 +100,12 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   # POST /referral
   def register_referral
-    User.register_referral(params[:referral_id], params[:device_id])
-    render json: {status: "success"}
+    if current_user.encrypt_device_id == params[:device_id]
+      User.register_referral(params[:referral_id], params[:device_id])
+      render json: {status: "success"}
+    else
+       render json: {status: "error", error_message: "wrong device id"}, status: Code[:error_code]  
+    end
   rescue => e
     rescue_message(e)
   end
@@ -231,6 +235,28 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue_message(e)
   end
 
+  # GET /users/top_week_recommends
+  def top_week_recommends
+    today = Time.now
+    @tag_obj = Wall.collection.aggregate(
+    {"$match" => {
+        "created_at" => { "$gte" => today.at_beginning_of_week },
+        "created_at" => { "$lte" => today.at_end_of_week }
+        }
+      }, 
+      { "$unwind" => '$wall_items' },
+      {
+      "$project" => {
+          "user_id" => "$wall_items.user_id"
+         }
+        },
+      {"$group" => {
+            "_id" => {"user_id" => "$user_id"}, "count" =>  {"$sum" => 1}}
+      },
+    )
+  end
+
+
   # POST /share_sms
   def sms_share
     wall = Wall.find(params[:wall_id])
@@ -267,8 +293,9 @@ class Api::V1::UsersController < Api::V1::BaseController
       statistic.f_r_score = (points - claim_points)
       statistic.f_r_claims = (statistic.f_r_claims += 1)
       statistic.save
-      claim_notification
-      render json: {status: "success", balance: statistic.f_r_score}
+      current_user.claim_status.create(amount: claim_points, status: "processing")
+      # claim_notification
+      render json: {status: "success", balance: statistic.f_r_score, claims: Code.serialized_json(current_user.claim_status)}
     else
       render json: {status: "error"}, status: Code[:error_code]
     end
@@ -287,7 +314,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # GET /friend_referral_score
   def friend_referral_score
     score = current_user.statistic.f_r_score
-    render json: {score: score}
+    render json: {score: score, claims: Code.serialized_json(current_user.claim_status)}
   end
   
   ############## private methods ###################################
