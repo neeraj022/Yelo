@@ -503,6 +503,18 @@ class User
       token = 'Token token='+"\""+sender.auth_token+"\""+","+' device_id='+"\""+sender.encrypt_device_id+"\""
       Unirest.post"#{chat_url}/api/v1/chats/send/#{str}", headers: {"Authorization" => token}
     end
+
+    def get_users_and_referral_count(users)
+      users_obj = Array.new
+      users.each do |u|
+        id = u["_id"]["user_id"]
+        user = User.where(_id: id).first
+        next if user.blank?
+        count = u["count"]
+        users_obj << {name: user.name, id: user.id.to_s, image_url: user.image_url, referral_count: count }
+      end
+      users_obj
+   end
   end
 
   ## private methods

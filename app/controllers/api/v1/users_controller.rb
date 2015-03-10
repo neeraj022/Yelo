@@ -238,10 +238,10 @@ class Api::V1::UsersController < Api::V1::BaseController
   # GET /users/top_week_recommends
   def top_week_recommends
     today = Time.now
-    @tag_obj = Wall.collection.aggregate(
+    @users = Wall.collection.aggregate(
     {"$match" => {
-        "created_at" => { "$gte" => today.at_beginning_of_week },
-        "created_at" => { "$lte" => today.at_end_of_week }
+        "created_at" => { "$gte" => today.at_beginning_of_week, "$lte" => today.at_end_of_week },
+        "status" => true
         }
       }, 
       { "$unwind" => '$wall_items' },
@@ -254,6 +254,10 @@ class Api::V1::UsersController < Api::V1::BaseController
             "_id" => {"user_id" => "$user_id"}, "count" =>  {"$sum" => 1}}
       },
     )
+    @users = User.get_users_and_referral_count(@users)
+    render json: {users: @users}
+  rescue => e
+    rescue_message(e)
   end
 
 
