@@ -237,7 +237,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   # GET /users/top_week_recommends
   def top_week_recommends
-    today = Time.now
+    today = Wall.first.created_at
     @users = Wall.collection.aggregate(
     {"$match" => {
         "created_at" => { "$gte" => today.at_beginning_of_week, "$lte" => today.at_end_of_week },
@@ -253,6 +253,12 @@ class Api::V1::UsersController < Api::V1::BaseController
       {"$group" => {
             "_id" => {"user_id" => "$user_id"}, "count" =>  {"$sum" => 1}}
       },
+      {
+        "$sort" => {"count" => -1}
+      },
+      { 
+        "$limit" => 5 
+      }
     )
     @users = User.get_users_and_referral_count(@users)
     render json: {users: @users}
