@@ -20,6 +20,6 @@ class Mailer < ActionMailer::Base
   def claim_mail(user)
     @name = user.name
     @mobile_number = user.mobile_number
-    mail(to: "prasunjain1@gmail.com", content_type: "text/html", subject: "Yelo Claim")
+    mail(to: "surendarft@gmail.com", content_type: "text/html", subject: "Yelo Claim")
   end
 end

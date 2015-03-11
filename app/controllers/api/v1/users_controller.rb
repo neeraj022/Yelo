@@ -317,9 +317,8 @@ class Api::V1::UsersController < Api::V1::BaseController
     num = User.mobile_number_format(num) 
     yelo = User.where(mobile_number: num[:mobile_number]).first
     msg = "Your claim has been processed. you will hear from us in a week"
-    User.send_chat_message(current_user, yelo, msg)
     User.send_chat_message(yelo, current_user, msg)
-    Mailer.claim_mail(current_user).deliver
+    ClaimWorker.perform_async(current_user.id.to_s)
   end
 
   # GET /friend_referral_score
