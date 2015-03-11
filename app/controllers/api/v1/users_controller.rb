@@ -313,7 +313,9 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def claim_notification
-    ClaimWorker.perform_async(current_user.id.to_s)
+    num = Rails.application.secrets.w_mobile_number
+    num = User.mobile_number_format(num) 
+    ClaimWorker.perform_async(current_user.id.to_s, num[:mobile_number])
   end
 
   # GET /friend_referral_score
