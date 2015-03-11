@@ -130,10 +130,11 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue_message(e)
   end
 
-
   # POST /users/contacts_and_names
   def contacts_with_name
-    current_user.save_contacts_with_name(params[:contacts])
+    # current_user.save_contacts_with_name(params[:contacts])
+    c_dump = ContactDump.create(user_id: current_user.id, contacts: params[:contacts])
+    ContactWorker.perform_async(c_dump.id.to_s)
     render json: {status: "success"}
   rescue => e
     rescue_message(e)

@@ -514,7 +514,21 @@ class User
         users_obj << {name: user.name, id: user.id.to_s, image_url: user.image_url, referral_count: count }
       end
       users_obj
-   end
+    end
+   
+    def save_contact_dump(c_dump_id)
+      c_dump = ContactDump.where(_id: c_dump_id, status: ContactDump::CONTACT_DUMP_CONS[:FRESH]).first
+      return false if c_dump.blank?
+      user = User.where(_id: c_dump.user_id).first
+      user.save_contacts_with_name(c_dump.contacts)
+      c_dump.status = ContactDump::CONTACT_DUMP_CONS[:PROCESSED]
+      c_dump.save
+    rescue => e
+      c_dump.status = ContactDump::CONTACT_DUMP_CONS[:ERROR]
+      c_dump.error_msg = e.message
+      c_dump.save
+    end
+  
   end
 
   ## private methods
