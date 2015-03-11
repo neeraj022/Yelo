@@ -140,7 +140,7 @@ class AppSetting
     end
 
     def claim_points
-      return 25
+      return 50
     end
 
   end
