@@ -313,11 +313,6 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def claim_notification
-    num = Rails.application.secrets.w_mobile_number
-    num = User.mobile_number_format(num) 
-    yelo = User.where(mobile_number: num[:mobile_number]).first
-    msg = "Your claim has been processed. you will hear from us in a week"
-    User.send_chat_message(yelo, current_user, msg)
     ClaimWorker.perform_async(current_user.id.to_s)
   end
 
