@@ -305,7 +305,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       statistic.f_r_claims = (statistic.f_r_claims += 1)
       statistic.save
       current_user.claim_status.create(amount: claim_points, status: "processing")
-      # claim_notification
+      claim_notification
       render json: {status: "success", balance: statistic.f_r_score, claims: Code.serialized_json(current_user.claim_status)}
     else
       render json: {status: "error"}, status: Code[:error_code]
