@@ -241,7 +241,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     today = Time.now
     @users = Wall.collection.aggregate(
     {"$match" => {
-        "updated_at" => { "$gte" => today.at_beginning_of_week, "$lte" => today.at_end_of_week },
+        "created_at" => { "$gte" => today.at_beginning_of_week, "$lte" => today.at_end_of_week },
         "status" => true
         }
       }, 
