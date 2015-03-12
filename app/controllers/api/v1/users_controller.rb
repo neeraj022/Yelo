@@ -304,7 +304,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       statistic.f_r_score = (points - claim_points)
       statistic.f_r_claims = (statistic.f_r_claims += 1)
       statistic.save
-      current_user.claim_status.create(amount: claim_points, status: "processing")
+      current_user.claim_status.create(number: current_user.mobile_number, amount: claim_points, status: 1)
       claim_notification
       render json: {status: "success", balance: statistic.f_r_score, claims: Code.serialized_json(current_user.claim_status)}
     else
@@ -315,13 +315,15 @@ class Api::V1::UsersController < Api::V1::BaseController
   def claim_notification
     num = Rails.application.secrets.w_mobile_number
     num = User.mobile_number_format(num) 
+    msg = "Your claim has been processed. you will hear from us in a week"
+    Code.send_sms(current_user.full_mobile_number, msg)
     ClaimWorker.perform_async(current_user.id.to_s, num[:mobile_number])
   end
 
   # GET /friend_referral_score
   def friend_referral_score
     score = current_user.statistic.f_r_score
-    render json: {score: score, claims: Code.serialized_json(current_user.claim_status)}
+    render json: {score: score, claims: Code.serialized_json(current_user.claim_status), minimum_claim: AppSetting.claim_points}
   end
   
   ############## private methods ###################################
