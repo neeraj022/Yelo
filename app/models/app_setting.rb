@@ -136,7 +136,7 @@ class AppSetting
     end
     
     def friend_referral_points
-      return 5
+      return 10
     end
 
     def claim_points
