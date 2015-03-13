@@ -315,7 +315,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def claim_notification
     num = Rails.application.secrets.w_mobile_number
     num = User.mobile_number_format(num) 
-    msg = "Your claim has been processed. you will hear from us in a week"
+    msg = "Your claim is under process. you will hear from us in a week"
     Code.send_sms(current_user.full_mobile_number, msg)
     ClaimWorker.perform_async(current_user.id.to_s, num[:mobile_number])
   end
