@@ -48,6 +48,7 @@ class User
   field :h_m_num,              type: String
   field :platform_version,     type: String
   field :admin_type,           type: Integer, default: 0
+  field :doc_verified,         type: Integer, default: 0
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
@@ -78,6 +79,7 @@ class User
   index "auth_token" => 1
   ############## carrier wave ######################
   mount_uploader :image, ImageUploader
+  mount_uploader :doc, DocUploader
   ############## relations #########################
   has_many :listings, dependent: :destroy
   has_many :walls, dependent: :destroy     

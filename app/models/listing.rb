@@ -27,6 +27,7 @@ class Listing
   embeds_many :listing_keywords
   embeds_many :listing_links
   belongs_to :tag
+  has_many :service_cards
   ####################  filters          #######################
   after_initialize :init
   ######################## validations #######################
