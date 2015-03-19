@@ -1,11 +1,10 @@
 # encoding: utf-8
 
-class ImageUploader < CarrierWave::Uploader::Base
-
+class CardUploader < CarrierWave::Uploader::Base
 
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
-  include CarrierWave::MiniMagick
+  # include CarrierWave::MiniMagick
 
   # Choose what kind of storage to use for this uploader:
   # storage :file
@@ -17,17 +16,8 @@ class ImageUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
-
   version :thumb do
     process :resize_to_fit => [100, 100]
-  end
-
-  # Provide a default URL as a default if there hasn't been a file uploaded:
-  def default_url
-    # For Rails 3.1+ asset pipeline compatibility:
-     ActionController::Base.helpers.asset_path("fallback/" + ["v1", "default.jpg"].compact.join('_'))
-    #"/images/fallback/" + ["v1", "default.png"].compact.join('_')
-    #"/images/fallback/" + [version_name, "avatar_default.png"].compact.join('_')
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -58,10 +48,8 @@ class ImageUploader < CarrierWave::Uploader::Base
 
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
-  def filename
-     # extension = File.extname(original_filename)
-    "#{model.id.to_s+model.updated_at.to_i.to_s}.#{model.image.file.extension}" if original_filename 
-    #"something.jpg" if original_filename
-  end
+  # def filename
+  #   "something.jpg" if original_filename
+  # end
 
 end

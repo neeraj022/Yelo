@@ -15,16 +15,9 @@ module ServiceCardSearch
     settings index: { number_of_shards: 1, number_of_replicas: 0 } do
       mapping do
         indexes :title, analyzer: 'standard'
-        indexes :description, analyzer: 'standard'
-        indexes :price, analyzer: 'standard'
-        indexes :country, analyzer: 'standard'
-        indexes :state, analyzer: 'standard'
-        indexes :city, analyzer: 'standard'
         indexes :created_at, type: "date", format: "date_time"
         indexes :updated_at, type: "date", format: "date_time"
         indexes :loc, type: 'geo_point'
-        indexes :tag_id, analyzer: 'standard'
-        indexes :tag_name, analyzer: 'standard'
       end
     end
 
@@ -38,10 +31,10 @@ module ServiceCardSearch
     # Customize the JSON serialization for Elasticsearch
     #
     def as_indexed_json(options={})
-      {id: self.id.to_s, tag_id: self.tag_id.to_s, loc: location_coordinates, country: self.country,
+      {id: self.id.to_s, tag_id: self.tag_id.to_s, tag_name: self.tag_name, loc: location_coordinates, country: self.country,
        city: self.city, state: self.state, status: self.status, description: self.description, 
-      title: self.title, price: self.price, updated_at: self.updated_at, created_at: self.created_at, 
-        group_name: self.group_name, group_id: self.group_id.to_s,}
+       title: self.title, price: self.price, updated_at: self.updated_at, created_at: self.created_at, 
+       group_name: self.group_name, group_id: self.group_id.to_s}
     end
 
     # Search in title and content fields for `query`, include highlights in response

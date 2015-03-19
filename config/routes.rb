@@ -109,6 +109,7 @@ Rails.application.routes.draw do
       resources :ratings
       resources :listings
       resources :tags
+      resources :service_cards
       resources :walls do
         resources :wall_items
       end
