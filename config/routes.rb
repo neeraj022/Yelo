@@ -105,7 +105,7 @@ Rails.application.routes.draw do
       get  "/users/claim", to: "users#claim"
       get  "/users/friend_referral_score", to: "users#friend_referral_score"
       get "/users/top_week_recommends", to: "users#top_week_recommends"
-      post "/save_user_doc", to: "service_cards#save_user_doc"
+      post "/users/doc", to: "users#save_doc"
       get "/user_service_cards", to: "service_cards#user_service_cards"
       get "/listing_service_cards/:listing_id", to: "service_cards#listing_service_cards"
       resources :users

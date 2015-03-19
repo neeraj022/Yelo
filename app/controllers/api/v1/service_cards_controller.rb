@@ -23,7 +23,7 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
       current_user.save
     end
   end
-  
+
   # PUT /service_cards/:id
   def update
   	@card = current_user.service_cards.where(_id: params[:id]).first

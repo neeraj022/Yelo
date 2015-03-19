@@ -325,6 +325,13 @@ class Api::V1::UsersController < Api::V1::BaseController
     score = current_user.statistic.f_r_score
     render json: {score: score, claims: Code.serialized_json(current_user.claim_status), minimum_claim: AppSetting.claim_points}
   end
+
+  # POST /users/doc
+  def save_doc
+    current_user.doc = params[:doc]
+    current_user.save
+    render json: {status: "success"}
+  end
   
   ############## private methods ###################################
   private
