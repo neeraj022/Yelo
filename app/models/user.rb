@@ -49,6 +49,7 @@ class User
   field :platform_version,     type: String
   field :admin_type,           type: Integer, default: 0
   field :doc_verified,         type: Integer, default: 0
+  field :is_service,           type: Boolean, default: true
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
