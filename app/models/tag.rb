@@ -14,6 +14,7 @@ class Tag
   has_many :walls
   has_many :keywords
   has_many :listings
+  has_many :service_cards
   ################## filters #################
   after_save :update_embed_docs
   ############## validators  #################

@@ -26,8 +26,13 @@ class ServiceCard
   field :card_score,  type: Integer, default: 0
   ##################### CONS ################################
   SERVICE_CARD = {OFF: 0,  ON: 1, HIDDEN: 2}
+  #################### FILTERS ##############################
+  before_save :set_user_attr
   ##################### RELATIONS ###########################
   embeds_one :service_card_image
+  belongs_to :tag
+  belongs_to :user
+  belongs_to :listing
   ######### carrier Wave ####################################
   mount_uploader :image, CardUploader
   #########  validations ###############################
@@ -41,5 +46,17 @@ class ServiceCard
     else
       self.image.url
     end
+  end
+
+  def set_user_attr
+    user = self.user
+    user.is_service = true
+    user.save
+  end
+
+  def owner
+    user = self.user
+    {id: user.id.to_s, name: user.name, image_url: user.image_url, mobile_number: user.mobile_number,
+      doc_verified: user.doc_verified}
   end
 end

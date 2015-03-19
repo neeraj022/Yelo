@@ -95,6 +95,7 @@ class User
   has_one :people
   has_many :shares
   has_many :claim_status
+  has_many :service_cards
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
   after_save :update_embed_docs
