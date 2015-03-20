@@ -107,7 +107,7 @@ Rails.application.routes.draw do
       post "/users/doc", to: "users#save_doc"
       get "/user_service_cards", to: "service_cards#user_service_cards"
       get "/listing_service_cards/:listing_id", to: "service_cards#listing_service_cards"
-      get "/service_cards/:servcie_card_id/ratings", to: "ratings#service_card_reviews"
+      get "/service_cards/:service_card_id/ratings", to: "ratings#service_card_reviews"
       post "/ratings/:id/status", to: "ratings#rating_status"
       resources :users
       resources :ratings

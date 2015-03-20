@@ -45,7 +45,7 @@ class Api::V1::RatingsController < Api::V1::BaseController
     rescue_message(e)
   end
 
-  # GET /service_cards/:servcie_card_id/ratings
+  # GET /service_cards/:service_card_id/ratings
   def service_card_reviews
     @card = ServiceCard.find(params[:service_card_id])
     if current_user.id.to_s == @card.user_id.to_s

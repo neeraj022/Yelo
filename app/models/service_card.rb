@@ -60,4 +60,12 @@ class ServiceCard
     {id: user.id.to_s, name: user.name, image_url: user.image_url, mobile_number: user.full_mobile_number,
       doc_verified: user.doc_verified}
   end
+
+  def avg_rating
+    ratings = self.ratings
+    count = ratings.count
+    return 0 if (count == 0)
+    stars = ratings.sum(:stars)
+    avg = (stars/count)
+  end
 end
