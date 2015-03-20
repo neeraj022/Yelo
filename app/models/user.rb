@@ -48,7 +48,7 @@ class User
   field :h_m_num,              type: String
   field :platform_version,     type: String
   field :admin_type,           type: Integer, default: 0
-  field :doc_verified,         type: Integer, default: 0
+  field :doc_verified,         type: Boolean, default: true
   field :is_service,           type: Boolean, default: true
   ## Recoverable
   field :reset_password_token,   type: String
