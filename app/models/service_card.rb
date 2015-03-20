@@ -30,9 +30,9 @@ class ServiceCard
   before_save :set_user_attr
   ##################### RELATIONS ###########################
   embeds_one :service_card_image
-  belongs_to :tag
   belongs_to :user
   belongs_to :listing
+  belongs_to :tag
   ######### carrier Wave ####################################
   mount_uploader :image, CardUploader
   #########  validations ###############################

@@ -14,7 +14,10 @@ module ServiceCardSearch
     #
     settings index: { number_of_shards: 1, number_of_replicas: 0 } do
       mapping do
-        indexes :title, analyzer: 'standard'
+        indexes :title, type: 'multi_field' do
+          indexes :title,     analyzer: 'standard'
+          indexes :original,   index: 'not_analyzed'
+        end
         indexes :created_at, type: "date", format: "date_time"
         indexes :updated_at, type: "date", format: "date_time"
         indexes :loc, type: 'geo_point'
@@ -32,8 +35,8 @@ module ServiceCardSearch
     #
     def as_indexed_json(options={})
       {id: self.id.to_s, tag_id: self.tag_id.to_s, tag_name: self.tag_name, loc: location_coordinates, country: self.country,
-       city: self.city, state: self.state, status: self.status, description: self.description, 
-       title: self.title, price: self.price, updated_at: self.updated_at, created_at: self.created_at, 
+       city: self.city, status: self.status, description: self.description, 
+       title: self.title.downcase, price: self.price, updated_at: self.updated_at, created_at: self.created_at, 
        group_name: self.group_name, group_id: self.group_id.to_s}
     end
 
@@ -58,7 +61,7 @@ module ServiceCardSearch
           filter: {}
         }
       @search_definition[:sort] ||= []
-      @search_definition[:sort] << { _at: {card_score: "desc"}}
+      # @search_definition[:sort] << { _at: {card_score: "desc"}}
       @search_definition[:filter][:or] ||= []
       if(query[:latitude].present? && query[:longitude].present?)
          @search_definition[:filter][:or] << {
@@ -83,7 +86,7 @@ module ServiceCardSearch
                    }
        end
       
-       if(query[:q].blank? && query[:tag_id].blank? && query[:group_id].blank? )
+       if(query[:title].blank? && query[:tag_id].blank? && query[:group_id].blank? && query[:status].blank?)
           @search_definition[:query] = { match_all: {} }
        else
           @search_definition[:query] = {
@@ -109,11 +112,12 @@ module ServiceCardSearch
           }
        end
 
-      if(query[:q].present?)
+      if(query[:title].present?)
           @search_definition[:query][:bool][:must] << {
-            term:{
-                title: query[:q]
-              }
+            multi_match: {
+                query: query[:title].downcase, 
+                fields: [ "title", "original" ] 
+               }
             }
       end 
            

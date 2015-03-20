@@ -8,6 +8,8 @@ class Search
       	Search.search_users(params)
       when "wall"
       	Search.search_walls(params)
+      when "service_card"
+        Search.search_service_cards(params)
       else
       	""
       end
@@ -23,6 +25,10 @@ class Search
     
     def search_walls(params)
       Wall.search(params)
+    end
+
+    def search_service_cards(params)
+      ServiceCard.search(params)
     end
 
   end
