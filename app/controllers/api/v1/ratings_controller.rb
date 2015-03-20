@@ -2,15 +2,6 @@ class Api::V1::RatingsController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:show, :index]
   before_action :set_user, only: [:index]
 
-  # GET /users/:user_id/ratings
-  def user_ratings
-    @ratings = @user.ratings
-    # expires_in 5.minutes, :public => true
-    render json: @ratings
-  rescue => e
-    rescue_message(e)
-  end
-
   # GET /ratings/:id
   def show
     @rating = Rating.where(_id: params[:id])
@@ -22,10 +13,9 @@ class Api::V1::RatingsController < Api::V1::BaseController
 
   # POST /ratings
   def create 
-    @rating = Rating.new(rating_params.merge(reviewer_id: current_user.id))
-    @rating.create_rating_owner(user_id: current_user.id, name: current_user.name, image_url: current_user.image_url)
+    @card = ServiceCard.find(params[:service_card_id])
+    @rating = @card.ratings.new(rating_params.merge(reviewer_id: current_user.id, user_id: @card.user_id))
     if(@rating.save)
-      @rating.save_tags(params[:tag_ids]) if params[:tag_ids].present?
       render json: @rating
     else
       render json: {status: Code[:status_error], error_message: @rating.errors.full_messages}, status: Code[:error_code]
@@ -38,7 +28,6 @@ class Api::V1::RatingsController < Api::V1::BaseController
   def update
   	@rating = Rating.where(_id: params[:id], reviewer_id: current_user.id).first
     if(@rating.update_attributes(rating_params))
-      @rating.rating_tags.destroy && @rating.save_tags(params[:tag_ids]) if params[:tag_ids].present?
       render json: @rating
     else
       render json: {status: Code[:status_error], error_message: @rating.errors.full_messages}, status: Code[:error_code]
@@ -56,13 +45,35 @@ class Api::V1::RatingsController < Api::V1::BaseController
     rescue_message(e)
   end
 
-  private
-  
-  def set_user
-    @user = User.find(params[:user_id])
+  # GET /service_cards/:servcie_card_id/ratings
+  def service_card_reviews
+    @card = ServiceCard.find(params[:service_card_id])
+    if current_user.id.to_s == @card.user_id.to_s
+      @ratings = @card.ratings
+    else
+      @ratings = @card.ratings.where(status: 1)
+    end
+    render json: @ratings
+  rescue => e
+    rescue_message(e)
   end
 
-  def rating_params
-    params.require(:rating).permit(:comment, :stars, :user_id, :tmp_id)
-  end
+  # POST /ratings/:id/status
+  def rating_status
+    @rating = Rating.where(_id: params[:id], user_id: current_user.id).first
+    @rating.status = params[:status]
+    @rating.save
+  rescue => e
+    rescue_message(e)
+   end
+  
+  private
+  
+    def set_user
+      @user = User.find(params[:user_id])
+    end
+
+    def rating_params
+      params.require(:rating).permit(:comment, :stars, :tmp_id)
+    end
 end

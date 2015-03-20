@@ -78,7 +78,6 @@ Rails.application.routes.draw do
       get '/notify', to: "chats#notify"
       get "/server_status", to: "public#server_status"
       post '/referral', to: 'users#register_referral'
-      get "/users/:user_id/ratings", to: 'ratings#user_ratings'
       get "/users/:user_id/walls", to: 'walls#user_walls'
       post "/notifications/:id/seen", to: "notifications#update_seen_status"
       get "/notifications", to: "notifications#index"
@@ -108,6 +107,8 @@ Rails.application.routes.draw do
       post "/users/doc", to: "users#save_doc"
       get "/user_service_cards", to: "service_cards#user_service_cards"
       get "/listing_service_cards/:listing_id", to: "service_cards#listing_service_cards"
+      get "/service_cards/:servcie_card_id/ratings", to: "ratings#service_card_reviews"
+      post "/ratings/:id/status", to: "ratings#rating_status"
       resources :users
       resources :ratings
       resources :listings

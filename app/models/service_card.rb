@@ -33,6 +33,7 @@ class ServiceCard
   belongs_to :user
   belongs_to :listing
   belongs_to :tag
+  has_many :ratings
   ######### carrier Wave ####################################
   mount_uploader :image, CardUploader
   #########  validations ###############################
