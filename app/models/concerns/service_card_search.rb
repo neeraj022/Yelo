@@ -37,7 +37,7 @@ module ServiceCardSearch
       {id: self.id.to_s, tag_id: self.tag_id.to_s, tag_name: self.tag_name, loc: location_coordinates, country: self.country,
        city: self.city, status: self.status, description: self.description, 
        title: self.title.downcase, price: self.price, updated_at: self.updated_at, created_at: self.created_at, 
-       group_name: self.group_name, group_id: self.group_id.to_s}
+       group_name: self.group_name, group_id: self.group_id.to_s, card_score: self.card_score}
     end
 
     # Search in title and content fields for `query`, include highlights in response
@@ -61,8 +61,8 @@ module ServiceCardSearch
           filter: {}
         }
       @search_definition[:sort] ||= []
-      # @search_definition[:sort] << { _at: {card_score: "desc"}}
-      @search_definition[:filter][:or] ||= []
+      @search_definition[:sort] << { card_score: {order: "desc"}}
+      # @search_definition[:filter][:or] ||= []
       if(query[:latitude].present? && query[:longitude].present?)
          @search_definition[:filter][:or] << {
               geo_distance: {

@@ -20,6 +20,7 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
   def save_user_doc
     if(params[:doc].present?)
       current_user.doc = params[:doc]
+      current_user.doc_verified = User::USER_CONS[:DOC_SUBMITTED]
       current_user.save
     end
   end

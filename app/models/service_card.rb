@@ -56,7 +56,7 @@ class ServiceCard
 
   def owner
     user = self.user
-    {id: user.id.to_s, name: user.name, image_url: user.image_url, mobile_number: user.mobile_number,
+    {id: user.id.to_s, name: user.name, image_url: user.image_url, mobile_number: user.full_mobile_number,
       doc_verified: user.doc_verified}
   end
 end

@@ -329,6 +329,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   # POST /users/doc
   def save_doc
     current_user.doc = params[:doc]
+    current_user.doc_verified = User::USER_CONS[:DOC_SUBMITTED] if params[:doc].present?
     current_user.save
     render json: {status: "success"}
   end

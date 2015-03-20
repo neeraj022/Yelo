@@ -48,7 +48,7 @@ class User
   field :h_m_num,              type: String
   field :platform_version,     type: String
   field :admin_type,           type: Integer, default: 0
-  field :doc_verified,         type: Boolean, default: false
+  field :doc_verified,         type: Integer, default: 0
   field :is_service,           type: Boolean, default: false
   ## Recoverable
   field :reset_password_token,   type: String
@@ -116,7 +116,9 @@ class User
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }, allow_blank: true, allow_nil: true
   ####################### scopes ############################
   scope :allowed, -> { where(status: true, mobile_verified: true) }
-  ##################### instance methods #####################
+  ##################### cons ######################################
+  USER_CONS = {DOC_SUBMITTED: 1,  DOC_VERFIED: 2, NO_DOC: 0}
+  ##################### instance methods ##########################
   def tags
     tags = Array.new
     self.listings.each do |l|
