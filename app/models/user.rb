@@ -48,8 +48,8 @@ class User
   field :h_m_num,              type: String
   field :platform_version,     type: String
   field :admin_type,           type: Integer, default: 0
-  field :doc_verified,         type: Boolean, default: true
-  field :is_service,           type: Boolean, default: true
+  field :doc_verified,         type: Boolean, default: false
+  field :is_service,           type: Boolean, default: false
   ## Recoverable
   field :reset_password_token,   type: String
   field :reset_password_sent_at, type: Time
