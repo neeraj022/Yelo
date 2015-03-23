@@ -379,8 +379,8 @@ class Api::V1::UsersController < Api::V1::BaseController
 
     def create_new_user
       @user = User.new(user_create_params)
-      @sms = @user.send_sms
       if(@user.save)
+        @sms = @user.send_sms
         Person.save_person(@user.mobile_number, @user.id, true)
         render json: {status: Code[:status_success]}
       else
