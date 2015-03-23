@@ -368,10 +368,10 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
 
     def existing_user
-      @call =  @user.send_missed_call.body
-      if(@user.update_attributes(keymatch: @call["keymatch"], serial_code:"", skip_update_validation: true))
+      if(@user.update_attributes(serial_code:"", skip_update_validation: true))
         Person.save_person(@user.mobile_number, @user.id, true)
-        render json: {status: Code[:status_success], otp_start: @call["otp_start"], call_status: @call["status"]}
+        @user = @user.reload
+        send_sms
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
       end
@@ -379,11 +379,10 @@ class Api::V1::UsersController < Api::V1::BaseController
 
     def create_new_user
       @user = User.new(user_create_params)
-      @call =  @user.send_missed_call.body
-      @user.keymatch = @call["keymatch"]
+      @sms = @user.send_sms
       if(@user.save)
         Person.save_person(@user.mobile_number, @user.id, true)
-        render json: {status: Code[:status_success], otp_start: @call["otp_start"], call_status: @call["status"]}
+        render json: {status: Code[:status_success]}
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
       end
