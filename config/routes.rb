@@ -105,7 +105,7 @@ Rails.application.routes.draw do
       get  "/users/friend_referral_score", to: "users#friend_referral_score"
       get "/users/top_week_recommends", to: "users#top_week_recommends"
       post "/users/doc", to: "users#save_doc"
-      get "/user_service_cards", to: "service_cards#user_service_cards"
+      get "/users/:user_id/service_cards", to: "service_cards#user_service_cards"
       get "/listing_service_cards/:listing_id", to: "service_cards#listing_service_cards"
       get "/service_cards/:service_card_id/ratings", to: "ratings#service_card_reviews"
       post "/ratings/:id/status", to: "ratings#rating_status"

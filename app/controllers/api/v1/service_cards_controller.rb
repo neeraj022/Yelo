@@ -46,9 +46,23 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
     rescue_message(e)
   end
 
-  # GET /user_service_cards/
+  # # GET /user_service_cards/
+  # def user_service_cards
+  #   @cards = current_user.service_cards
+  #   render json: @cards
+  # rescue => e
+  #   rescue_message(e)
+  # end
+
+  # GET /users/:user_id/service_cards/
   def user_service_cards
-    @cards = current_user.service_cards
+    @user = User.where(_id: params[:user_id]).first
+    if current_user.id.to_s == params[:user_id]
+      @cards = @user.service_cards
+    else
+      # @cards = @user.service_cards.where(status: ServiceCard::SERVICE_CARD[:ON])
+      @cards = @user.service_cards
+    end
     render json: @cards
   rescue => e
     rescue_message(e)
