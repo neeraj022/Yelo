@@ -58,24 +58,24 @@ class ServiceCard
   def set_duration_type
     if(self.duration_unit.present?)
       unit = case duration_unit
-              when /^day?s$/
+              when /^days?$/
                 ServiceCard::DURATION_TYPE[:DAY]
-              when /^week?s$/
+              when /^weeks?$/
                 ServiceCard::DURATION_TYPE[:WEEK]
-              when /^month?s$/
+              when /^months?$/
                 ServiceCard::DURATION_TYPE[:MONTH]
             end
       self.duration_type = unit
     end
   end
 
-  def duration_unit
+  def duration_time
     unit = case duration_type
          when 1
            "day"
          when 2
            "week"
-         when 2
+         when 3
            "month"
        end
     ActionController::Base.helpers.pluralize(self.duration, unit)
