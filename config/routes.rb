@@ -125,6 +125,7 @@ Rails.application.routes.draw do
     get "/wall/statistics", to: "statistics#wall_statistics"
     get "/walls/tags", to: "statistics#tag_summary"
     get "/statistics/users", to: "statistics#user_summary"
+    get "/statistics/content_count", to: "new_content_statistics#index"
   end
 
 end
