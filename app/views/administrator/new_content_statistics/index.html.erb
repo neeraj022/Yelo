@@ -1,6 +1,6 @@
-<h1><%=params[:type] %> data</h1>
 <table border="1" style="width:100%">
   <tr>
+    <th>period</th>
     <th>users</th>
     <th>listings</th>
     <th>service cards</th> 
@@ -8,11 +8,28 @@
     <th>posts</th>
   </tr>
     <tr>
-      <td><%=@users.count%></td>
-	  <td><%=@listings.count%></td>
-	  <td><%=@service_cards.count%></td>
-	  <td><%=@chats.count%></td>
-	  <td><%=@posts.count%></td>
+      <td>Day</td>
+      <td><%=@day_users.count%></td>
+	  <td><%=@day_listings.count%></td>
+	  <td><%=@day_service_cards.count%></td>
+	  <td><%=@day_chats.count%></td>
+	  <td><%=@day_posts.count%></td>
+   </tr>
+   <tr>
+      <td>Week</td>
+      <td><%=@week_users.count%></td>
+	  <td><%=@week_listings.count%></td>
+	  <td><%=@week_service_cards.count%></td>
+	  <td><%=@week_chats.count%></td>
+	  <td><%=@week_posts.count%></td>
+   </tr>
+   <tr>
+      <td>Month</td>
+      <td><%=@month_users.count%></td>
+	  <td><%=@month_listings.count%></td>
+	  <td><%=@month_service_cards.count%></td>
+	  <td><%=@month_chats.count%></td>
+	  <td><%=@month_posts.count%></td>
    </tr>
 
 </table>
