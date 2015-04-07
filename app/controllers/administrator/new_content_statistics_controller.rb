@@ -1,10 +1,10 @@
 class Administrator::NewContentStatisticsController  < Administrator::AdministratorController
   
   def index
-  	 date = Date.today
-  	 @day_query = "{created_at: date.beginning_of_day..date.end_of_day}"
-  	 @week_query = "{created_at: date.beginning_of_week..date.end_of_day}"
-  	 @month_query = "{created_at: date.beginning_of_month..date.end_of_month}"
+  	 @date = Date.today
+  	 @day_query = "{created_at: @date.beginning_of_day..@date.end_of_day}"
+  	 @week_query = "{created_at: @date.beginning_of_week..@date.end_of_day}"
+  	 @month_query = "{created_at: @date.beginning_of_month..@date.end_of_month}"
      ######################### day ###########################################
      @day_listings = Listing.where(eval(@day_query))
      @day_users =  User.where(eval(@day_query)).where(mobile_verified: true)
