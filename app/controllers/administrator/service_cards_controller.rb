@@ -45,6 +45,6 @@ class Administrator::ServiceCardsController < Administrator::AdministratorContro
   private
 
   def service_card_params
-    params.require(:service_cards).permit(:message, :status)
+    params.require(:service_card).permit(:message, :status)
   end
 end

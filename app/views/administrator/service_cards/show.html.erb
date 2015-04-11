@@ -1,18 +1,18 @@
 <h2>Service Card</h2>
 
 <h4>User Details</h4>
-<p>@user.name</p>
-<p>@user.mobile_number</p>
-<p>@user.city</p>
+<p><b>Name:</b> <%=@user.name%></p>
+<p><b>Mobile number:</b> <%=@user.mobile_number%></p>
+<p><b>City</b><%=@user.city%></p>
 <p><%= image_tag @user.doc_url %></p>
 
 <h4>Service Card Details</h4>
-<p>Title: <%=@service_card.title%></p>
-<p>Description: <%=@service_card.description%></p>
-<p>Price: <%=@service_card.price%></p>
-<p>Duration: <%=@service_card.duration_time%></p>
-<p>Status: <%=@server_card.status_in_words%></p>
-<p>Category: <%=@service_card.group_name%></p>
-<p>Sub Category: <%=@service_card.tag_name%></p>
-<p>Image: <%= image_tag @service_card.image_url %></p>
-<%= link_to "Edit", administrator_service_card_path(@service_card)%>
+<p><b>Title:</b> <%=@service_card.title%></p>
+<p><b>Description:</b> <%=@service_card.description%></p>
+<p><b>Price:</b> <%=@service_card.price%></p>
+<p><b>Duration:</b> <%=@service_card.duration_time%></p>
+<p><b>Status:</b> <%=@service_card.status_in_words%></p>
+<p><b>Category:</b> <%=@service_card.group_name%></p>
+<p><b>Sub category</b> <%=@service_card.tag_name%></p>
+<p><b>Image:</b> <%= image_tag @service_card.image_url %></p>
+<%= link_to "Edit", edit_administrator_service_card_path(@service_card)%>

@@ -1,4 +1,4 @@
-<%= form_for(@service_card) do |f| %>
+<%= form_for([:administrator, @service_card]) do |f| %>
   <% if @service_card.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@service_card.errors.count, "error") %> prohibited this service card from being saved:</h2>
@@ -12,19 +12,19 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :message %><br>
-    <%= f.text_field :message %>
+    <b><%= f.label :message %></b><br>
+    <%= f.text_area :message %><br><br>
   </div>
   <div class="field">
-    <%= f.label :status %><br>
+    <b><%= f.label :status %>:</b><br>
     <%= f.label :status, "OFF" %>
-    <%= f.radio_button("user", "status", ServiceCard::SERVICE_CARD[:OFF])%>
-    <%= f.label :status, "ON" %>
-    <%= f.radio_button("user", "status", ServiceCard::SERVICE_CARD[:ON])%>
+    <%= radio_button("service_card", "status", ServiceCard::SERVICE_CARD[:OFF])%><br>
+    <%= f.label :status, "ON" %>&nbsp;
+    <%= radio_button("service_card", "status", ServiceCard::SERVICE_CARD[:ON])%><br>
     <%= f.label :status, "HIDDEN" %>
-    <%= f.radio_button("user", "status", ServiceCard::SERVICE_CARD[:HIDDEN])%>
+    <%= radio_button("service_card", "status", ServiceCard::SERVICE_CARD[:HIDDEN])%>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <br><%= f.submit %>
   </div>
 <% end %>
