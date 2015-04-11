@@ -61,7 +61,7 @@ module ServiceCardSearch
           filter: {}
         }
       @search_definition[:sort] ||= []
-      @search_definition[:sort] << { card_score: {order: "desc"}}
+      # @search_definition[:sort] << { card_score: {order: "desc"}}
       if(query[:latitude].present? && query[:longitude].present?)
         @search_definition[:filter][:or] ||= []
          @search_definition[:filter][:or] << {

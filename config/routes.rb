@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-
   get 'public/index'
 
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
@@ -126,6 +125,7 @@ Rails.application.routes.draw do
     get "/walls/tags", to: "statistics#tag_summary"
     get "/statistics/users", to: "statistics#user_summary"
     get "/statistics/content_count", to: "new_content_statistics#index"
+    resources :service_cards
   end
 
 end

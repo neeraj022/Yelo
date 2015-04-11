@@ -1,0 +1,17 @@
+<h2>Service Cards</h2>
+<table>
+<th>
+	<td>Title</td>
+	<td>Description</td>
+	<td>Status</td>
+	<td>edit</td>
+</th>
+<%@service_cards.each do |s|%>
+<tr>
+<td><%=s.title%></td>
+<td><%=s.description%></td>
+<td><%=s.status_in_words%></td>
+<td><%= link_to "Edit", administrator_service_card_path(s)%></td>
+</tr>
+<%end%>
+</table>

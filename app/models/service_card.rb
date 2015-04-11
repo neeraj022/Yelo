@@ -27,6 +27,7 @@ class ServiceCard
   field :duration,      type: Integer, default: 0
   field :duration_type, type: Integer, default: 1
   field :note,          type: String
+  field :message,       type: String
   ##################### attribute accessor ##################
   attr_accessor :duration_unit
   ##################### CONS ################################
@@ -79,6 +80,17 @@ class ServiceCard
            "month"
        end
     ActionController::Base.helpers.pluralize(self.duration, unit)
+  end
+
+  def status_in_words
+     str = case status
+     when ServiceCard::SERVICE_CARD[:ON]
+       "ON"
+     when ServiceCard::SERVICE_CARD[:OFF]
+       "OFF"
+     when ServiceCard::SERVICE_CARD[:HIDDEN]
+       "HIDDEN"
+     end
   end
 
   def set_user_attr

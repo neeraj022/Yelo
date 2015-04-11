@@ -1,0 +1,30 @@
+<%= form_for(@service_card) do |f| %>
+  <% if @service_card.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@service_card.errors.count, "error") %> prohibited this service card from being saved:</h2>
+
+      <ul>
+      <% @service_card.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :message %><br>
+    <%= f.text_field :message %>
+  </div>
+  <div class="field">
+    <%= f.label :status %><br>
+    <%= f.label :status, "OFF" %>
+    <%= f.radio_button("user", "status", ServiceCard::SERVICE_CARD[:OFF])%>
+    <%= f.label :status, "ON" %>
+    <%= f.radio_button("user", "status", ServiceCard::SERVICE_CARD[:ON])%>
+    <%= f.label :status, "HIDDEN" %>
+    <%= f.radio_button("user", "status", ServiceCard::SERVICE_CARD[:HIDDEN])%>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
