@@ -4,8 +4,8 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
   # POST /service_cards
   def create
   	save_user_doc
-  	@listing = current_user.listings.where(_id: params[:listing_id]).first
-    @card = ServiceCard.new(service_card_params.merge({user_id: current_user.id, listing_id: params[:listing_id], tag_id: @listing.tag_id}))
+  	@listing = get_listing
+    @card = ServiceCard.new(service_card_params.merge({user_id: current_user.id, listing_id: @listing.id, tag_id: @listing.tag_id}))
     @card.image = params[:image] if params[:image].present?
     if @card.save
       render json: @card
@@ -14,6 +14,27 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
     end
   rescue => e
     rescue_message(e)
+  end
+
+  def get_listing
+    if(params[:listing_id].present?)
+      return current_user.listings.where(_id: params[:listing_id]).first
+    elsif(params[:tag_id].present?)
+     return  find_or_create_listing
+    else
+      return nil
+    end
+  end
+
+  def find_or_create_listing
+    listing = current_user.listings.where(tag_id: params[:tag_id]).first_or_initialize
+    if(!listing.persisted?)
+      listing.l_type = 0
+      listing.latitude = params[:service_card][:latitude]
+      listing.longitude =  params[:service_card][:longitude]
+      listing.save!
+    end
+    listing
   end
 
   # POST /save_user_doc
