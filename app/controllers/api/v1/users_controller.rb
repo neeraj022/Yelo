@@ -1,6 +1,6 @@
 class Api::V1::UsersController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:ping, :show, :create, :verify_serial_code, :verify_missed_call, :sms_serial_code]
-  before_action :set_mobile_number, only: [:create, :verify_serial_code, :verify_missed_call, :sms_serial_code]
+  before_action :set_mobile_number, only: [:create, :verify_serial_code, :verify_missed_call, :sms_serial_code, :send_missed_call]
   
   # POST '/users'
   def create
@@ -332,6 +332,21 @@ class Api::V1::UsersController < Api::V1::BaseController
     current_user.doc_verified = User::USER_CONS[:DOC_SUBMITTED] if params[:doc].present?
     current_user.save
     render json: {status: "success"}
+  end
+
+  # POST /send_missed_call
+  def send_missed_call
+    @user = User.where(mobile_number: params[:user][:mobile_number]).first
+    if(@user.present?)
+      @call = @user.send_missed_call.body
+      @user.keymatch = @call["keymatch"]
+      @user.save
+      render json: {status: Code[:status_success], otp_start: @call["otp_start"], call_status: @call["status"]}
+    else
+      render json: {error_message: "user not present"}, status: Code[:error_code]
+    end
+  rescue => e
+    rescue_message(e)
   end
   
   ############## private methods ###################################

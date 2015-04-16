@@ -65,6 +65,7 @@ Rails.application.routes.draw do
       post "/verify_call", to: "users#verify_missed_call"
       post "/verify_serial_code", to: "users#verify_serial_code"
       post "/sms_serial_code", to: "users#sms_serial_code"
+      post "/send_missed_call", to: "users#send_missed_call"
       post "/interests", to: "users#interests"
       get "/tags/suggestions", to: "tags#suggestions"
       get "/tags/auto_suggestions", to: "tags#auto_suggestions"
