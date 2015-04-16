@@ -23,11 +23,13 @@ class Administrator::ServiceCardsController < Administrator::AdministratorContro
                 return ServiceCard::SERVICE_CARD[:ON]
              when "off"
                 return ServiceCard::SERVICE_CARD[:OFF]
-              when "hidden"
-                return ServiceCard::SERVICE_CARD[:OFF]
-              else
-                 ServiceCard::SERVICE_CARD[:ON]
-              end
+             when "hidden"
+                return ServiceCard::SERVICE_CARD[:HIDDEN]
+            when "reject"
+                return ServiceCard::SERVICE_CARD[:REJECT]
+            else
+                ServiceCard::SERVICE_CARD[:ON]
+            end
       return status
   end
 

@@ -31,7 +31,7 @@ class ServiceCard
   ##################### attribute accessor ##################
   attr_accessor :duration_unit
   ##################### CONS ################################
-  SERVICE_CARD  = {OFF: 0,  ON: 1, HIDDEN: 2}
+  SERVICE_CARD  = {OFF: 0,  ON: 1, HIDDEN: 2, REJECT: 4}
   DURATION_TYPE = {DAY: 1, WEEK: 2, MONTH: 3}
   #################### FILTERS ##############################
   before_save :set_user_attr, :set_duration_type

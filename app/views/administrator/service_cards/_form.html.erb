@@ -23,6 +23,8 @@
     <%= radio_button("service_card", "status", ServiceCard::SERVICE_CARD[:ON])%><br>
     <%= f.label :status, "HIDDEN" %>
     <%= radio_button("service_card", "status", ServiceCard::SERVICE_CARD[:HIDDEN])%>
+    <%= f.label :status, "REJECT" %>
+    <%= radio_button("service_card", "status", ServiceCard::SERVICE_CARD[:REJECT])%>
   </div>
   <div class="actions">
     <br><%= f.submit %>
