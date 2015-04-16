@@ -28,7 +28,7 @@ class Api::V1::CommunityController < Api::V1::BaseController
    
    # GET /group_list
    def group_list
-     @groups = Group.all
+     @groups = Group.where(status: true)
      render json: @groups, root: :groups
    end
 
