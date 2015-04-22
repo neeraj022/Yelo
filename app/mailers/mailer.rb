@@ -26,6 +26,6 @@ class Mailer < ActionMailer::Base
   def service_card(card_id)
     @card = ServiceCard.where(_id: card_id).first
     @user = @card.user
-    mail(to: "surendarft@gmail.com", content_type: "text/html", subject: "New Service Card")
+    mail(to: "prasunjain1@gmail.com", content_type: "text/html", subject: "New Service Card")
   end
 end
