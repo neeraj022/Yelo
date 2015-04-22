@@ -8,6 +8,7 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
     @card = ServiceCard.new(service_card_params.merge({user_id: current_user.id, listing_id: @listing.id, tag_id: @listing.tag_id}))
     @card.image = params[:image] if params[:image].present?
     if @card.save
+      ServiceCardWorker.perform_async(@card.id.to_s)
       render json: @card
     else
       render json: {error_message: @card.errors.full_messages}, status: Code[:error_code]

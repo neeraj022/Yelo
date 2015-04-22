@@ -22,4 +22,10 @@ class Mailer < ActionMailer::Base
     @mobile_number = user.mobile_number
     mail(to: "prasunjain1@gmail.com", content_type: "text/html", subject: "Yelo Claim")
   end
+
+  def service_card(card_id)
+    @card = ServiceCard.where(_id: card_id).first
+    @user = @card.user
+    mail(to: "surendarft@gmail.com", content_type: "text/html", subject: "New Service Card")
+  end
 end

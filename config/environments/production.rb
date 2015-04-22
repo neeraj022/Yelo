@@ -83,7 +83,7 @@ Rails.application.configure do
   }
 
   # added for devise and sending mail
-  config.action_mailer.default_url_options = { :host => 'http://www.yelo.red' }
+  config.action_mailer.default_url_options = { :host => 'http://api.yelo.red' }
   #change false for production
   config.action_mailer.perform_deliveries = true 
   config.action_mailer.raise_delivery_errors = true
@@ -97,8 +97,5 @@ Rails.application.configure do
    :domain               => 'yelo.red',
    :authentication       => 'plain'
  }
-
-
-
 
 end
