@@ -109,6 +109,9 @@ Rails.application.routes.draw do
       get "/listing_service_cards/:listing_id", to: "service_cards#listing_service_cards"
       get "/service_cards/:service_card_id/ratings", to: "ratings#service_card_reviews"
       post "/ratings/:id/status", to: "ratings#rating_status"
+      post "/service_cards/:id/destroy", to: "service_cards#destroy"
+      post "/listings/:id/destroy", to: "listings#destroy"
+      post "/ratings/:id/destroy", to: "ratings#destroy"
       resources :users
       resources :ratings
       resources :listings

@@ -13,6 +13,7 @@ class AppSetting
   field :server_message,           type: String
   field :sms_per_day,              type: Integer, default: 5
   field :tagged_user_sms_interval, type: Integer, default: 1
+  field :service_sms_interval,     type: Integer, default: 1
   field :android_app_url,          type: String
   field :ios_app_url,              type: String
   field :windows_app_url,          type: String
@@ -94,6 +95,15 @@ class AppSetting
       setting = AppSetting.first
       if setting
         setting.tagged_user_sms_interval
+      else
+        1
+      end
+    end
+
+    def service_sms_interval
+      setting = AppSetting.first
+      if setting
+        setting.service_sms_interval
       else
         1
       end

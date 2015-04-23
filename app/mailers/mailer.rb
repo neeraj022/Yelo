@@ -28,4 +28,10 @@ class Mailer < ActionMailer::Base
     @user = @card.user
     mail(to: "prasunjain1@gmail.com", content_type: "text/html", subject: "New Service Card")
   end
+
+  def track_service_card(card_id)
+    @card = ServiceCard.where(_id: card_id).first
+    @user = @card.user
+    mail(to: "prasunjain1@gmail.com", content_type: "text/html", subject: "New Service Card")
+  end
 end
