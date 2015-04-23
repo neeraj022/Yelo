@@ -32,7 +32,7 @@ class ServiceCard
   attr_accessor :duration_unit
   ##################### CONS ################################
   SERVICE_CARD  = {OFF: 0,  ON: 1, HIDDEN: 2, REJECT: 4}
-  DURATION_TYPE = {DAY: 1, WEEK: 2, MONTH: 3}
+  DURATION_TYPE = {DAY: 1, WEEK: 2, MONTH: 3, HOUR: 4}
   #################### FILTERS ##############################
   before_save :set_user_attr, :set_duration_type
   ##################### RELATIONS ###########################
@@ -65,6 +65,8 @@ class ServiceCard
                 ServiceCard::DURATION_TYPE[:WEEK]
               when /^months?$/
                 ServiceCard::DURATION_TYPE[:MONTH]
+              when /^hours?$/
+                ServiceCard::DURATION_TYPE[:HOUR]
             end
       self.duration_type = unit
     end
@@ -78,6 +80,8 @@ class ServiceCard
            "week"
          when 3
            "month"
+         when 4
+           "hour"
        end
     ActionController::Base.helpers.pluralize(self.duration, unit)
   end

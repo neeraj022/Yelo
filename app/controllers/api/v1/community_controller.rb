@@ -32,6 +32,14 @@ class Api::V1::CommunityController < Api::V1::BaseController
      render json: @groups, root: :groups
    end
 
+   # GET /group_cards
+   def group_cards
+      @tag_ids = ServiceCard.only(:tag_id).distinct(:tag_id)
+      @group_ids = Tag.where(:_id.in => @tag_ids).distinct(:group_id)
+      @groups = Group.where(:_id.in => @group_ids)
+      render json: @groups, root: :groups
+   end
+
    # GET /top_tags
    def top_tags
      @list = Array.new
@@ -53,5 +61,8 @@ class Api::V1::CommunityController < Api::V1::BaseController
    end
 
 end
+
+
+
 
 
