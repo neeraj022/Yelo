@@ -94,6 +94,8 @@ class ServiceCard
        "OFF"
      when ServiceCard::SERVICE_CARD[:HIDDEN]
        "HIDDEN"
+     when ServiceCard::SERVICE_CARD[:REJECT]
+       "REJECTED"
      end
   end
 
