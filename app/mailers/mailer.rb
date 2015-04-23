@@ -26,12 +26,15 @@ class Mailer < ActionMailer::Base
   def service_card(card_id)
     @card = ServiceCard.where(_id: card_id).first
     @user = @card.user
-    mail(to: "prasunjain1@gmail.com", content_type: "text/html", subject: "New Service Card")
+    email = Rails.application.secrets.info_mail
+    mail(to: email, content_type: "text/html", subject: "New Service Card")
   end
 
-  def track_service_card(card_id)
+  def track_service_card(card_id, user_id)
     @card = ServiceCard.where(_id: card_id).first
+    @booker = User.find(user_id)
     @user = @card.user
-    mail(to: "prasunjain1@gmail.com", content_type: "text/html", subject: "New Service Card")
+    email = Rails.application.secrets.info_mail
+    mail(to: email, content_type: "text/html", subject: "Service Card Booking")
   end
 end

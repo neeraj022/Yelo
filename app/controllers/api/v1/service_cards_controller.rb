@@ -46,6 +46,7 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
     msg = "#{@booker.name} (#{@booker.full_mobile_number}) has booked your service on yelo - #{@card.title}"
     @service_sms_log.send_sms(msg)
     ServiceCardWorker.perform_async(@card.id.to_s, "track", @booker.id.to_s)
+    render json: {status: :success}
   rescue => e
     rescue_message(e)  
   end

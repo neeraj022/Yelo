@@ -41,6 +41,7 @@ class ServiceCard
   belongs_to :listing
   belongs_to :tag
   has_many :ratings
+  has_many :service_sms_logs
   #################### carrier Wave ####################################
   mount_uploader :image, CardUploader
   #################### validations ###############################

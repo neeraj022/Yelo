@@ -1,0 +1,12 @@
+<h2>Title</h2>
+<p><%=@card.title%></p>
+<h2>Description</h2>
+<p><%=@card.description%></p>
+<h2>Link</h2>
+<p><%=administrator_service_card_url(@card.id.to_s)%></p>
+<h2>Service Owner Details</h2>
+<p><%=@user.name%></p>
+<p><%=@user.full_mobile_number%></p>
+<h2>Service Card Booked By</h2>
+<p><%=@booker.name%></p>
+<p><%=@booker.full_mobile_number%></p>
