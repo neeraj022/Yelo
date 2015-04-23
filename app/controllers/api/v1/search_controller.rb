@@ -55,7 +55,7 @@ class Api::V1::SearchController < Api::V1::BaseController
        @params = {city: params[:city], country: params[:country],
                  type: params[:type], tag_id: params[:tag_id], group_id: params[:group_id],
                  title: params[:title]}
-      @params[:status] = 0
+      @params[:status] = ServiceCard::SERVICE_CARD[:ON]
       @params[:latitude] = params[:latitude].to_f if params[:latitude].present?
       @params[:longitude] = params[:longitude].to_f if params[:longitude].present?
       params[:radius] ||= 25

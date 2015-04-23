@@ -34,7 +34,15 @@ class Api::V1::CommunityController < Api::V1::BaseController
 
    # GET /group_cards
    def group_cards
-      @tag_ids = ServiceCard.only(:tag_id).distinct(:tag_id)
+    if(params[:latitude].present? && params[:longitude].present?)
+       @params = {latitude: params[:latitude].to_f, longitude: params[:longitude].to_f, 
+       radius: 50, type: "service_card", status: ServiceCard::SERVICE_CARD[:ON]}
+       @cards = Search.query(@params).records
+       @tag_ids = @cards.map{|c| c.tag_id.to_s} if @cards.present?
+     else
+       @tag_ids = ServiceCard.only(:tag_id).distinct(:tag_id)
+    end
+      @tag_ids ||= []
       @group_ids = Tag.where(:_id.in => @tag_ids).distinct(:group_id)
       @groups = Group.where(:_id.in => @group_ids)
       render json: @groups, root: :groups
