@@ -372,7 +372,7 @@ class User
   def update_embed_docs
     if(name_changed? || image_changed?)
       wall_owner_update
-      rating_owner_update
+      # rating_owner_update
     end
   end
 
