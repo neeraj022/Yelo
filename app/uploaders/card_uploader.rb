@@ -1,6 +1,8 @@
 # encoding: utf-8
 
 class CardUploader < CarrierWave::Uploader::Base
+   before :cache, :reset_secure_token
+
 
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
@@ -46,12 +48,18 @@ class CardUploader < CarrierWave::Uploader::Base
   #   %w(jpg jpeg gif png)
   # end
 
+  def reset_secure_token(file)
+    model.image_secure_token = nil
+  end
+
+  def secure_token(length = 16)
+    model.image_secure_token ||= SecureRandom.hex(length / 2)
+  end
+
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
   def filename
-     # extension = File.extname(original_filename)
-    "#{Devise.friendly_token}.#{model.image.file.extension}" if original_filename 
-    #"something.jpg" if original_filename
+     "#{secure_token(16)}.#{file.extension}" if original_filename.present?
   end
 
 end

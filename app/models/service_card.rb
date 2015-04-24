@@ -28,6 +28,8 @@ class ServiceCard
   field :duration_type, type: Integer, default: 1
   field :note,          type: String
   field :message,       type: String
+  field :image_secure_token, type: String
+
   ##################### attribute accessor ##################
   attr_accessor :duration_unit
   ##################### CONS ################################
