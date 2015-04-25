@@ -43,7 +43,8 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
     @card = ServiceCard.find(params[:id])
     @booker = current_user
     @service_sms_log = ServiceSmsLog.where(user_id: @booker.id, service_card_id: @card.id).first_or_create
-    msg = "#{@booker.name} (#{@booker.full_mobile_number}) has booked your service on yelo - #{@card.title}"
+    # (+#{@booker.full_mobile_number})
+    msg = "#{@booker.name} has booked your service on yelo - #{@card.title}"
     @service_sms_log.send_sms(msg)
     ServiceCardWorker.perform_async(@card.id.to_s, "track", @booker.id.to_s)
     render json: {status: :success}

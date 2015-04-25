@@ -38,7 +38,7 @@ class ServiceCard
   #################### FILTERS ##############################
   before_save :set_user_attr, :set_duration_type
   ##################### RELATIONS ###########################
-  embeds_one :service_card_image
+  # embeds_one :service_card_image
   belongs_to :user
   belongs_to :listing
   belongs_to :tag
