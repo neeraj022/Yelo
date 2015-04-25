@@ -41,7 +41,7 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
   # GET /service_cards/:id/book/
   def book
     @card = ServiceCard.find(params[:id])
-    @booker = User.find(params[:user_id])
+    @booker = current_user
     @service_sms_log = ServiceSmsLog.where(user_id: @booker.id, service_card_id: @card.id).first_or_create
     msg = "#{@booker.name} (#{@booker.full_mobile_number}) has booked your service on yelo - #{@card.title}"
     @service_sms_log.send_sms(msg)
