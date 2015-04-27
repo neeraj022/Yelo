@@ -41,7 +41,12 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
   # GET /service_cards/:id/book/
   def book
     @card = ServiceCard.find(params[:id])
+    @card.books = (@card.books += 1)
+    @card.save
     @booker = current_user
+    @service_book = ServiceCardBook.where(user_id: @booker.id, service_card_id: @card.id).first_or_initialize
+    @service_book.count = (@service_book.count += 1)
+    @service_book.save
     @service_sms_log = ServiceSmsLog.where(user_id: @booker.id, service_card_id: @card.id).first_or_create
     # (+#{@booker.full_mobile_number})
     msg = "#{@booker.name} has booked your service on yelo - #{@card.title}"
@@ -50,6 +55,14 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
     render json: {status: :success}
   rescue => e
     rescue_message(e)  
+  end
+
+  # POST /service_cards/views/add
+  def add_views
+    @card = ServiceCard.find(params[:id])
+    @card.views = (@card.views += 1)
+    @card.save
+    render json: {status: :success}
   end
 
   # POST /save_user_doc

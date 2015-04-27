@@ -2,7 +2,7 @@
 <table border="1", cellpadding="10", cellspacing="0">
 <tr>
 	<td><b>Title</b></td>
-	<td><b>Description</b></td>
+	<td><b>Name</b></td>
 	<td><b>Status</b></td>
 	<td><b>show</b></td>
 	<td><b>edit</b></td>
@@ -10,7 +10,7 @@
 <%@service_cards.each do |s|%>
 <tr>
 <td><%=s.title%></td>
-<td><%=truncate(s.description, length: 17, separator: '.')%></td>
+<td><%=s.user.name%></td>
 <td><%=s.status_in_words%></td>
 <td><%= link_to "Show", administrator_service_card_path(s)%></td>
 <td><%= link_to "Edit", edit_administrator_service_card_path(s)%></td>

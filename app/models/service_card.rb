@@ -29,7 +29,8 @@ class ServiceCard
   field :note,          type: String
   field :message,       type: String
   field :image_secure_token, type: String
-
+  field :views,         type: Integer, default: 0
+  field :books,         type: Integer, default: 0
   ##################### attribute accessor ##################
   attr_accessor :duration_unit
   ##################### CONS ################################
@@ -44,6 +45,7 @@ class ServiceCard
   belongs_to :tag
   has_many :ratings
   has_many :service_sms_logs
+  has_many :service_card_books
   #################### carrier Wave ####################################
   mount_uploader :image, CardUploader
   #################### validations ###############################
