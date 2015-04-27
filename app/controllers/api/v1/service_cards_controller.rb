@@ -57,7 +57,7 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
     rescue_message(e)  
   end
 
-  # POST /service_cards/views/add
+  # POST /service_cards/:id/views
   def add_views
     @card = ServiceCard.find(params[:id])
     @card.views = (@card.views += 1)

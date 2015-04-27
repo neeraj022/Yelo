@@ -113,7 +113,7 @@ Rails.application.routes.draw do
       post "/listings/:id/destroy", to: "listings#destroy"
       post "/ratings/:id/destroy", to: "ratings#destroy"
       post "/service_cards/:id/book/", to: "service_cards#book"
-      post "/service_cards/views/add", to: "service_cards#add_views"
+      post "/service_cards/:id/views", to: "service_cards#add_views"
       resources :users
       resources :ratings
       resources :listings
