@@ -59,9 +59,7 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
 
   # POST /service_cards/:id/views
   def add_views
-    @card = ServiceCard.find(params[:id])
-    @card.views = (@card.views += 1)
-    @card.save
+    ServiceCardView.where(user_id: current_user.id, service_card_id: params[:id]).first_or_create
     render json: {status: :success}
   end
 

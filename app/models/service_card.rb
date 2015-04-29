@@ -46,6 +46,7 @@ class ServiceCard
   has_many :ratings
   has_many :service_sms_logs
   has_many :service_card_books
+  has_many :service_card_views
   #################### carrier Wave ####################################
   mount_uploader :image, CardUploader
   #################### validations ###############################
@@ -108,6 +109,10 @@ class ServiceCard
     user = self.user
     user.is_service = true
     user.save
+  end
+
+  def views
+    self.service_card_views.count
   end
 
   def owner
