@@ -37,7 +37,7 @@ class Wall
   embeds_one  :wall_info
   has_many    :report_abuses, as: :abuse_obj
   embeds_many :wall_chat_users
-  has_many :comments
+  embeds_many :comments
 
   accepts_nested_attributes_for :tagged_users
   accepts_nested_attributes_for :wall_chat_users

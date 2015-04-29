@@ -47,13 +47,13 @@ class Api::V1::CommentsController <  Api::V1::BaseController
    rescue => e
     rescue_message(e)
    end
-  
-  def set_Wall
-    @wall = Wall.find(params[:wall_id])
-  end
 
   private
-    
+
+    def set_wall
+      @wall = Wall.find(params[:wall_id])
+    end
+
     def comment_params
       params.require(:comment).permit(:message)
     end

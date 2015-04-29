@@ -1,3 +1,3 @@
-class CommentSerializer < ActiveModel::Serializer
-  attributes :id
+class CommentSerializer < CustomSerializer
+  attributes :id, :message, :status, :spam_count
 end

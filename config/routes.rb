@@ -115,6 +115,8 @@ Rails.application.routes.draw do
       post "/service_cards/:id/book/", to: "service_cards#book"
       post "/service_cards/:id/views", to: "service_cards#add_views"
       post "/walls/:wall_id/comments/:id/spam", to:"comments#report_spam"
+      post "/walls/:wall_id/comments/:id/destroy", to: "comments#destroy"
+      get "/walls/:id/wall_and_comments", to: "walls#wall_and_comments"
       resources :users
       resources :ratings
       resources :listings

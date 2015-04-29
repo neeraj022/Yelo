@@ -4,12 +4,12 @@ class Comment
   include Mongoid::Timestamps::Updated
 
   field :user_id,    type: BSON::ObjectId
-  field :messsage,   type: String
+  field :message,    type: String
   field :status,     type: Integer, default: 1
   field :spam_count, type: Integer, default: 0
 
   embeds_many :comment_spams
-  enbedded_in :wall
+  embedded_in :wall
 
   validates :user_id, :message, presence: true
 

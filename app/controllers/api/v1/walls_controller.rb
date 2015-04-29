@@ -1,7 +1,7 @@
 class Api::V1::WallsController < Api::V1::BaseController
   before_action :authenticate_user!, except: [:show, :user_walls]
   before_action :truncate_wall_msg
-  before_action :set_wall, only: [:create, :update]
+  before_action :set_wall_params, only: [:create, :update]
   # POST /walls/
   def create
     @wall = current_user.walls.new(wall_params)
@@ -83,6 +83,12 @@ class Api::V1::WallsController < Api::V1::BaseController
     rescue_message(e)
   end
 
+  # GET /walls/:id/wall_and_comments
+  def wall_and_comments
+    @wall = Wall.where(_id: params[:id]).first
+    render json: {wall: Code.serialized_json(@wall, "WallCommentSerializer")}
+  end
+
   # GET /walls/chat_users
   def chat_users
     @wall = current_user.walls.where(_id: params[:id]).first
@@ -113,7 +119,7 @@ class Api::V1::WallsController < Api::V1::BaseController
       params[:wall][:message] =  params[:wall][:message].to_s.truncate(600) if params[:wall].present?
     end
 
-    def set_wall
+    def set_wall_params
       if(params[:wall][:tag_id].present?)
          params[:wall][:group_id] = Tag.find(params[:wall][:tag_id]).group_id.to_s
       end
