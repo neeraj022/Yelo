@@ -114,6 +114,7 @@ Rails.application.routes.draw do
       post "/ratings/:id/destroy", to: "ratings#destroy"
       post "/service_cards/:id/book/", to: "service_cards#book"
       post "/service_cards/:id/views", to: "service_cards#add_views"
+      post "/walls/:wall_id/comments/:id/spam", to:"comments#report_spam"
       resources :users
       resources :ratings
       resources :listings
@@ -121,6 +122,7 @@ Rails.application.routes.draw do
       resources :service_cards
       resources :walls do
         resources :wall_items
+        resources :comments
       end
     end
   end

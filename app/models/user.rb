@@ -96,6 +96,10 @@ class User
   has_many :shares
   has_many :claim_status
   has_many :service_cards
+  
+  accepts_nested_attributes_for :setting
+  accepts_nested_attributes_for :statistic
+  accepts_nested_attributes_for :contacts
   ############## filters ############################
   before_save :ensure_authentication_token, :mobile_verification_serial
   after_save :update_embed_docs
