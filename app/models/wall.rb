@@ -108,6 +108,11 @@ class Wall
     end
   end
 
+  def allowed_comments
+    comments = self.comments.where(status: Comment::COMMENT_STATUS[:ON])
+    Code.serialized_json(comments)
+  end
+
   def tagged_users_count
     self.tagged_users.count
   end

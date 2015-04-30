@@ -13,5 +13,5 @@ class Comment
 
   validates :user_id, :message, presence: true
 
-  SERVICE_CARD  = {OFF: 0,  ON: 1}
+  COMMENT_STATUS  = {OFF: 0,  ON: 1}
 end

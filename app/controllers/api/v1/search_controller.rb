@@ -11,8 +11,8 @@ class Api::V1::SearchController < Api::V1::BaseController
     else
       show_active_cities
     end
-  # rescue => e
-  #    rescue_message(e) 
+  rescue => e
+     rescue_message(e) 
   end
 
   def show_active_cities

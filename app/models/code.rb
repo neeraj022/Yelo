@@ -34,7 +34,7 @@ class Code
    end
 
   def self.serialized_json(obj, class_name = nil)
-    if obj.kind_of?(Array)
+    if obj.kind_of?(Mongoid::Criteria)
       ActiveModel::ArraySerializer.new(obj).as_json
     elsif(class_name)
       class_name.constantize.new(obj, root: false)

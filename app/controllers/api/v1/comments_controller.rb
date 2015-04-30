@@ -26,7 +26,7 @@ class Api::V1::CommentsController <  Api::V1::BaseController
     rescue_message(e)
   end
 
-  # DESTROY /walls/:wall_id/comment/:id  
+   # DESTROY /walls/:wall_id/comment/:id  
    def destroy
      @comment = @wall.comments.where(_id: params[:id], user_id: current_user.id).first
      @comment.destroy
@@ -37,15 +37,15 @@ class Api::V1::CommentsController <  Api::V1::BaseController
    def report_spam
      @comment = @wall.comments.where(_id: params[:id]).first
      @comment.spam_count = (@comment.spam_count += 1)
-     @spam = @comment.comment_spams.where(user_id: current_user.id).first_or_create
-     @spam.description = params[:comment][:description]
+     @spam = @comment.comment_spams.where(user_id: current_user.id).first_or_initialize
+     @spam.description = params[:description]
      if @spam.save
        render json: {status: "success"}
      else
        render json: {error_message: @spam.errors.full_messages}, status: Code[:error_code]
     end
    rescue => e
-    rescue_message(e)
+     rescue_message(e)
    end
 
   private
