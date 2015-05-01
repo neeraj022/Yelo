@@ -36,7 +36,7 @@ class Api::V1::CommunityController < Api::V1::BaseController
    def group_cards
     if(params[:latitude].present? && params[:longitude].present?)
        @params = {latitude: params[:latitude].to_f, longitude: params[:longitude].to_f, 
-       radius: 50, type: "service_card", status: ServiceCard::SERVICE_CARD[:ON]}
+       radius: 50, type: "service_card", status: ServiceCard::SERVICE_CARD[:ON], size: 500}
        @cards = Search.query(@params).records
        @tag_ids = @cards.map{|c| c.tag_id.to_s} if @cards.present?
      else

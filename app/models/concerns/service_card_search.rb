@@ -85,7 +85,7 @@ module ServiceCardSearch
                         }
                    }
        end
-      
+
        if(query[:title].blank? && query[:tag_id].blank? && query[:group_id].blank? && query[:status].blank?)
           @search_definition[:query] = { match_all: {} }
        else
@@ -111,6 +111,11 @@ module ServiceCardSearch
             } 
           }
        end
+
+      if(query[:size].present?)
+        @search_definition[:size] = query[:size]
+      end
+      
 
       if(query[:title].present?)
           @search_definition[:query][:bool][:must] << {
