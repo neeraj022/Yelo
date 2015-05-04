@@ -24,7 +24,7 @@ class Api::V1::CommentsController <  Api::V1::BaseController
   def save_comment_notification
     return if (@comment.user_id.to_s == @wall.user_id.to_s)
     v_hash = {wall_id: @wall.id.to_s, commented_by: current_user.name, comment: @comment.message}
-    notify = Notification.save_notify(Notification::N_CONS[:WALL_COMMENT], v_hash, @comment.user_id)
+    notify = Notification.save_notify(Notification::N_CONS[:WALL_COMMENT], v_hash, @wall.user_id)
     notify.send_notification
   end
 
