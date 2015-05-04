@@ -189,6 +189,10 @@ class Wall
     end
   end
 
+  def comments_count
+    self.comments.count
+  end
+
   def wall_chats
     get_chat_users(self.chat_user_ids)
   end
