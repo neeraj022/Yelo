@@ -346,6 +346,8 @@ class User
       return true
     when Notification::N_CONS[:CREATE_WALL]
       return true
+    when Notification::N_CONS[:WALL_COMMENT]
+      return true
     else
       return false
     end

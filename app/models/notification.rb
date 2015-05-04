@@ -10,7 +10,7 @@ class Notification
   ################### relation ###################
   belongs_to :user 
   ################  constants ####################
-  N_CONS = {USER_TAG: 1, CREATE_WALL: 2, WALL_PIN: 3, CONTACT_WALL: 4}
+  N_CONS = {USER_TAG: 1, CREATE_WALL: 2, WALL_PIN: 3, CONTACT_WALL: 4, WALL_COMMENT: 5}
   N_STATUS = {FRESH: 0, SENT: 1, SEEN: 2, SUMMARY: 3}
   ################ instance methods ##############
   def save_notification_status(status)
@@ -28,6 +28,8 @@ class Notification
       Notification.wall_tag_obj(self)
     when Notification::N_CONS[:CONTACT_WALL]
       Notification.contact_wall_obj(self)
+    when Notification::N_CONS[:WALL_COMMENT]
+      Notification.wall_comment_obj(self)
     end
   end
 
@@ -179,6 +181,13 @@ class Notification
       str = self.message_format("post_follow_msg", opt, default_msg)
       {collapse_key: "pin", message: str , resource: {name:
       "Referral on yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+    end
+
+    def wall_comment_obj(n_obj)
+      v_hash = n_obj.n_value
+      str =  "#{v_hash[:commented_by]}: #{v_hash[:comment].truncate(100)}"
+      {collapse_key: "comment", message: str , resource: {name:
+      "New Comment", dest: {wall_id: v_hash[:wall_id]}}}
     end
 
     def message_format(type, opt={}, default_msg=nil)
