@@ -21,6 +21,7 @@ class Api::V1::CommunityController < Api::V1::BaseController
     tags.each do |t|
       words = Keyword.where(tag_id: t.id).limit(10)
       words = Code.serialized_json(words.to_a)
+      words = (words.kind_of? Array) ? words : []
       @list << {name: t.name, id: t.id.to_s, keywords: words}
     end
     render json: {tags: @list}
