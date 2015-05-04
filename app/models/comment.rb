@@ -14,4 +14,8 @@ class Comment
   validates :user_id, :message, presence: true
 
   COMMENT_STATUS  = {OFF: 0,  ON: 1}
+
+  def user_details
+    User.get_user(self.user_id)
+  end
 end

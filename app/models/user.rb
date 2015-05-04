@@ -476,6 +476,11 @@ class User
       users
     end
 
+    def get_user(id)
+      u = User.where(_id: id).first
+      {id: u.id.to_s, name: u.name, image_url: u.image_url}
+    end
+
     def save_inactive_user(mobile_number, country_code)
       user =  User.where(mobile_number: mobile_number).first_or_initialize
       user.country_code = country_code
