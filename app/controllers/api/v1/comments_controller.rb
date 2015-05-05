@@ -23,8 +23,10 @@ class Api::V1::CommentsController <  Api::V1::BaseController
 
   def save_comment_notification
     v_hash = {wall_id: @wall.id.to_s, commented_by: current_user.name, comment: @comment.message}
-    user_ids = @wall.comments.map{|c| c.user_id.to_s}
+    user_ids = @wall.comments.map{|c| c.user_id.to_s}.uniq
     user_ids.delete(current_user.id.to_s)
+    binding.pry
+    return if user_ids.blank?
     obj = Notification.wall_comment_obj(v_hash)
     Notification.send_notifications(user_ids, obj)
   end
