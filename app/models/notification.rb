@@ -199,7 +199,7 @@ class Notification
     end
 
     def wall_comment_obj(n_obj)
-      v_hash = n_obj.n_value if n_obj.kind_of? Notification
+      v_hash =  (n_obj.kind_of? Notification) ? n_obj.n_value : n_obj
       str =  "#{v_hash[:commented_by]}: #{v_hash[:comment].truncate(100)}"
       {collapse_key: "comment", message: str , resource: {name:
       "New Comment", dest: {wall_id: v_hash[:wall_id]}}}
