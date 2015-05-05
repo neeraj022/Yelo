@@ -213,6 +213,19 @@ class Notification
       end
       str
     end
+
+    def send_comment_notifications(wall_id, comment_id, user_id)
+      wall = Wall.where(_id: wall_id).first
+      return if wall.blank?
+      comment = wall.comments.where(_id: comment_id).first
+      user = User.find(user_id)
+      v_hash = {wall_id: wall.id.to_s, commented_by: user.name, comment: comment.message}
+      user_ids = wall.comments.map{|c| c.user_id.to_s}.uniq
+      user_ids.delete(user.id.to_s)
+      return if user_ids.blank?
+      obj = Notification.wall_comment_obj(v_hash)
+      Notification.send_notifications(user_ids, obj)
+    end
     
     def summary_wall_obj(tags_hash)
       str = "Today on yelo - "
