@@ -96,6 +96,21 @@ class Notification
       Notification.push_notify("android", android_push_ids, notify_obj) if android_push_ids.present?
     end
 
+
+    def send_notifications(user_ids, notify_obj)
+      users = User.where(:_id.in => user_ids)
+      android_push_ids = Array.new
+      ios_push_ids = Array.new
+      users.each do |u|
+        if(u.platform == "android")
+          android_push_ids << u.push_id if u.push_id.present?
+        elsif(u.platform == "ios")
+          ios_push_ids << u.push_id if u.push_id.present?
+        end
+      end
+      Notification.push_notify("android", android_push_ids, notify_obj) if android_push_ids.present?
+    end
+
     def notify
       puts "started quick notification"
       notifications = Notification.where(n_status: Notification::N_STATUS[:FRESH])
@@ -184,7 +199,7 @@ class Notification
     end
 
     def wall_comment_obj(n_obj)
-      v_hash = n_obj.n_value
+      v_hash = n_obj.n_value if n_obj.kind_of? Notification
       str =  "#{v_hash[:commented_by]}: #{v_hash[:comment].truncate(100)}"
       {collapse_key: "comment", message: str , resource: {name:
       "New Comment", dest: {wall_id: v_hash[:wall_id]}}}
