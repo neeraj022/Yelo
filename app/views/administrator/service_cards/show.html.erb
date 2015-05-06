@@ -15,5 +15,8 @@
 <p><b>Category:</b> <%=@service_card.group_name%></p>
 <p><b>Sub category:</b> <%=@service_card.tag_name%></p>
 <p><b>Deliverables:</b> <%=@service_card.note%></p>
+<p><b>City:</b> <%=@service_card.city%></p>
+<p><b>Latitude:</b> <%=@service_card.latitude%></p>
+<p><b>Longitude:</b> <%=@service_card.longitude%></p>
 <p><b>Image:</b> <%= image_tag @service_card.image_url %></p>
 <%= link_to "Edit", edit_administrator_service_card_path(@service_card)%>

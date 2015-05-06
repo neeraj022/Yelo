@@ -518,7 +518,8 @@ class User
       chat_url = Rails.application.secrets.chat_url
       str = "?sender_id=#{sender.id.to_s}&receiver_id=#{receiver.id.to_s}&message=#{msg}&sent_at=#{Time.now.to_s}"
       token = 'Token token='+"\""+sender.auth_token+"\""+","+' device_id='+"\""+sender.encrypt_device_id+"\""
-      Unirest.post"#{chat_url}/api/v1/chats/send/#{str}", headers: {"Authorization" => token}
+      encoded_url = URI.encode("#{chat_url}/api/v1/chats/send/#{str}")
+      Unirest.post encoded_url, headers: {"Authorization" => token}
     end
 
     def get_users_and_referral_count(users)
