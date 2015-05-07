@@ -323,7 +323,9 @@ class Api::V1::UsersController < Api::V1::BaseController
   # GET /friend_referral_score
   def friend_referral_score
     score = current_user.statistic.f_r_score
-    render json: {score: score, claims: Code.serialized_json(current_user.claim_status), minimum_claim: AppSetting.claim_points}
+    claims = Code.serialized_json(current_user.claim_status)
+    claims = [] unless (claims.kind_of? Array)
+    render json: {score: score, claims: claims, minimum_claim: AppSetting.claim_points}
   end
 
   # POST /users/doc
