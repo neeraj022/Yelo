@@ -64,6 +64,9 @@ class WallItem
         notify = Notification.save_notify(Notification::N_CONS[:USER_TAG], v_hash, user.id)
         # notify = NotificationWorker.perform_async(notify.id.to_s)
         notify.send_notification
+        if(updated_at > 1.week.ago)
+          send_wall_tag_email_sms(t_usr, usr[:email], usr[:name]) 
+        end
       end
     else
       user = User.save_inactive_user(mobile_number, country_code)

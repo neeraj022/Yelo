@@ -4,13 +4,18 @@
 # num = User.mobile_number_format(num) 
 # sender = User.where(mobile_number: num[:mobile_number]).first
 # users = User.allowed
+# i = 1
 # users.each do |u|
-#   msg = "Hey #{u.name},
-#     We have just launched a new 'Discover' tab where Cards are listed by experts for startups.
-#     You too can create a 'Productized' cards. Try networking over a 'Cup of Coffee' cost as zero (0).
-# - Prasun Jain, founder yelo."
+#   begin
+#   msg = "Hey #{u.name}!
+#    You can now comment on posts in addition to private chat. Give it a try!"
 #   puts msg
+#   puts i
+#   i += 1
 #   User.send_chat_message(sender, u, msg)
+#   rescue => e
+#     puts "#{e}" 
+#   end
 # end
 
 
