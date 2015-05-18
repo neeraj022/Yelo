@@ -83,7 +83,7 @@ class Notification
     end
 
     def send_daily_notification()
-      users = User.where(:updated_at.lte => 1.days.ago)
+      users = User.allowed.where(:updated_at.lte => 1.days.ago)
       return if users.count == 0
       users.each do |u|
         listings = u.listings
@@ -103,6 +103,7 @@ class Notification
         obj = {collapse_key: "wall", message: str, resource: {name:
        "yelo", dest: {tag: wall.tag_name,  wall_id: wall.id.to_s}}}
         u.touch
+        next if (u.platform.blank? || u.push_id.blank?)
         Notification.push_notify(u.platform, [u.push_id], obj) 
       end
     end
