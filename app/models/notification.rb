@@ -82,6 +82,31 @@ class Notification
       params
     end
 
+    def send_daily_notification()
+      users = User.where(:updated_at.lte => 1.days.ago)
+      return if users.count == 0
+      users.each do |u|
+        listings = u.listings
+        next if listings.blank?
+        listing = listings.last
+        params = self.set_geo_params(listing)
+        params[:type] = "wall"
+        params[:size] = 10
+        params[:date_gte] = 1.days.ago
+        params[:status] = true
+        walls = Search.query(params).records
+        count = walls.count
+        next if count == 0
+        last = (walls.count - 1)
+        wall = walls[rand(0..last)]
+        str =  "New post - #{wall[:message].truncate(100)}"
+        obj = {collapse_key: "wall", message: str, resource: {name:
+       "yelo", dest: {tag: wall.tag_name,  wall_id: wall.id.to_s}}}
+        u.touch
+        Notification.push_notify(u.platform, [u.push_id], obj) 
+      end
+    end
+
     def send_new_wall_notifications(user_ids, notify_obj)
       users = User.where(:_id.in => user_ids)
       android_push_ids = Array.new

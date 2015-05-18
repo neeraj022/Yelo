@@ -128,6 +128,16 @@ module WallSearch
           }
        end
 
+      if(query[:date_gte].present?)
+         @search_definition[:query][:bool][:must] << {
+            range:  { 
+              created_at: {
+                  gte: query[:date_gte]
+                }
+            } 
+          }
+       end
+
       if(query[:keywords].present?)
           @search_definition[:query][:bool][:must] << {
             terms:{

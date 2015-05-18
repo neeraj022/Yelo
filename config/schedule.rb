@@ -32,6 +32,11 @@ every 5.minutes do
   runner "Cron.gcm_ping"
 end
 
+
+every :day, :at => '5:30pm' do
+  runner "Notification.send_daily_notification"
+end
+
 # every 1.hours do
 #    runner "Notification.wall_summary_notify"
 # end
