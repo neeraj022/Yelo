@@ -99,7 +99,7 @@ class Notification
         next if count == 0
         last = (walls.count - 1)
         wall = walls[rand(0..last)]
-        str =  "New post - #{wall[:message].truncate(100)}"
+        str =  "New Post: #{wall[:message].truncate(100)}"
         obj = {collapse_key: "wall", message: str, resource: {name:
        "yelo", dest: {tag: wall.tag_name,  wall_id: wall.id.to_s}}}
         u.touch
