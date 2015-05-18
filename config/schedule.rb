@@ -33,7 +33,7 @@ every 5.minutes do
 end
 
 
-every :day, :at => '5:30pm' do
+every :day, :at => '4:10pm' do
   runner "Notification.send_daily_notification"
 end
 
