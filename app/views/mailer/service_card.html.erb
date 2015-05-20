@@ -4,7 +4,7 @@
 <p><%=@card.description%></p>
 <p>Deliverables</p>
 <p><%=@card.note%></p>
-<p><%= image_tag @service_card.image_url %></p>
+<p><%= image_tag @card.image_url %></p>
 <h2>Link</h2>
 <p><%=administrator_service_card_url(@card.id.to_s)%></p>
 <h2>User Details</h2>
