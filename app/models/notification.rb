@@ -122,6 +122,19 @@ class Notification
       Notification.push_notify("android", android_push_ids, notify_obj) if android_push_ids.present?
     end
 
+    def send_single_notification(user_id, notify_obj)
+      user = User.where(:_id => user_id).first
+      return "" if user.blank?
+      android_push_ids = Array.new
+      ios_push_ids = Array.new
+      if(user.platform == "android")
+        android_push_ids << user.push_id if user.push_id.present?
+      elsif(user.platform == "ios")
+        ios_push_ids << user.push_id if user.push_id.present?
+      end
+      Notification.push_notify("android", android_push_ids, notify_obj) if android_push_ids.present?
+    end
+
 
     def send_notifications(user_ids, notify_obj)
       users = User.where(:_id.in => user_ids)
@@ -134,7 +147,7 @@ class Notification
           ios_push_ids << u.push_id if u.push_id.present?
         end
       end
-      Notification.push_notify("android", android_push_ids, notify_obj) if android_push_ids.present?
+      Notification.push_notify("android", android_push_ids.uniq, notify_obj) if android_push_ids.present?
     end
 
     def notify
@@ -212,7 +225,7 @@ class Notification
       default_msg =  "#{v_hash[:tagged_by]} referred you on - #{v_hash[:message].truncate(100)}"
       str = self.message_format("post_tag_msg", opt, default_msg)
       {collapse_key: "tag", message: str, resource: {name:
-      "Referred on yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+      "Referred on yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id],datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
     end
 
     def wall_tag_obj(n_obj)
@@ -221,12 +234,13 @@ class Notification
       default_msg =  "You have a new referral from #{v_hash[:commented_by]} for your ##{v_hash[:tag_name]} post"
       str = self.message_format("post_follow_msg", opt, default_msg)
       {collapse_key: "pin", message: str , resource: {name:
-      "Referral on yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id]}}}
+      "Referral on yelo", dest: {tag: v_hash[:tag_name],  wall_id: v_hash[:wall_id], datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
     end
 
     def wall_comment_obj(n_obj)
       v_hash =  (n_obj.kind_of? Notification) ? n_obj.n_value : n_obj
-      str =  "#{v_hash[:commented_by]}: #{v_hash[:comment].truncate(100)}"
+      #str =  "#{v_hash[:commented_by]}: #{v_hash[:comment].truncate(100)}"
+      str = "#{v_hash[:commented_by]} also commented on - #{v_hash[:post_tag]}"
       {collapse_key: "comment", message: str , resource: {name:
       "New Comment", dest: {wall_id: v_hash[:wall_id]}}}
     end
@@ -245,12 +259,18 @@ class Notification
       return if wall.blank?
       comment = wall.comments.where(_id: comment_id).first
       user = User.find(user_id)
-      v_hash = {wall_id: wall.id.to_s, commented_by: user.name, comment: comment.message}
+      v_hash = {wall_id: wall.id.to_s, commented_by: user.name, post_tag: wall.message,sub_category: wall.tag_name}
       user_ids = wall.comments.map{|c| c.user_id.to_s}.uniq
       user_ids.delete(user.id.to_s)
+      user_ids.delete(wall.user_id.to_s)
       return if user_ids.blank?
       obj = Notification.wall_comment_obj(v_hash)
-      Notification.send_notifications(user_ids, obj)
+      obj1 = {:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.user_id.to_s}}}
+      unless wall.user_id.to_s === user.id.to_s
+        user_id =  wall.user_id.to_s
+        response1 = Notification.send_single_notification(user_id,obj1)
+      end
+      response =  Notification.send_notifications(user_ids, obj)
     end
     
     def summary_wall_obj(tags_hash)
@@ -283,12 +303,12 @@ class Notification
       response
     end
 
-    def push_ios(ids, msg)
-      gcm = GCM.new(Rails.application.secrets.android_api_key)
-      registration_ids= ids
-      options = {data: {score: "123"}, collapse_key: obj["collapse_key"]}
-      response = gcm.send(registration_ids, options)
-    end
+    # def push_ios(ids, msg)
+    #   gcm = GCM.new(Rails.application.secrets.android_api_key)
+    #   registration_ids= ids
+    #   options = {data: {score: "123"}, collapse_key: obj["collapse_key"]}
+    #   response = gcm.send(registration_ids, options)
+    # end
   end
 
 end
