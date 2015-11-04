@@ -265,7 +265,7 @@ class Notification
       user_ids.delete(wall.user_id.to_s)
       return if user_ids.blank?
       obj = Notification.wall_comment_obj(v_hash)
-      obj1 = {:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.user_id.to_s}}}
+      obj1 = {:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.id.to_s}}}
       unless wall.user_id.to_s === user.id.to_s
         user_id =  wall.user_id.to_s
         response1 = Notification.send_single_notification(user_id,obj1)
@@ -284,7 +284,7 @@ class Notification
     end
 
     def push_notify(platform, push_ids, obj)
-      puts obj
+      # puts obj
       if(platform.downcase == "android")
         response = self.push_android(push_ids, obj)
       elsif(platform.downcase == "ios")
