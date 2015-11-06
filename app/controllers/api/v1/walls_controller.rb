@@ -8,8 +8,8 @@ class Api::V1::WallsController < Api::V1::BaseController
     if @wall.save
       @wall.save_image(params[:image]) if params[:image].present?
       #Notification.save_wall(@wall.id.to_s)
-      #NewWallWorker.perform_async(@wall.id.to_s)
-      ContactWallWorker.perform_async(@wall.id.to_s)
+      # NewWallWorker.perform_async(@wall.id.to_s)   #new wall interest notifications
+      # ContactWallWorker.perform_async(@wall.id.to_s)  #new wall notifications
       # Notification.save_contact_wall(@wall.id)
       render json: @wall
     else
