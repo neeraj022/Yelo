@@ -242,7 +242,7 @@ class Notification
       #str =  "#{v_hash[:commented_by]}: #{v_hash[:comment].truncate(100)}"
       str = "#{v_hash[:commented_by]} also commented on - #{v_hash[:post_tag]}"
       {collapse_key: "comment", message: str , resource: {name:
-      "New Comment", dest: {wall_id: v_hash[:wall_id]}}}
+      "New Comment", dest: {wall_id: v_hash[:wall_id],tag: v_hash[:sub_category],datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
     end
 
     def message_format(type, opt={}, default_msg=nil)
@@ -265,7 +265,7 @@ class Notification
       user_ids.delete(wall.user_id.to_s)
       return if user_ids.blank?
       obj = Notification.wall_comment_obj(v_hash)
-      obj1 = {:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.id.to_s}}}
+      obj1 = {:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.id.to_s,:tag => wall.tag_name,datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
       unless wall.user_id.to_s === user.id.to_s
         user_id =  wall.user_id.to_s
         response1 = Notification.send_single_notification(user_id,obj1)
