@@ -66,6 +66,8 @@ gem 'whenever', :require => false
 
 gem 'gcm'
 
+gem 'apns'
+
 gem 'apipie-rails'
 
 gem 'capistrano', "~> 3.0.0"

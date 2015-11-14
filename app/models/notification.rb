@@ -133,6 +133,7 @@ class Notification
         ios_push_ids << user.push_id if user.push_id.present?
       end
       Notification.push_notify("android", android_push_ids, notify_obj) if android_push_ids.present?
+      Notification.push_notify("ios", ios_push_ids, notify_obj) if ios_push_ids.present?
     end
 
 
@@ -148,6 +149,7 @@ class Notification
         end
       end
       Notification.push_notify("android", android_push_ids.uniq, notify_obj) if android_push_ids.present?
+      Notification.push_notify("ios", ios_push_ids.uniq, notify_obj) if ios_push_ids.present?
     end
 
     def notify
@@ -255,16 +257,16 @@ class Notification
     end
 
     def send_comment_notifications(wall_id, comment_id, user_id)
-      wall = Wall.where(_id: wall_id).first
-      return if wall.blank?
-      comment = wall.comments.where(_id: comment_id).first
-      user = User.find(user_id)
-      v_hash = {wall_id: wall.id.to_s, commented_by: user.name, post_tag: wall.message,sub_category: wall.tag_name}
-      user_ids = wall.comments.map{|c| c.user_id.to_s}.uniq
-      user_ids.delete(user.id.to_s)
-      user_ids.delete(wall.user_id.to_s)
-      return if user_ids.blank?
-      obj = Notification.wall_comment_obj(v_hash)
+       wall = Wall.where(_id: wall_id).first
+       return if wall.blank?
+       comment = wall.comments.where(_id: comment_id).first
+       user = User.find(user_id)
+       v_hash = {wall_id: wall.id.to_s, commented_by: user.name, post_tag: wall.message,sub_category: wall.tag_name} 
+       user_ids = wall.comments.map{|c| c.user_id.to_s}.uniq
+       user_ids.delete(user.id.to_s)
+       user_ids.delete(wall.user_id.to_s)
+       return if user_ids.blank?
+       obj = Notification.wall_comment_obj(v_hash)
       obj1 = {:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.id.to_s,:tag => wall.tag_name,datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
       unless wall.user_id.to_s === user.id.to_s
         user_id =  wall.user_id.to_s
@@ -288,13 +290,13 @@ class Notification
       if(platform.downcase == "android")
         response = self.push_android(push_ids, obj)
       elsif(platform.downcase == "ios")
-        # response = self.push_ios([user.push_token], obj.to_json)
+        response = self.push_ios(push_ids,obj.to_json)
       end
       response
     end
 
     def push_android(ids, obj)
-      return "" unless Rails.env == "production"
+      #return "" unless Rails.env == "production"
       gcm = GCM.new(Rails.application.secrets.android_api_key)
       # options = {data: {payload: obj.to_json}, collapse_key: obj["collapse_key"]}
       options = {data: {payload: obj.to_json}}
@@ -303,12 +305,20 @@ class Notification
       response
     end
 
-    # def push_ios(ids, msg)
+     def push_ios(ids, obj)
     #   gcm = GCM.new(Rails.application.secrets.android_api_key)
     #   registration_ids= ids
     #   options = {data: {score: "123"}, collapse_key: obj["collapse_key"]}
     #   response = gcm.send(registration_ids, options)
-    # end
+       objnew = ActiveSupport::JSON.decode(obj.gsub(/:([a-zA-z])/,'\\1').gsub('=>', ' : '))
+       message = objnew["message"] 
+       ids.each do |id|
+         n = APNS::Notification.new(id.to_s, message)
+         otherjson = {:collapse_key => objnew["collapse_key"],:resource => {:name => objnew["resource"]["name"],:dest =>{:wall_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:datetime => objnew["resource"]["dest"]["datetime"]}}}
+         response = APNS.send_notification(id.to_s, :alert => message, :badge => 1, :sound => 'default' ,:other => otherjson)
+       end
+     end
   end
 
 end
+
