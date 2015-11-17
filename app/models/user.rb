@@ -87,7 +87,7 @@ class User
   embeds_one :setting
   embeds_one :statistic
   has_many :user_tags, dependent: :destroy
-  has_many :notifications, dependent: :destroy
+  has_many :push_records, dependent: :destroy
   has_many :chat_logs, dependent: :destroy
   has_many :ratings, dependent: :destroy
   has_many :connects, class_name: "Connector"
@@ -149,7 +149,7 @@ class User
   def alert_notify
     obj = {collapse_key: "alert", message: "", resource: {name:
       "chat alert", dest: ""}}
-    Notification.push_notify(self.platform, [self.push_id], obj)
+    PushRecord.push_notify(self.platform, [self.push_id], obj)
   end
 
   def connects_count
@@ -338,15 +338,15 @@ class User
 
   def is_instant(type)
     case type
-    when Notification::N_CONS[:USER_TAG]
+    when PushRecord::N_CONS[:USER_TAG]
       return true
-    when Notification::N_CONS[:WALL_PIN]
+    when PushRecord::N_CONS[:WALL_PIN]
       return true
-    when Notification::N_CONS[:CONTACT_WALL]
+    when PushRecord::N_CONS[:CONTACT_WALL]
       return true
-    when Notification::N_CONS[:CREATE_WALL]
+    when PushRecord::N_CONS[:CREATE_WALL]
       return true
-    when Notification::N_CONS[:WALL_COMMENT]
+    when PushRecord::N_CONS[:WALL_COMMENT]
       return true
     else
       return false

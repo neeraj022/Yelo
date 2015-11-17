@@ -78,8 +78,8 @@ Rails.application.routes.draw do
       get "/server_status", to: "public#server_status"
       post '/referral', to: 'users#register_referral'
       get "/users/:user_id/walls", to: 'walls#user_walls'
-      post "/notifications/:id/seen", to: "notifications#update_seen_status"
-      get "/notifications", to: "notifications#index"
+      post "/push_records/:id/seen", to: "push_records#update_seen_status"
+      get "/push_records", to: "push_records#index"
       get "/users/:user_id/all_tags", to: "tags#all_user_tags"
       get "/walls/:id/connects", to: "walls#connects"
       post "/walls/:id/close", to: "walls#wall_close"

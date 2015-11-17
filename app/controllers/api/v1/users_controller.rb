@@ -385,11 +385,14 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
 
     def existing_user
+    puts "existing user=======#{@user}"
       if(@user.update_attributes(serial_code:"", skip_update_validation: true))
+	puts "update"
         Person.save_person(@user.mobile_number, @user.id, true)
         @user = @user.reload
         send_sms
       else
+	puts "error======#{@user.errors.full_messages}"
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
       end
     end

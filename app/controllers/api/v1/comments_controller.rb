@@ -27,8 +27,8 @@ class Api::V1::CommentsController <  Api::V1::BaseController
     user_ids = @wall.comments.map{|c| c.user_id.to_s}.uniq
     user_ids.delete(current_user.id.to_s)
     return if user_ids.blank?
-    obj = Notification.wall_comment_obj(v_hash)
-    Notification.send_notifications(user_ids, obj)
+    obj = PushRecord.wall_comment_obj(v_hash)
+    PushRecord.send_notifications(user_ids, obj)
   end
 
   # PUT /walls/:wall_id/comment/:id  

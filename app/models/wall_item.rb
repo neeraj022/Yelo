@@ -30,11 +30,11 @@ class WallItem
     tag_users.each do |t|
       t_usr = create_tag_user(wall, t)
       if t_usr.errors.present?
-        return {status: false, error_message: t_usr.errors.messages} 
+       return {status: false, error_message: t_usr.errors.messages} 
       else
-        v_hash = {wall_id: wall.id.to_s, message: wall.message, commented_by: self.name, tag_name: wall.tag_or_group_name}
+      v_hash = {wall_id: wall.id.to_s, message: wall.message, commented_by: self.name, tag_name: wall.tag_or_group_name}
         if(wall_user.id.to_s != self.user_id.to_s)
-          notify = Notification.save_notify(Notification::N_CONS[:WALL_PIN], v_hash, wall_user.id)
+          notify = PushRecord.save_notify(PushRecord::N_CONS[:WALL_PIN], v_hash, wall_user.id)
           notify.send_notification
           # NotificationWorker.perform_async(notify.id.to_s)
         end
@@ -60,8 +60,8 @@ class WallItem
       t_usr.name = user.name
       v_hash = {wall_id: wall.id.to_s, tagged_by: self.name, message: wall.message, 
                 tag_name: wall.tag_or_group_name}
-      if (self.user_id.to_s != user.id.to_s)          
-        notify = Notification.save_notify(Notification::N_CONS[:USER_TAG], v_hash, user.id)
+      if (self.user_id.to_s != user.id.to_s)         
+       notify = PushRecord.save_notify(PushRecord::N_CONS[:USER_TAG], v_hash, user.id)
         # notify = NotificationWorker.perform_async(notify.id.to_s)
         notify.send_notification
         if(updated_at > 1.week.ago)
@@ -94,7 +94,7 @@ class WallItem
     opt = {post_message: wall.message.truncate(100), tagged_by: self.name}
     default_msg = "#{self.name} referred you on yelo - #{wall.message.truncate(100)},
            Download the app here http://app.yelo.red"
-    msg = Notification.message_format("tag_sms_msg", opt, default_msg)
+    msg = PushRecord.message_format("tag_sms_msg", opt, default_msg)
     sms_log.send_sms(msg)
     if email.present?
       EmailWorker.perform_async("refer", email, wall.message.truncate(100), self.name, name, self.wall.tag_or_group_name, self.wall.wall_owner.name)

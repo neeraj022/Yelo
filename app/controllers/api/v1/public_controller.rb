@@ -19,21 +19,21 @@ class Api::V1::PublicController < Api::V1::BaseController
   def push
     case params[:type]
     when "wall_summary"
-      notification = Notification.where(n_type: 2).last
+      notification = PushRecord.where(n_type: 2).last
       tags_hash = {services: 1, arts: 2, tech: 5 }
-      obj = Notification.summary_wall_obj(tags_hash)
+      obj = PushRecord.summary_wall_obj(tags_hash)
     when "wall_pin"
-      notification = Notification.where(n_type: 3).last
+      notification = PushRecord.where(n_type: 3).last
     when "tagged_user"
-      notification = Notification.where(n_type: 1).last
+      notification = PushRecord.where(n_type: 1).last
     when "contact_wall"
-      notification = Notification.where(n_type: 4).last
+      notification = PushRecord.where(n_type: 4).last
     when "chat"
       obj = {collapse_key: "alert", message: "", resource: {name:
       "chat alert", dest: ""}}
     end
     obj = notification.notify_obj if (params[:type] != "wall_summary" && params[:type] != "chat")
-    response = Notification.push_notify("android", [params[:push_id]], obj)
+    response = PushRecord.push_notify("android", [params[:push_id]], obj)
     render json: {status: "success", gcm: response.to_s}
   end
 
