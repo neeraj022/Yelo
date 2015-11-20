@@ -117,6 +117,7 @@ Rails.application.routes.draw do
       post "/walls/:wall_id/comments/:id/spam", to:"comments#report_spam"
       post "/walls/:wall_id/comments/:id/destroy", to: "comments#destroy"
       get "/walls/:id/wall_and_comments", to: "walls#wall_and_comments"
+      get "/users/chat_users"
       resources :users
       resources :ratings
       resources :listings

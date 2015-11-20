@@ -241,7 +241,7 @@ class PushRecord
     def wall_comment_obj(n_obj)
       v_hash =  (n_obj.kind_of? PushRecord) ? n_obj.n_value : n_obj
       #str =  "#{v_hash[:commented_by]}: #{v_hash[:comment].truncate(100)}"
-      str = "#{v_hash[:commented_by]} also commented on - #{v_hash[:post_tag]}"
+      str = "#{v_hash[:commented_by]} also commented on - #{v_hash[:post_tag].truncate(100)}"
       {collapse_key: "comment", message: str , resource: {name:
       "New Comment", dest: {wall_id: v_hash[:wall_id],tag: v_hash[:sub_category],datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
     end
@@ -266,7 +266,7 @@ class PushRecord
        user_ids.delete(wall.user_id.to_s)
        return if user_ids.blank?
        obj = PushRecord.wall_comment_obj(v_hash)
-      obj1 = {:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.id.to_s,:tag => wall.tag_name,datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
+      obj1 = {:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message.truncate(100)}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.id.to_s,:tag => wall.tag_name,datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
       unless wall.user_id.to_s === user.id.to_s
         user_id =  wall.user_id.to_s
 	response1 = PushRecord.send_single_notification(user_id,obj1)
@@ -313,7 +313,7 @@ class PushRecord
        ids.each do |id|
          n = APNS::Notification.new(id.to_s, message)
          otherjson = {:collapse_key => objnew["collapse_key"],:resource => {:name => objnew["resource"]["name"],:dest =>{:wall_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:datetime => objnew["resource"]["dest"]["datetime"]}}}
-         response = APNS.send_notification(id.to_s, :alert => message, :badge => 1, :sound => 'default' ,:other => otherjson)
+         response = APNS.send_notification(id.to_s, :alert => message, :badge => 1, :sound => 'default')# ,:other => otherjson)
 	end
      end
   end

@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::BaseController
-  before_action :authenticate_user!, except: [:ping, :show, :create, :verify_serial_code, :verify_missed_call, :sms_serial_code, :send_missed_call]
+  before_action :authenticate_user!, except: [:ping, :show, :create, :verify_serial_code, :verify_missed_call, :sms_serial_code, :send_missed_call,:chat_users]
   before_action :set_mobile_number, only: [:create, :verify_serial_code, :verify_missed_call, :sms_serial_code, :send_missed_call]
   
   # POST '/users'
@@ -350,6 +350,34 @@ class Api::V1::UsersController < Api::V1::BaseController
   rescue => e
     rescue_message(e)
   end
+ 
+  def chat_users #listing of users for chat initialization
+    @user =  User.where(_id: params[:id]).first
+    if @user.present?
+      @yelo = User.find("54595a2779656c42fb000000")
+      @yelo_usr = [id:@yelo.id.to_s,name:@yelo.name,image_url: @yelo.image.url] if @yelo.present?
+      @recent_users = @user.chat_logs.map{|c|c.chatter_id.to_s}.uniq
+      @rec_usr = User.find(@recent_users) unless @recent_users.blank?
+      @recent_user =  @rec_usr.map{|e|{name: e.name,id:e.id.to_s,image_url:e.image.url}} unless @rec_usr.blank?
+      person = []
+      unless @user.contacts.blank?
+        @user.contacts.each do |c|
+          unless c.person.blank?
+            if c.person.is_present
+               person << c.person
+            end
+          end
+        end
+      end
+      ids = person.map{|p|p.user_id.to_s}
+      @dev_usr = User.find(ids) unless ids.blank?
+      @device_contact = @dev_usr.map{|e|{name: e.name,id:e.id.to_s,image_url:e.image.url}} unless @dev_usr.blank?
+      render json: {status: "success",:data => {yelo: @yelo_usr, recent_users: @recent_user.blank? ? [] : @recent_user, device_contact: @device_contact.blank? ? [] : @device_contact}}
+
+    else
+      render json: {error_message: "user not present"}, status: Code[:error_code]
+    end
+  end
   
   ############## private methods ###################################
   private
@@ -385,14 +413,11 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
 
     def existing_user
-    puts "existing user=======#{@user}"
       if(@user.update_attributes(serial_code:"", skip_update_validation: true))
-	puts "update"
         Person.save_person(@user.mobile_number, @user.id, true)
         @user = @user.reload
         send_sms
       else
-	puts "error======#{@user.errors.full_messages}"
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
       end
     end
