@@ -406,9 +406,9 @@ class Api::V1::UsersController < Api::V1::BaseController
   def leaderboard
     @users = paginate User.desc(:global_points).limit(50).collect{|c|{id:c.id.to_s,name:c.name,image_url:c.image.url,global_points:c.global_points}}, per_page: 10
     unless @users.blank?
-      render json: {status: '1',:message => 'Records',:data => {global_users: @users, pages: 50/10}}
+      render json: {status: '1',:message => 'Records',:data => {global_users: @users}}
     else
-      render json: {:status => '1',:message => 'No records found',:data => {global_users: [], pages: 50/10}}
+      render json: {:status => '1',:message => 'No records found',:data => {global_users: []}}
     end
   end
 
