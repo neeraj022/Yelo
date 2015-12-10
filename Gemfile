@@ -56,6 +56,8 @@ gem 'mini_magick'
 
 gem 'kaminari'
 
+gem 'api-pagination'
+
 gem 'rails_admin'
 
 gem 'fog'

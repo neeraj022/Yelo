@@ -107,8 +107,8 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
     if current_user.id.to_s == params[:user_id]
       @cards = @user.service_cards
     else
-      # @cards = @user.service_cards.where(status: ServiceCard::SERVICE_CARD[:ON])
-      @cards = @user.service_cards
+      @cards = @user.service_cards.where(status: ServiceCard::SERVICE_CARD[:ON])
+      #@cards = @user.service_cards
     end
     render json: @cards
   rescue => e

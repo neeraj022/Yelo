@@ -1,5 +1,5 @@
 class Api::V1::UsersController < Api::V1::BaseController
-  before_action :authenticate_user!, except: [:ping, :show, :create, :verify_serial_code, :verify_missed_call, :sms_serial_code, :send_missed_call,:chat_users]
+  before_action :authenticate_user!, except: [:ping, :show, :create, :verify_serial_code, :verify_missed_call, :sms_serial_code, :send_missed_call,:calculate_points]
   before_action :set_mobile_number, only: [:create, :verify_serial_code, :verify_missed_call, :sms_serial_code, :send_missed_call]
   
   # POST '/users'
@@ -240,7 +240,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def top_week_recommends
     today = Time.now
     @users = Wall.collection.aggregate(
-    {"$match" => {
+     {"$match" => {
         "created_at" => { "$gte" => today.at_beginning_of_week, "$lte" => today.at_end_of_week },
         "status" => true
         }
@@ -264,7 +264,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     @users = User.get_users_and_referral_count(@users)
     render json: {users: @users}
   rescue => e
-    rescue_message(e)
+   rescue_message(e)
   end
 
 
@@ -356,9 +356,9 @@ class Api::V1::UsersController < Api::V1::BaseController
     if @user.present?
       @yelo = User.find("54595a2779656c42fb000000")
       @yelo_usr = [id:@yelo.id.to_s,name:@yelo.name,image_url: @yelo.image.url] if @yelo.present?
-      @recent_users = @user.chat_logs.map{|c|c.chatter_id.to_s}.uniq
-      @rec_usr = User.find(@recent_users) unless @recent_users.blank?
-      @recent_user =  @rec_usr.map{|e|{name: e.name,id:e.id.to_s,image_url:e.image.url}} unless @rec_usr.blank?
+      #@recent_users = @user.chat_logs.map{|c|c.chatter_id.to_s}.uniq
+      #@rec_usr = User.find(@recent_users) unless @recent_users.blank?
+      #@recent_user =  @rec_usr.map{|e|{name: e.name,id:e.id.to_s,image_url:e.image.url}} unless @rec_usr.blank?
       person = []
       unless @user.contacts.blank?
         @user.contacts.each do |c|
@@ -372,13 +372,46 @@ class Api::V1::UsersController < Api::V1::BaseController
       ids = person.map{|p|p.user_id.to_s}
       @dev_usr = User.find(ids) unless ids.blank?
       @device_contact = @dev_usr.map{|e|{name: e.name,id:e.id.to_s,image_url:e.image.url}} unless @dev_usr.blank?
-      render json: {status: "success",:data => {yelo: @yelo_usr, recent_users: @recent_user.blank? ? [] : @recent_user, device_contact: @device_contact.blank? ? [] : @device_contact}}
+      render json: {status: "success",:data => {yelo: @yelo_usr, recent_users: [], device_contact: @device_contact.blank? ? [] : @device_contact.sort_by{|arr|arr[:name]}}}
 
     else
       render json: {error_message: "user not present"}, status: Code[:error_code]
     end
   end
   
+  def calculate_points
+    @walls = Wall.all.to_a
+    user_ids = @walls.collect{|i|i.wall_items.collect{|u|u.user_id.to_s}}.flatten
+    usr_ids = @walls.collect{|c|c.comments.collect{|uu|uu.user_id.to_s}}.flatten
+    @users = User.all.to_a
+    a = []
+    @users.each do |user|
+      b = {}
+      b[:id] = user.id.to_s
+      b[:name] = user.name
+      b[:refer_point] = (user_ids.count(user.id.to_s))*10
+      b[:comment_point] = (usr_ids.count(user.id.to_s))*5
+      b[:ask_point] = user.walls.count*-5
+      b[:total_points] = (user_ids.count(user.id.to_s))*10 + (usr_ids.count(user.id.to_s))*5 + user.walls.count*-5
+      if (b[:total_points] < 100)
+        user.update_attributes(:global_points => 100)
+      else
+        user.update_attributes(:global_points => b[:total_points])
+      end
+      a << b
+    end
+    render json: {status: "success",:data => {:global_points => a}}
+  end
+
+  def leaderboard
+    @users = paginate User.desc(:global_points).limit(50).collect{|c|{id:c.id.to_s,name:c.name,image_url:c.image.url,global_points:c.global_points}}, per_page: 10
+    unless @users.blank?
+      render json: {status: '1',:message => 'Records',:data => {global_users: @users, pages: 50/10}}
+    else
+      render json: {:status => '1',:message => 'No records found',:data => {global_users: [], pages: 50/10}}
+    end
+  end
+
   ############## private methods ###################################
   private
 
@@ -416,6 +449,19 @@ class Api::V1::UsersController < Api::V1::BaseController
       if(@user.update_attributes(serial_code:"", skip_update_validation: true))
         Person.save_person(@user.mobile_number, @user.id, true)
         @user = @user.reload
+	walls = Wall.all.to_a
+        user_ids = walls.collect{|i|i.wall_items.collect{|u|u.user_id.to_s}}.flatten
+        refer_point = (user_ids.count(@user.id.to_s))*10
+        usr_ids = walls.collect{|c|c.comments.collect{|uu|uu.user_id.to_s}}.flatten
+        comment_point = (usr_ids.count(@user.id.to_s))*5
+        wall = @user.walls
+        ask_point = wall.count*-5
+        total_points = refer_point +  comment_point + ask_point
+        if total_points < 100
+          @user.update_attributes(:global_points => 100)
+        else
+          @user.update_attributes(:global_points => total_points)
+        end
         send_sms
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
@@ -425,6 +471,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     def create_new_user
       @user = User.new(user_create_params)
       if(@user.save)
+	@global_points = @user.update_attributes(:global_points => 100)
         @sms = @user.send_sms
         Person.save_person(@user.mobile_number, @user.id, true)
         render json: {status: Code[:status_success]}

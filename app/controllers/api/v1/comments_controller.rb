@@ -9,6 +9,7 @@ class Api::V1::CommentsController <  Api::V1::BaseController
       # save_comment_notification
       CommentNotifyWorker.perform_async(@wall.id.to_s, @comment.id.to_s, current_user.id.to_s)
       touch_wall
+      current_user.update_attributes(:global_points => current_user.global_points + 5)
       render json: @comment
     else
       render json: {error_message: @comment.errors.full_messages}, status: Code[:error_code]

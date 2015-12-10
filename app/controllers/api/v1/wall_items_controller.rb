@@ -18,7 +18,9 @@ class Api::V1::WallItemsController < Api::V1::BaseController
 
   def add_tagged_users
     @tagged_users = @wall_item.save_tagged_users(params[:tag_users])
+    current_user.update_attributes(:global_points => current_user.global_points + 10)
     if(@tagged_users[:status])
+     # current_user.update_attributes(:global_points => current_user.global_points + 10)
       render json: @wall_item
     else
       @wall_item.destroy

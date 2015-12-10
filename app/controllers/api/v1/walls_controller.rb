@@ -4,19 +4,24 @@ class Api::V1::WallsController < Api::V1::BaseController
   before_action :set_wall_params, only: [:create, :update]
   # POST /walls/
   def create
-    @wall = current_user.walls.new(wall_params)
-    if @wall.save
-      @wall.save_image(params[:image]) if params[:image].present?
-      #Notification.save_wall(@wall.id.to_s)
-      # NewWallWorker.perform_async(@wall.id.to_s)   #new wall interest notifications
-      # ContactWallWorker.perform_async(@wall.id.to_s)  #new wall notifications
-      # Notification.save_contact_wall(@wall.id)
-      render json: @wall
+    if (current_user.global_points > 0)
+       @wall = current_user.walls.new(wall_params)
+       if @wall.save
+          @wall.save_image(params[:image]) if params[:image].present?
+          #Notification.save_wall(@wall.id.to_s)
+          # NewWallWorker.perform_async(@wall.id.to_s)   #new wall interest notifications
+          # ContactWallWorker.perform_async(@wall.id.to_s)  #new wall notifications
+          # Notification.save_contact_wall(@wall.id)
+          current_user.update_attributes(:global_points => current_user.global_points - 5)
+          render json: @wall
+       else
+          render json: {error_message: @wall.errors.full_messages}, status: Code[:error_code]
+       end
     else
-      render json: {error_message: @wall.errors.full_messages}, status: Code[:error_code]
+      render json: {error_message: "Your points are less than 5,so you can not post", status: "success"}
     end
-  # rescue => e
-  #   rescue_message(e)
+      # rescue => e
+      #   rescue_message(e)
   end
 
   # GET /wall/:id

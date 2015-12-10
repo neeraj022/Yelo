@@ -118,6 +118,8 @@ Rails.application.routes.draw do
       post "/walls/:wall_id/comments/:id/destroy", to: "comments#destroy"
       get "/walls/:id/wall_and_comments", to: "walls#wall_and_comments"
       get "/users/chat_users"
+      get "users/calculate_points"
+      get "/users/leaderboard"
       resources :users
       resources :ratings
       resources :listings
