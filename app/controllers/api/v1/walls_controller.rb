@@ -18,7 +18,7 @@ class Api::V1::WallsController < Api::V1::BaseController
           render json: {error_message: @wall.errors.full_messages}, status: Code[:error_code]
        end
     else
-      render json: {error_message: "Your points are less than 5,so you can not post", status: "success"}
+      render json: {error_message: "Hey! You don't have sufficient points to ask a question. Help others, gain point.", status: "success"}
     end
       # rescue => e
       #   rescue_message(e)
