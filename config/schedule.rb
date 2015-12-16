@@ -33,9 +33,9 @@ every 5.minutes do
 end
 
 
-every :day, :at => '4:10pm' do
-  runner "Notification.send_daily_notification"
-end
+#every :day, :at => '4:10pm' do
+ # runner "Notification.send_daily_notification"
+#end
 
 # every 1.hours do
 #    runner "Notification.wall_summary_notify"
