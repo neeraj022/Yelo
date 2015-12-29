@@ -25,7 +25,7 @@ class Api::V1::PublicController < Api::V1::BaseController
            status =  {code: 2, message: "Please update your app to be a part of yelo.",version_android: setting.version_android}
            render json: status
          elsif app_version.to_i > setting.android_force_update && app_version.to_i <= setting.android_soft_update
-           status =  {code: 4, message: "We have an awesome update available for you, with lots of new features and bug fixes. Would you like to update now?",version_android: setting.version_a$
+           status =  {code: 4, message: "We have an awesome update available for you, with lots of new features and bug fixes. Would you like to update now?",version_android: setting.version_android}
            render json: status
          elsif setting.android_force_update >= app_version.to_i
            status =  {code: 2, message: "Please update your app to be a part of yelo.",version_android: setting.version_android}
