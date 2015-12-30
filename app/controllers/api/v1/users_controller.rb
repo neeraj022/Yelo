@@ -373,7 +373,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       ids = person.map{|p|p.user_id.to_s}
       @dev_usr = User.find(ids) unless ids.blank?
       @device_contact = @dev_usr.map{|e|{name: e.name,id:e.id.to_s,image_url:e.image.url}} unless @dev_usr.blank?
-      render json: {status: "success",:data => {yelo: @yelo_usr, recent_users: [], device_contact: @device_contact.blank? ? [] : @device_contact.sort_by{|arr|arr[:name]}}}
+      render json: {status: "success",:data => {yelo: @yelo_usr, recent_users: [], device_contact: @device_contact.blank? ? [] : @device_contact}}#.sort_by{|arr|arr[:name]}}}
 
     else
       render json: {error_message: "user not present"}, status: Code[:error_code]
