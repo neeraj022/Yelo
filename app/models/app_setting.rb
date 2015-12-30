@@ -28,6 +28,10 @@ class AppSetting
   field :wall_share_msg,           type: String
   field :friend_referral_points,   type: Integer, default: 10
   field :claim_points,             type: Integer, default: 50
+  field :ios_force_update,         type: Integer, default: 0
+  field :android_force_update,     type: Integer, default: 0
+  field :ios_soft_update,          type: Integer, default: 0
+  field :android_soft_update,      type: Integer, default: 0
   ############### class methods ############################
   class << self
     # in minutes
