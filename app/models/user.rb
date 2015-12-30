@@ -214,10 +214,10 @@ class User
     {avg: avg, user_count: count}
   end
 
-  def save_user_tags(tag_id, tagged_by)
+  def save_user_tags(tag_id, tagged_by, wall_id)
     user_tag = self.user_tags.where(tag_id: tag_id).first
     unless user_tag.present?
-      user_tag = self.user_tags.create(tag_id: tag_id)
+      user_tag = self.user_tags.create(tag_id: tag_id,wall_id: wall_id)
     end
     user_tag.connectors.where(user_id: tagged_by).first_or_create
     user_tag.count = user_tag.count += 1

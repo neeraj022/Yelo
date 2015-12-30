@@ -1,5 +1,5 @@
 class Api::V1::SearchController < Api::V1::BaseController
-  before_action :set_search_params, :authenticate_user!
+  before_action :set_search_params#, :authenticate_user!
   after_action :send_welcome_message, only: [:search]
   
   # GET /search

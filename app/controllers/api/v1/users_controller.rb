@@ -20,6 +20,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     # expires_in 5.minutes, :public => true
     render json: @user
   rescue => e
+    puts "exception is #{e.backtrace}"
     rescue_message(e)
   end
 

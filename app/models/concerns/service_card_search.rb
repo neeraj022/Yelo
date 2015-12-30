@@ -34,10 +34,21 @@ module ServiceCardSearch
     # Customize the JSON serialization for Elasticsearch
     #
     def as_indexed_json(options={})
-      {id: self.id.to_s, tag_id: self.tag_id.to_s, tag_name: self.tag_name, loc: location_coordinates, country: self.country,
-       city: self.city, status: self.status, description: self.description, 
-       title: self.title.downcase, price: self.price, updated_at: self.updated_at, created_at: self.created_at, 
-       group_name: self.group_name, group_id: self.group_id.to_s, card_score: self.card_score}
+      puts "app version #{self.app_version}===== app type #{self.app_type}"
+      unless self.app_version.blank? && self.app_type.blank?
+        if self.app_version >= '56' && self.app_type == 'android' || self.app_version >= '56' && self.app_type == 'ios'
+          puts "search method of service card and tag id is #{self.tag_id}====="
+          {id: self.id.to_s, tag_id: self.tag_id.to_s, tag_name: Tag.find(self.tag_id.map{|tag|tag[:_id].to_s}).map{|n|n.name}, loc: location_coordinates, country: self.country,
+           city: self.city, status: self.status, description: self.description,
+           title: self.title.downcase, price: self.price, updated_at: self.updated_at, created_at: self.created_at,
+           card_score: self.card_score} #group_name: self.group_name, group_id: self.group_id.to_s,
+        end
+      else
+        {id: self.id.to_s, tag_id: self.tag_id.to_s, tag_name: self.tag_name, loc: location_coordinates, country: self.country,
+         city: self.city, status: self.status, description: self.description,
+         title: self.title.downcase, price: self.price, updated_at: self.updated_at, created_at: self.created_at,
+         group_name: self.group_name, group_id: self.group_id.to_s, card_score: self.card_score}
+      end
     end
 
     # Search in title and content fields for `query`, include highlights in response
@@ -106,9 +117,9 @@ module ServiceCardSearch
        
        if(query[:group_id].present?)
          @search_definition[:query][:bool][:must] << {
-            term:  { 
+            term:  {
               group_id: query[:group_id]
-            } 
+            }
           }
        end
 
