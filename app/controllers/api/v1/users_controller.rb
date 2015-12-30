@@ -355,7 +355,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def chat_users #listing of users for chat initialization
     @user =  User.where(_id: params[:id]).first
     if @user.present?
-      @yelo = User.find("54595a2779656c42fb000000")
+      @yelo = User.find("566574837261695ab6050000")
       @yelo_usr = [id:@yelo.id.to_s,name:@yelo.name,image_url: @yelo.image.url] if @yelo.present?
       #@recent_users = @user.chat_logs.map{|c|c.chatter_id.to_s}.uniq
       #@rec_usr = User.find(@recent_users) unless @recent_users.blank?
