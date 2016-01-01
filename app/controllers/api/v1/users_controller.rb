@@ -362,7 +362,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       #@recent_user =  @rec_usr.map{|e|{name: e.name,id:e.id.to_s,image_url:e.image.url}} unless @rec_usr.blank?
       person = []
       unless @user.contacts.blank?
-        @user.is_present.contacts.each do |c|
+        @user.contacts.each do |c|
           unless c.person.blank?
             if c.person.is_present
                person << c.person
@@ -450,7 +450,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       if(@user.update_attributes(serial_code:"", skip_update_validation: true))
         Person.save_person(@user.mobile_number, @user.id, true)
         @user = @user.reload
-	walls = Wall.all.to_a
+	      walls = Wall.all.to_a
         user_ids = walls.collect{|i|i.wall_items.collect{|u|u.user_id.to_s}}.flatten
         refer_point = (user_ids.count(@user.id.to_s))*10
         usr_ids = walls.collect{|c|c.comments.collect{|uu|uu.user_id.to_s}}.flatten
