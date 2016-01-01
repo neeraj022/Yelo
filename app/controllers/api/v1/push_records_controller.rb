@@ -1,9 +1,10 @@
 class Api::V1::PushRecordsController < Api::V1::BaseController
-  before_action :authenticate_user!
+  #before_action :authenticate_user!
 
   # GET /notifications
   def index
-    @notifications = current_user.notifications.ne(n_status: PushRecord::N_STATUS[:seen])
+    current_user = User.find('562616ef79656c2646510000')
+    @notifications = paginate current_user.push_records.ne(n_status: PushRecord::N_STATUS[:seen]).order('push_records.created_at DESC'), per_page: 20
     render json: @notifications
   rescue => e
      rescue_message(e) 

@@ -7,6 +7,9 @@ class PushRecord
   field :n_type,    type: Integer
   field :n_value,   type: Hash
   field :n_status,  type: Integer, default: 0
+  field :wall_id,   type: BSON::ObjectId
+  field :tag_name,  type: String
+  field :message,   type: String
   ################### relation ###################
   belongs_to :user 
   ################  constants ####################
@@ -33,7 +36,7 @@ class PushRecord
     end
   end
 
-  def send_notification
+  def send_notification(push_record_id)
     user = self.user
     return false unless user.push_id.present?
     unless user.can_send_notification?(self.n_type)
@@ -42,6 +45,10 @@ class PushRecord
     end
     self.save_notification_status(PushRecord::N_STATUS[:SENT])
     obj = self.notify_obj
+    record_id = {:nid => push_record_id.to_s}
+    obj = obj.merge(record_id)
+    self.message = obj[:message]
+    self.save
     PushRecord.push_notify(user.platform, [user.push_id], obj)
   end
  
@@ -49,7 +56,8 @@ class PushRecord
   class << self
     def save_notify(n_type, n_value, user_id, status=nil)
       status ||= PushRecord::N_CONS[:FRESH]
-     PushRecord.create(n_type: n_type,n_value: n_value, user_id: user_id, n_status: status)
+     # PushRecord.create(n_type: n_type,n_value: n_value, user_id: user_id, n_status: status)
+      PushRecord.create(n_type: n_type,n_value: n_value, user_id: user_id, n_status: status,wall_id: n_value[:wall_id],tag_name: n_value[:tag_name])
     end
 
     def save_wall(id)
@@ -264,13 +272,20 @@ class PushRecord
        user_ids = wall.comments.map{|c| c.user_id.to_s}.uniq
        user_ids.delete(user.id.to_s)
        user_ids.delete(wall.user_id.to_s)
-       return if user_ids.blank?
+       # return if user_ids.blank?
        obj = PushRecord.wall_comment_obj(v_hash)
-      obj1 = {:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message.truncate(100)}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.id.to_s,:tag => wall.tag_name,datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
+      obj1 = {:t => "single",:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message.truncate(100)}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.id.to_s,:tag => wall.tag_name,datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
       unless wall.user_id.to_s === user.id.to_s
         user_id =  wall.user_id.to_s
-	response1 = PushRecord.send_single_notification(user_id,obj1)
+        @push = PushRecord.create(n_type: 5,n_value: v_hash, user_id: wall.user_id, n_status: 1,wall_id: wall_id,tag_name: wall.tag_name,message: obj1[:message])
+        record = {:nid => @push.id.to_s}
+        obj1 = obj1.merge(record)
+	      response1 = PushRecord.send_single_notification(user_id,obj1)
       end
+      return if user_ids.blank?
+       user_ids.each do |id|
+         PushRecord.create(n_type: 5,n_value: v_hash, user_id: id, n_status: 1,wall_id: wall_id,tag_name: wall.tag_name,message: obj[:message])
+       end
       response =  PushRecord.send_notifications(user_ids, obj)
     end
     
@@ -310,11 +325,25 @@ class PushRecord
     #   response = gcm.send(registration_ids, options)
       objnew = ActiveSupport::JSON.decode(obj.gsub(/:([a-zA-z])/,'\\1').gsub('=>', ' : '))
        message = objnew["message"] 
-       ids.each do |id|
-         n = APNS::Notification.new(id.to_s, message)
-         otherjson = {:collapse_key => objnew["collapse_key"],:resource => {:name => objnew["resource"]["name"],:dest =>{:wall_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:datetime => objnew["resource"]["dest"]["datetime"]}}}
-         response = APNS.send_notification(id.to_s, :alert => message, :badge => 1, :sound => 'default')# ,:other => otherjson)
-	end
+       ids.each do |uid|
+         if objnew["collapse_key"] == 'comment' && objnew["t"].blank?
+           @user = User.where(push_id: uid).first
+           @push_record_id = PushRecord.where(user_id: @user.id.to_s).last.id.to_s
+           objnew["nid"] = @push_record_id
+         end
+         n = APNS::Notification.new(uid.to_s, message)
+         @key = case objnew["collapse_key"]
+                    when "comment"
+                        "5"
+                    when "pin"
+                        "3"
+                    when "tag"
+                        "1"
+                    end
+         # otherjson = {:collapse_key => objnew["collapse_key"],:resource => {:name => objnew["resource"]["name"],:dest =>{:wall_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:datetime => objnew["resource"]["dest"]["datetime"]}}}
+         otherjson = {:w_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:key =>@key,:n_id => objnew["nid"],:dt => DateTime.now.strftime("%m-%d-%Y %H:%M %p")}
+         response = APNS.send_notification(uid.to_s, :alert => message, :badge => 1, :sound => 'default' ,:other => otherjson)
+	     end
      end
   end
 

@@ -362,7 +362,7 @@ class Api::V1::UsersController < Api::V1::BaseController
       #@recent_user =  @rec_usr.map{|e|{name: e.name,id:e.id.to_s,image_url:e.image.url}} unless @rec_usr.blank?
       person = []
       unless @user.contacts.blank?
-        @user.contacts.each do |c|
+        @user.is_present.contacts.each do |c|
           unless c.person.blank?
             if c.person.is_present
                person << c.person
@@ -475,7 +475,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 	@global_points = @user.update_attributes(:global_points => 100)
         @sms = @user.send_sms
         Person.save_person(@user.mobile_number, @user.id, true)
-        render json: {status: Code[:status_success]}
+        render json: {status: Code[:status_success],serial_code: @user.serial_code}
       else
         render json: {status: Code[:status_error], error_message: @user.errors.full_messages}, status: Code[:error_code]  
       end
@@ -484,7 +484,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     def send_sms
       @sms = @user.send_sms
       if(@sms[:status])
-        render json: {status: Code[:status_success]}
+        render json: {status: Code[:status_success],serial_code: @user.serial_code}
       else
         render json: {status: Code[:status_error], error_message: @sms[:error_message]}
       end

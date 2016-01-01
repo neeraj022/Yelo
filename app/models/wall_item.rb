@@ -35,7 +35,7 @@ class WallItem
       v_hash = {wall_id: wall.id.to_s, message: wall.message, commented_by: self.name, tag_name: wall.tag_or_group_name}
         if(wall_user.id.to_s != self.user_id.to_s)
           notify = PushRecord.save_notify(PushRecord::N_CONS[:WALL_PIN], v_hash, wall_user.id)
-          notify.send_notification
+          notify.send_notification(notify.id)
           # NotificationWorker.perform_async(notify.id.to_s)
         end
       end
@@ -63,7 +63,7 @@ class WallItem
       if (self.user_id.to_s != user.id.to_s)         
        notify = PushRecord.save_notify(PushRecord::N_CONS[:USER_TAG], v_hash, user.id)
         # notify = NotificationWorker.perform_async(notify.id.to_s)
-        notify.send_notification
+        notify.send_notification(notify.id)
         if(updated_at > 1.week.ago)
           send_wall_tag_email_sms(t_usr, usr[:email], usr[:name]) 
         end
