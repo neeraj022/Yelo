@@ -97,7 +97,6 @@ Rails.application.routes.draw do
       post "/sms_share", to: "users#sms_share"
       get  "/suggestions", to: "community#suggestions"
       get  "/tag_list/:group_id", to: "community#tag_list"
-      get  "/tags_list", to: "community#tags_list"
       get  "/group_list", to: "community#group_list"
       get  "/group_cards", to: "community#group_cards"
       get  "/top_tags", to: "community#top_tags"

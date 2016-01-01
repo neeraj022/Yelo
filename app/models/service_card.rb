@@ -31,8 +31,6 @@ class ServiceCard
   field :image_secure_token, type: String
   field :views,         type: Integer, default: 0
   field :books,         type: Integer, default: 0
-  field :app_version,   type: String
-  field :app_type,      type: String
   ##################### attribute accessor ##################
   attr_accessor :duration_unit
   ##################### CONS ################################
@@ -49,14 +47,12 @@ class ServiceCard
   has_many :service_sms_logs
   has_many :service_card_books
   has_many :service_card_views
-  has_many :business_images
   #################### carrier Wave ####################################
   mount_uploader :image, CardUploader
-  # mount_uploader :avatars, BusinessUploader
   #################### validations ###############################
   validates :latitude , numericality: { greater_than_or_equal_to:  -90, less_than_or_equal_to:  90 }
   validates :longitude, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
-  validates :title, :description,  :user_id,  presence: true
+  validates :title, :description, :price, :user_id, :listing_id, presence: true
   #########  instance methods ###############################
   def image_url
     if !Rails.application.secrets.cloud_storage.present? || self.image.url.include?("fallback")
