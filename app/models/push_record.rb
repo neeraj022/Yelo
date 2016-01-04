@@ -325,6 +325,7 @@ class PushRecord
     #   response = gcm.send(registration_ids, options)
       objnew = ActiveSupport::JSON.decode(obj.gsub(/:([a-zA-z])/,'\\1').gsub('=>', ' : '))
        message = objnew["message"] 
+       message = objnew["message"].blank? ? "You have a new message" : objnew["message"]
        ids.each do |uid|
          if objnew["collapse_key"] == 'comment' && objnew["t"].blank?
            @user = User.where(push_id: uid).first
