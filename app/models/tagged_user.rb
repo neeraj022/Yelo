@@ -25,7 +25,7 @@ class TaggedUser
   validates :country_code, presence: true
 
   def full_mobile_number
-    self.country_code.to_s + self.mobile_number.to_s
+   self.mobile_number.to_s # self.country_code.to_s + self.mobile_number.to_s
   end
 
 end
