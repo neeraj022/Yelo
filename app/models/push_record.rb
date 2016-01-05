@@ -342,7 +342,7 @@ class PushRecord
                         "1"
                     end
          # otherjson = {:collapse_key => objnew["collapse_key"],:resource => {:name => objnew["resource"]["name"],:dest =>{:wall_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:datetime => objnew["resource"]["dest"]["datetime"]}}}
-         otherjson = {:w_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:key =>@key,:n_id => objnew["nid"],:dt => DateTime.now.strftime("%m-%d-%Y %H:%M %p")}
+         otherjson = {:w_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:key =>@key,:n_id => objnew["nid"],:dt => Time.now}
          response = APNS.send_notification(uid.to_s, :alert => message, :sound => 'default' ,:other => otherjson)
 	     end
      end

@@ -23,7 +23,7 @@ class PushRecordSerializer < CustomSerializer
   end
 
   def dt
-    "#{object.created_at.strftime('%m-%d-%Y %H:%M %p')}"
+    "#{object.created_at.strftime('%Y-%m-%d %H:%M:%S %z')}"
   end
 
 end
