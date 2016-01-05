@@ -1,5 +1,5 @@
 class Api::V1::PushRecordsController < Api::V1::BaseController
- # before_action :authenticate_user!
+  before_action :authenticate_user!
 
   # GET /notifications
   def index
