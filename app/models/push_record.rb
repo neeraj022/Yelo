@@ -324,7 +324,7 @@ class PushRecord
     #   options = {data: {score: "123"}, collapse_key: obj["collapse_key"]}
     #   response = gcm.send(registration_ids, options)
       objnew = ActiveSupport::JSON.decode(obj.gsub(/:([a-zA-z])/,'\\1').gsub('=>', ' : '))
-       message = objnew["message"] 
+      # message = objnew["message"] 
        message = objnew["message"].blank? ? "You have a new message" : objnew["message"]
        ids.each do |uid|
          if objnew["collapse_key"] == 'comment' && objnew["t"].blank?
@@ -343,7 +343,7 @@ class PushRecord
                     end
          # otherjson = {:collapse_key => objnew["collapse_key"],:resource => {:name => objnew["resource"]["name"],:dest =>{:wall_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:datetime => objnew["resource"]["dest"]["datetime"]}}}
          otherjson = {:w_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:key =>@key,:n_id => objnew["nid"],:dt => DateTime.now.strftime("%m-%d-%Y %H:%M %p")}
-         response = APNS.send_notification(uid.to_s, :alert => message, :badge => 1, :sound => 'default' ,:other => otherjson)
+         response = APNS.send_notification(uid.to_s, :alert => message, :sound => 'default' ,:other => otherjson)
 	     end
      end
   end
