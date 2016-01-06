@@ -340,9 +340,15 @@ class PushRecord
                         "3"
                     when "tag"
                         "1"
+                    when "alert"
+ 			"6"
                     end
-         # otherjson = {:collapse_key => objnew["collapse_key"],:resource => {:name => objnew["resource"]["name"],:dest =>{:wall_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:datetime => objnew["resource"]["dest"]["datetime"]}}}
-         otherjson = {:w_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:key =>@key,:n_id => objnew["nid"],:dt => Time.now}
+         if @key == "6"
+	  otherjson = {:key =>@key}
+          # otherjson = {:collapse_key => objnew["collapse_key"],:resource => {:name => objnew["resource"]["name"],:dest =>{:wall_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:datetime => objnew["resource"]["dest"]["datetime"]}}}
+         else
+          otherjson = {:w_id => objnew["resource"]["dest"]["wall_id"],:tag => objnew["resource"]["dest"]["tag"],:key =>@key,:n_id => objnew["nid"],:dt => Time.now}
+         end
          response = APNS.send_notification(uid.to_s, :alert => message, :sound => 'default' ,:other => otherjson)
 	     end
      end
