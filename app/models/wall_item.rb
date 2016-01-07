@@ -68,9 +68,9 @@ class WallItem
           send_wall_tag_email_sms(t_usr, usr[:email], usr[:name]) 
         end
       end
-    # else
-    #   user = User.save_inactive_user(mobile_number, country_code)
-    #   send_wall_tag_email_sms(t_usr, usr[:email], usr[:name])
+     else
+       user = User.save_inactive_user(mobile_number, country_code)
+       send_wall_tag_email_sms(t_usr, usr[:email], usr[:name])
     end
     user.save_user_tags(wall.tag_id, self.user_id, wall.id) if wall.tag_id.present?
     listing = user.listings.where(tag_id: wall.tag_id).first_or_initialize
