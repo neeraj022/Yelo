@@ -139,7 +139,7 @@ class Api::V1::ServiceCardsController < Api::V1::BaseController
     
     def service_card_params
       params.require(:service_card).permit(:title, :description, :price, :latitude, :longitude,
-      	            :city, :country, :state, :address, :zipcode, :duration, :duration_unit, :note)
+      	            :city, :country, :state, :address, :zipcode, :duration, :duration_unit, :note, :email, :mobile_number, :website_url)
     end
 
 end

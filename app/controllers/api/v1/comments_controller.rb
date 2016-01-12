@@ -4,15 +4,19 @@ class Api::V1::CommentsController <  Api::V1::BaseController
 
   # POST /walls/:wall_id/comment  
   def create
-    @comment = @wall.comments.new(comment_params.merge(user_id: current_user.id))
-    if @comment.save
-      # save_comment_notification
-      CommentNotifyWorker.perform_async(@wall.id.to_s, @comment.id.to_s, current_user.id.to_s)
-      touch_wall
-      current_user.update_attributes(:global_points => current_user.global_points + 7)
-      render json: @comment
+    unless @wall.is_closed?
+      @comment = @wall.comments.new(comment_params.merge(user_id: current_user.id))
+      if @comment.save
+        # save_comment_notification
+        CommentNotifyWorker.perform_async(@wall.id.to_s, @comment.id.to_s, current_user.id.to_s)
+        touch_wall
+        current_user.update_attributes(:global_points => current_user.global_points + 7)
+        render json: @comment
+      else
+        render json: {error_message: @comment.errors.full_messages}, status: Code[:error_code]
+      end
     else
-      render json: {error_message: @comment.errors.full_messages}, status: Code[:error_code]
+     render json: {error_message: "Wall is already closed"}
     end
   rescue => e
     rescue_message(e)

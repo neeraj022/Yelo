@@ -31,6 +31,9 @@ class ServiceCard
   field :image_secure_token, type: String
   field :views,         type: Integer, default: 0
   field :books,         type: Integer, default: 0
+  field :email,         type: String
+  field :mobile_number, type: Integer
+  field :website_url,   type: String
   ##################### attribute accessor ##################
   attr_accessor :duration_unit
   ##################### CONS ################################

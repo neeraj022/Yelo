@@ -5,6 +5,7 @@ class Api::V1::WallItemsController < Api::V1::BaseController
   def create
     params = wall_item_params.merge(user_id: current_user.id, name: current_user.name, 
                                    image_url: current_user.image_url)
+    render json: {error_message:{mobile_number: ["Wall is already closed"]}}, status: Code[:error_code] and return  if @wall.is_closed?
     @wall_item = @wall.wall_items.new(params)
     if(@wall_item.save)
       add_tagged_users
@@ -12,7 +13,8 @@ class Api::V1::WallItemsController < Api::V1::BaseController
       render json: {error_message: @wall_item.errors.full_messages}, status: Code[:error_code]
     end
   rescue => e
-    @wall_item.destroy if @wall_item.persisted?
+   # @wall_item.destroy if @wall.is_closed?
+   @wall_item.destroy if @wall_item.persisted?
     rescue_message(e)
   end
 
