@@ -475,8 +475,9 @@ class Api::V1::UsersController < Api::V1::BaseController
 
     def create_new_user
       @user = User.new(user_create_params)
+      @user.global_points = 100
       if(@user.save)
-	@global_points = @user.update_attributes(:global_points => 100)
+	# @global_points = @user.update_attributes(:global_points => 100)
         @sms = @user.send_sms
         Person.save_person(@user.mobile_number, @user.id, true)
         render json: {status: Code[:status_success],serial_code: @user.serial_code}
