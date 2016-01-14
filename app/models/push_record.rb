@@ -249,7 +249,7 @@ class PushRecord
     def wall_comment_obj(n_obj)
       v_hash =  (n_obj.kind_of? PushRecord) ? n_obj.n_value : n_obj
       #str =  "#{v_hash[:commented_by]}: #{v_hash[:comment].truncate(100)}"
-      str = "#{v_hash[:commented_by]} also commented on - #{v_hash[:post_tag].truncate(100)}"
+      str = "#{v_hash[:commented_by]} also commented on - #{v_hash[:post_tag].truncate(20)}"
       {collapse_key: "comment", message: str , resource: {name:
       "New Comment", dest: {wall_id: v_hash[:wall_id],tag: v_hash[:sub_category],datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
     end
@@ -274,7 +274,7 @@ class PushRecord
        user_ids.delete(wall.user_id.to_s)
        # return if user_ids.blank?
        obj = PushRecord.wall_comment_obj(v_hash)
-      obj1 = {:t => "single",:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message.truncate(100)}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.id.to_s,:tag => wall.tag_name,datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
+      obj1 = {:t => "single",:collapse_key=>"comment", :message=> "You have a new comment from #{user.name} on - #{wall.message.truncate(20)}", :resource=>{:name=>"New Comment", :dest=>{:wall_id=>wall.id.to_s,:tag => wall.tag_name,datetime: DateTime.now.strftime("%m-%d-%Y %H:%M %p")}}}
       unless wall.user_id.to_s === user.id.to_s
         user_id =  wall.user_id.to_s
         @push = PushRecord.create(n_type: 5,n_value: v_hash, user_id: wall.user_id, n_status: 1,wall_id: wall_id,tag_name: wall.tag_name,message: obj1[:message])
