@@ -120,6 +120,11 @@ Rails.application.routes.draw do
       get "/users/chat_users"
       get "users/calculate_points"
       get "/users/leaderboard"
+      #added by neeraj
+      #Method to get new suggestions according to tag field
+      get "/booking_suggestions/:booking_id", to: "service_cards#get_top_suggestions"
+      get "/service_cards/:service_card_id/ratings_pagination", to: "ratings#service_card_reviews_pagination"
+
       resources :users
       resources :ratings
       resources :listings
